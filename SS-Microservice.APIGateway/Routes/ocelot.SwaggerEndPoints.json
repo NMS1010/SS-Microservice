@@ -1,0 +1,37 @@
+{
+  "SwaggerEndPoints": [
+    {
+      "Key": "gateway",
+      "TransformByOcelotConfig": false,
+      "Config": [
+        {
+          "Name": "SS-Microservice.APIGateway",
+          "Version": "1.0",
+          "Url": "https://localhost:7182/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "products",
+      "TransformByOcelotConfig": true,
+      "Config": [
+        {
+          "Name": "SS-Microservice.Services.Product",
+          "Version": "1.0",
+          "Url": "https://localhost:7096/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "auth",
+      "TransformByOcelotConfig": true,
+      "Config": [
+        {
+          "Name": "SS-Microservice.Services.Auth",
+          "Version": "1.0",
+          "Url": "https://localhost:7026/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

@@ -2,18 +2,18 @@
   "Routes": [
     {
       "UseServiceDiscovery": true,
-      "Servicename": "AuthService",
+      "Servicename": "ProductService",
       "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "https",
-      "SwaggerKey": "auth",
+      "SwaggerKey": "products",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7026
+          "Port": 7096
         }
       ],
-      "UpstreamPathTemplate": "/auth/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Post" ]
+      "UpstreamPathTemplate": "/products/{everything}",
+      "UpstreamHttpMethod": [ "Get" ]
     }
   ]
 }
