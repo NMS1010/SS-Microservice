@@ -21,4 +21,8 @@
     <Folder Include="Routes\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SS-Microservice.Common\SS-Microservice.Common.csproj" />
+  </ItemGroup>
+
 </Project>

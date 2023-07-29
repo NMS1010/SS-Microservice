@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Ocelot.Values;
+using SS_Microservice.Common.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,32 +72,7 @@ builder.Services.AddSwaggerGen(s =>
     });
 });
 
-string issuer = configuration.GetValue<string>("Tokens:Issuer");
-string signingKey = configuration.GetValue<string>("Tokens:Key");
-byte[] signingKeyBytes = Encoding.UTF8.GetBytes(signingKey);
-builder.Services
-    .AddAuthentication(opts =>
-    {
-        opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(opts =>
-    {
-        opts.RequireHttpsMetadata = false;
-        opts.SaveToken = true;
-        opts.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidateIssuer = true,
-            ValidIssuer = issuer,
-            ValidateAudience = true,
-            ValidAudience = issuer,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero,
-            IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes)
-        };
-    });
+builder.Services.AddJwtAuthentication(configuration);
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();

@@ -32,7 +32,7 @@ namespace SS_Microservice.Common.Consul
                 Check = new AgentServiceCheck()
                 {
                     Interval = TimeSpan.FromSeconds(15),
-                    HTTP = $"http://{_config.Address}:{_config.Port}//{_config.HealthCheckEndPoint}",
+                    HTTP = $"https://{_config.Address}:{_config.Port}/{_config.HealthCheckEndPoint}",
                     Timeout = TimeSpan.FromSeconds(5)
                 }
             };

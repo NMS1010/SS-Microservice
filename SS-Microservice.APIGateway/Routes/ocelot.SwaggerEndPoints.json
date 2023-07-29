@@ -16,7 +16,7 @@
       "TransformByOcelotConfig": true,
       "Config": [
         {
-          "Name": "SS-Microservice.Services.Product",
+          "Name": "SS-Microservice.Services.Products",
           "Version": "1.0",
           "Url": "https://localhost:7096/swagger/v1/swagger.json"
         }

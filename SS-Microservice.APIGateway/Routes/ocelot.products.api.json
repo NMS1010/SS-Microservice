@@ -12,7 +12,7 @@
           "Port": 7096
         }
       ],
-      "UpstreamPathTemplate": "/products/{everything}",
+      "UpstreamPathTemplate": "/gateway/{everything}",
       "UpstreamHttpMethod": [ "Get" ]
     }
   ]
