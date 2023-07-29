@@ -4,7 +4,6 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>SS_Microservice.Common</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 </Project>
