@@ -21,21 +21,21 @@ namespace SS_Microservice.Services.Auth.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Authenticate([FromBody] LoginRequest request)
         {
             var token = await _mediator.Send(_mapper.Map<LoginQuery>(request));
             return Ok(token);
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             var success = await _mediator.Send(_mapper.Map<RegisterCommand>(request));
             return Ok(success);
         }
 
-        [HttpPost]
+        [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
             var newToken = await _mediator.Send(_mapper.Map<RefreshTokenCommand>(request));

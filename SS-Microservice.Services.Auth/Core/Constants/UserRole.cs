@@ -2,13 +2,13 @@
 {
     public class UserRole
     {
-        public static List<string> UserRoles { get; set; } = new List<string>()
+        public static string ADMIN = "ADMIN";
+        public static string USER = "USER";
+
+        public static List<string> Roles = new List<string>()
         {
             ADMIN,
             USER
         };
-
-        public static string ADMIN = "ADMIN";
-        public static string USER = "USER";
     }
 }
