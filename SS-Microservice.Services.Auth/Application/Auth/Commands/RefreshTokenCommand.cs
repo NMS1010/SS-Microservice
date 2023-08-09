@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SS_Microservice.Services.Auth.Application.Model;
+using SS_Microservice.Services.Auth.Application.Model.Auth;
 
 namespace SS_Microservice.Services.Auth.Application.Auth.Commands
 {

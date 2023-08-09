@@ -25,4 +25,6 @@
     <ProjectReference Include="..\SS-Microservice.Common\SS-Microservice.Common.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
 </Project>

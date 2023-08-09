@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Consul;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Services.Auth.Application.Auth.Commands;
 using SS_Microservice.Services.Auth.Application.Auth.Queries;
-using SS_Microservice.Services.Auth.Application.Model;
+using SS_Microservice.Services.Auth.Application.Model.Auth;
+using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 
 namespace SS_Microservice.Services.Auth.Controllers
 {
@@ -25,21 +27,21 @@ namespace SS_Microservice.Services.Auth.Controllers
         public async Task<IActionResult> Authenticate([FromBody] LoginRequest request)
         {
             var token = await _mediator.Send(_mapper.Map<LoginQuery>(request));
-            return Ok(token);
+            return Ok(CustomAPIResponse<AuthResponse>.Success(token, StatusCodes.Status200OK));
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             var success = await _mediator.Send(_mapper.Map<RegisterCommand>(request));
-            return Ok(success);
+            return Ok(CustomAPIResponse<bool>.Success(success, StatusCodes.Status201Created));
         }
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
             var newToken = await _mediator.Send(_mapper.Map<RefreshTokenCommand>(request));
-            return Ok(newToken);
+            return Ok(CustomAPIResponse<AuthResponse>.Success(newToken, StatusCodes.Status200OK));
         }
     }
 }

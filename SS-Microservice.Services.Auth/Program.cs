@@ -40,6 +40,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 async Task CreateRoles(IServiceProvider serviceProvider)
 {
     var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();

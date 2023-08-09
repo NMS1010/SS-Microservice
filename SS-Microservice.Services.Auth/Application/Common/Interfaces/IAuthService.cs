@@ -1,6 +1,6 @@
 ﻿using SS_Microservice.Services.Auth.Application.Auth.Commands;
 using SS_Microservice.Services.Auth.Application.Auth.Queries;
-using SS_Microservice.Services.Auth.Application.Model;
+using SS_Microservice.Services.Auth.Application.Model.Auth;
 
 namespace SS_Microservice.Services.Auth.Application.Common.Interfaces
 {

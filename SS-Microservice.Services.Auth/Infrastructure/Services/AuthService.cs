@@ -4,7 +4,7 @@ using SS_Microservice.Services.Auth.Application.Auth.Commands;
 using SS_Microservice.Services.Auth.Application.Auth.Queries;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Services.Auth.Application.Common.Interfaces;
-using SS_Microservice.Services.Auth.Application.Model;
+using SS_Microservice.Services.Auth.Application.Model.Auth;
 using SS_Microservice.Services.Auth.Core.Constants;
 using SS_Microservice.Services.Auth.Core.Entities;
 
