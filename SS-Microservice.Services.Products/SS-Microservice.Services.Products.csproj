@@ -8,11 +8,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="7.0.0" />
+	  <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="7.0.0" />
+	  <PackageReference Include="MongoDB.Driver" Version="2.21.0" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	  <PackageReference Include="AutoMapper" Version="12.0.1" />
+	  <PackageReference Include="AutoMapper.Collection" Version="9.0.0" />
+	  <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" Version="6.0.4" />
+	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+
+	  <PackageReference Include="MediatR" Version="12.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SS-Microservice.Common\SS-Microservice.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Dto\" />
+    <Folder Include="Application\Model\" />
+    <Folder Include="Application\Product\Commands\" />
+    <Folder Include="Application\Product\Handlers\" />
+    <Folder Include="Application\Product\Queries\" />
+    <Folder Include="Infrastructure\Services\" />
   </ItemGroup>
 
 </Project>
