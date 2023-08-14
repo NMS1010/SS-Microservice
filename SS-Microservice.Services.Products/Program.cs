@@ -1,10 +1,15 @@
+using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jwt;
+using SS_Microservice.Common.Services.Upload;
+using SS_Microservice.Services.Products.Application.Common.AutoMapper;
 using SS_Microservice.Services.Products.Application.Common.Interfaces;
 using SS_Microservice.Services.Products.Infrastructure.Data;
+using SS_Microservice.Services.Products.Infrastructure.Repositories;
+using SS_Microservice.Services.Products.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +20,14 @@ builder.Services.Configure<MongoDBSettings>(
 
 builder.Services.AddSingleton<IMongoDBSettings>(sp =>
     sp.GetRequiredService<IOptions<MongoDBSettings>>().Value);
-
+builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile(new MapperProfile(provider.GetService<IHttpContextAccessor>()));
+}).CreateMapper());
 builder.Services.AddScoped<IProductContext, ProductContext>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IUploadService, UploadService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

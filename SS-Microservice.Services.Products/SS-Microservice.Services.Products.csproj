@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>SS_Microservice.Services.Products</RootNamespace>
   </PropertyGroup>
@@ -22,15 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SS-Microservice.Common\SS-Microservice.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Application\Dto\" />
-    <Folder Include="Application\Model\" />
-    <Folder Include="Application\Product\Commands\" />
-    <Folder Include="Application\Product\Handlers\" />
-    <Folder Include="Application\Product\Queries\" />
-    <Folder Include="Infrastructure\Services\" />
   </ItemGroup>
 
 </Project>

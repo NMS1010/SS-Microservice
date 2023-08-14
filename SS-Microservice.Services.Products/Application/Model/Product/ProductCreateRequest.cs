@@ -1,16 +1,17 @@
-﻿namespace SS_Microservice.Services.Products.Core.Entities
+﻿namespace SS_Microservice.Services.Products.Application.Model.Product
 {
-    public class Product : BaseEntity
+    public class ProductCreateRequest
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public long Quantity { get; set; }
         public decimal Price { get; set; }
-        public DateTime DateCreated { get; set; }
-        public DateTime DateUpdated { get; set; }
         public string Origin { get; set; }
         public int Status { get; set; }
         public string MainImage { get; set; }
-        public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
+
+        public IFormFile Image { get; set; }
+
+        public List<IFormFile> SubImages { get; set; }
     }
 }

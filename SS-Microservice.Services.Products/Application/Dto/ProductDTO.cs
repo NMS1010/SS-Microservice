@@ -1,7 +1,10 @@
-﻿namespace SS_Microservice.Services.Products.Core.Entities
+﻿using SS_Microservice.Services.Products.Core.Entities;
+
+namespace SS_Microservice.Services.Products.Application.Dto
 {
-    public class Product : BaseEntity
+    public class ProductDTO
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public long Quantity { get; set; }
@@ -11,6 +14,6 @@
         public string Origin { get; set; }
         public int Status { get; set; }
         public string MainImage { get; set; }
-        public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
+        public ICollection<ProductImageDTO> Images { get; set; }
     }
 }

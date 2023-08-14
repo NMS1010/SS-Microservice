@@ -1,6 +1,20 @@
-﻿namespace SS_Microservice.Services.Products.Application.Common.Interfaces
+﻿using SS_Microservice.Services.Products.Application.Dto;
+using SS_Microservice.Services.Products.Application.Model.Product;
+using SS_Microservice.Services.Products.Application.Product.Commands;
+using SS_Microservice.Services.Products.Application.Product.Queries;
+
+namespace SS_Microservice.Services.Products.Application.Common.Interfaces
 {
     public interface IProductService
     {
+        Task AddProduct(ProductCreateCommand command);
+
+        Task<bool> UpdateProduct(ProductUpdateCommand command);
+
+        Task<bool> DeleteProduct(ProductDeleteCommand command);
+
+        Task<List<ProductDTO>> GetAllProduct(ProductGetAllQuery query);
+
+        Task<ProductDTO> GetProductById(ProductGetByIdQuery query);
     }
 }
