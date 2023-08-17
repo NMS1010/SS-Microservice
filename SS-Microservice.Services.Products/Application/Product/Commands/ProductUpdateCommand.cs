@@ -5,7 +5,7 @@ namespace SS_Microservice.Services.Products.Application.Product.Commands
 {
     public class ProductUpdateCommand : IRequest<bool>
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public long Quantity { get; set; }

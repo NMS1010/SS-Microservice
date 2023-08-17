@@ -23,4 +23,8 @@
     <ProjectReference Include="..\SS-Microservice.Common\SS-Microservice.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

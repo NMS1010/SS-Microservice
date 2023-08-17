@@ -28,7 +28,7 @@ namespace SS_Microservice.Services.Products.Controllers
 
         [HttpGet("all")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetProducts(ProductPagingRequest request)
+        public async Task<IActionResult> GetProducts([FromQuery] ProductPagingRequest request)
         {
             var query = _mapper.Map<ProductGetAllQuery>(request);
             var res = await _sender.Send(query);
@@ -37,7 +37,7 @@ namespace SS_Microservice.Services.Products.Controllers
 
         [HttpGet("{productId}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetProductById(Guid productId)
+        public async Task<IActionResult> GetProductById([FromQuery] Guid productId)
         {
             var res = await _sender.Send(new ProductGetByIdQuery() { ProductId = productId });
             return Ok(CustomAPIResponse<ProductDTO>.Success(res, StatusCodes.Status200OK));

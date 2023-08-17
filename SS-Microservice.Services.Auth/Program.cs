@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SS_Microservice.Common.Consul;
+using SS_Microservice.Common.Middleware;
 using SS_Microservice.Services.Auth.Application.Common.AutoMapper;
 using SS_Microservice.Services.Auth.Application.Common.Interfaces;
 using SS_Microservice.Services.Auth.Core.Constants;
 using SS_Microservice.Services.Auth.Core.Entities;
 using SS_Microservice.Services.Auth.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Auth.Infrastructure.Services;
-using SS_Microservice.Services.Auth.Middleware;
 using System;
 using System.Reflection;
 

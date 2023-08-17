@@ -4,22 +4,26 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jwt;
+using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Services.Products.Application.Common.AutoMapper;
 using SS_Microservice.Services.Products.Application.Common.Interfaces;
 using SS_Microservice.Services.Products.Infrastructure.Data;
 using SS_Microservice.Services.Products.Infrastructure.Repositories;
 using SS_Microservice.Services.Products.Infrastructure.Services;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 // Add services to the container.
 builder.Services.Configure<MongoDBSettings>(
-               configuration.GetSection("WordDatabaseSetting"));
+               configuration.GetSection("ProductDatabaseSetting"));
 
 builder.Services.AddSingleton<IMongoDBSettings>(sp =>
     sp.GetRequiredService<IOptions<MongoDBSettings>>().Value);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
 {
     cfg.AddProfile(new MapperProfile(provider.GetService<IHttpContextAccessor>()));
@@ -71,7 +75,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

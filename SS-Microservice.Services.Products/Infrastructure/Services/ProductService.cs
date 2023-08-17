@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SS_Microservice.Common.Services.Upload;
+using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Services.Products.Application.Common.Interfaces;
 using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Model.Product;
@@ -24,11 +25,17 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
 
         public async Task AddProduct(ProductCreateCommand command)
         {
-            var product = _mapper.Map<Core.Entities.Product>(command);
+            var product = new Product();
 
             var now = DateTime.Now;
 
-            product.Id = Guid.NewGuid();
+            product.Status = command.Status;
+            product.Name = command.Name;
+            product.Description = command.Description;
+            product.Price = command.Price;
+            product.Origin = command.Origin;
+            product.Quantity = command.Quantity;
+            product.Id = Guid.NewGuid().ToString();
             product.DateCreated = now;
             product.DateUpdated = now;
             product.Status = 1;
@@ -36,15 +43,18 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             {
                 product.MainImage = await _uploadService.UploadFile(command.Image);
             }
-            foreach (var file in command.SubImages)
+            if (command.SubImages != null)
             {
-                if (file != null)
+                foreach (var file in command.SubImages)
                 {
-                    product.Images.Add(new()
+                    if (file != null)
                     {
-                        Id = Guid.NewGuid(),
-                        Path = await _uploadService.UploadFile(file)
-                    });
+                        product.Images.Add(new()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Path = await _uploadService.UploadFile(file)
+                        });
+                    }
                 }
             }
             await _repository.Insert(product);
@@ -56,7 +66,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             return _repository.Delete(product);
         }
 
-        private static IEnumerable<Core.Entities.Product> SortProduct(string column, bool isAscending, IEnumerable<Core.Entities.Product> products)
+        private static List<Core.Entities.Product> SortProduct(string column, bool isAscending, List<Core.Entities.Product> products)
         {
             var tempFunc = column switch
             {
@@ -66,14 +76,14 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
                 "Quantity" => new Func<Core.Entities.Product, object>(x => x.Quantity),
                 _ => new Func<Core.Entities.Product, object>(x => x.Name),
             };
-            return isAscending
+            return (isAscending
                 ? products.OrderBy(tempFunc)
-                : products.OrderByDescending(tempFunc);
+                : products.OrderByDescending(tempFunc)).ToList();
         }
 
         public async Task<List<ProductDTO>> GetAllProduct(ProductGetAllQuery query)
         {
-            var products = SortProduct(query.ColumnName, query.TypeSort == "ASC", await _repository.GetAll());
+            var products = SortProduct(query.ColumnName, query.TypeSort == "ASC", (await _repository.GetAll()).ToList());
             if (query.Keyword != null)
             {
                 products = products.Where(x =>
@@ -81,13 +91,18 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
                     || x.Description.ToLower().Contains(query.Keyword.ToString().ToLower())
                     || x.Quantity.ToString().Contains(query.Keyword.ToString())
                     || x.Price.ToString().Contains(query.Keyword.ToString())
-                    || x.Origin.ToLower().Contains(query.Keyword.ToString().ToLower()));
+                    || x.Origin.ToLower().Contains(query.Keyword.ToString().ToLower()))
+                    .ToList();
             }
             var result = products
                 .Skip((int)query.PageIndex - 1)
                 .Take((int)query.PageSize).ToList();
-
-            return _mapper.Map<List<Core.Entities.Product>, List<ProductDTO>>(result);
+            var productDtos = new List<ProductDTO>();
+            foreach (var item in result)
+            {
+                productDtos.Add(_mapper.Map<Product, ProductDTO>(item));
+            }
+            return productDtos;
         }
 
         public async Task<ProductDTO> GetProductById(ProductGetByIdQuery query)
@@ -99,8 +114,18 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
 
         public async Task<bool> UpdateProduct(ProductUpdateCommand command)
         {
-            var product = _mapper.Map<Product>(command);
+            var product = await _repository.GetById(command.Id);
+            if (product == null)
+                throw new NotFoundException("Cannot find this product");
+
+            product.Status = command.Status;
+            product.Name = command.Name;
+            product.Description = command.Description;
+            product.Price = command.Price;
+            product.Origin = command.Origin;
+            product.Quantity = command.Quantity;
             product.DateUpdated = DateTime.Now;
+
             if (command.Image != null)
             {
                 product.MainImage = await _uploadService.UploadFile(command.Image);
