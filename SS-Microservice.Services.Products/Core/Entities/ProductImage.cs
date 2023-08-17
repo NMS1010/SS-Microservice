@@ -2,7 +2,7 @@
 {
     public class ProductImage
     {
-        public Guid Id { get; set; }
-        public string Path { get; set; }
+        public string Id { get; set; }
+        public string ImageName { get; set; }
     }
 }

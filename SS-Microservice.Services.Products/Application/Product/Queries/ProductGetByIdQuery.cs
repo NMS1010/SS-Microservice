@@ -5,6 +5,6 @@ namespace SS_Microservice.Services.Products.Application.Product.Queries
 {
     public class ProductGetByIdQuery : IRequest<ProductDTO>
     {
-        public Guid ProductId { get; set; }
+        public string ProductId { get; set; }
     }
 }

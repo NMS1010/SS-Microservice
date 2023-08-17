@@ -3,6 +3,7 @@ using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Model.Product;
 using SS_Microservice.Services.Products.Application.Product.Commands;
 using SS_Microservice.Services.Products.Application.Product.Queries;
+using SS_Microservice.Services.Products.Core.Entities;
 
 namespace SS_Microservice.Services.Products.Application.Common.AutoMapper
 {
@@ -25,6 +26,10 @@ namespace SS_Microservice.Services.Products.Application.Common.AutoMapper
             CreateMap<ProductCreateRequest, ProductCreateCommand>();
             CreateMap<ProductUpdateRequest, ProductUpdateCommand>();
             CreateMap<ProductPagingRequest, ProductGetAllQuery>();
+            CreateMap<ProductImageUpdateRequest, ProductImageUpdateCommand>();
+            CreateMap<ProductImage, ProductImageDTO>()
+                .ForMember(des => des.Path,
+                act => act.MapFrom(src => GetFile(src.ImageName, httpContextAccessor)));
         }
     }
 }

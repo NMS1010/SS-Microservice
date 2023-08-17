@@ -34,7 +34,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
 
         public async Task<T> GetById(object id)
         {
-            var data = await _dbSet.Find(filter: g => g.Id == (Guid)id).SingleOrDefaultAsync();
+            var data = await _dbSet.Find(filter: g => g.Id == id.ToString()).SingleOrDefaultAsync();
             return data;
         }
 

@@ -2,7 +2,7 @@
 {
     public class ProductImageDTO
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Path { get; set; }
     }
 }

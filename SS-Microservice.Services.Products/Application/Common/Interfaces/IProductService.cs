@@ -11,7 +11,11 @@ namespace SS_Microservice.Services.Products.Application.Common.Interfaces
 
         Task<bool> UpdateProduct(ProductUpdateCommand command);
 
+        Task<bool> UpdateProductImage(ProductImageUpdateCommand command);
+
         Task<bool> DeleteProduct(ProductDeleteCommand command);
+
+        Task<bool> DeleteProductImage(ProductImageDeleteCommand command);
 
         Task<List<ProductDTO>> GetAllProduct(ProductGetAllQuery query);
 

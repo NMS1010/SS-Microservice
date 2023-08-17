@@ -28,7 +28,7 @@ namespace SS_Microservice.Services.Products.Controllers
 
         [HttpGet("all")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetProducts(ProductPagingRequest request)
+        public async Task<IActionResult> GetProducts([FromQuery] ProductPagingRequest request)
         {
             var query = _mapper.Map<ProductGetAllQuery>(request);
             var res = await _sender.Send(query);
@@ -37,7 +37,7 @@ namespace SS_Microservice.Services.Products.Controllers
 
         [HttpGet("{productId}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetProductById(Guid productId)
+        public async Task<IActionResult> GetProductById(string productId)
         {
             var res = await _sender.Send(new ProductGetByIdQuery() { ProductId = productId });
             return Ok(CustomAPIResponse<ProductDTO>.Success(res, StatusCodes.Status200OK));
@@ -61,12 +61,31 @@ namespace SS_Microservice.Services.Products.Controllers
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
         }
 
+        [HttpPut("update/images")]
+        public async Task<IActionResult> UpdateProductImage([FromForm] ProductImageUpdateRequest request)
+        {
+            var command = _mapper.Map<ProductImageUpdateCommand>(request);
+            var res = await _sender.Send(command);
+            if (!res)
+                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update images for this product"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+        }
+
         [HttpDelete("delete/{productId}")]
-        public async Task<IActionResult> DeleteProduct(Guid productId)
+        public async Task<IActionResult> DeleteProduct(string productId)
         {
             var res = await _sender.Send(new ProductDeleteCommand() { ProductId = productId });
             if (!res)
                 return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this product"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+        }
+
+        [HttpDelete("delete/images/{productId}/{productImageId}")]
+        public async Task<IActionResult> DeleteProductImage(string productId, string productImageId)
+        {
+            var res = await _sender.Send(new ProductImageDeleteCommand() { ProductId = productId, ProductImageId = productImageId });
+            if (!res)
+                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete image for this product"));
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
         }
     }

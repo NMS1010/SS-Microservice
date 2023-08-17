@@ -3,7 +3,7 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "ProductService",
-      "DownstreamPathTemplate": "/api/products/create",
+      "DownstreamPathTemplate": "/api/products/create/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
       "DownstreamHostAndPorts": [
@@ -12,8 +12,46 @@
           "Port": 7096
         }
       ],
-      "UpstreamPathTemplate": "/products/create",
+      "UpstreamPathTemplate": "/products/create/{everything}",
       "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "ProductService",
+      "DownstreamPathTemplate": "/api/products/update/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "products",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7096
+        }
+      ],
+      "UpstreamPathTemplate": "/products/update/{everything}",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "ProductService",
+      "DownstreamPathTemplate": "/api/products/delete/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "products",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7096
+        }
+      ],
+      "UpstreamPathTemplate": "/products/delete/{everything}",
+      "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []

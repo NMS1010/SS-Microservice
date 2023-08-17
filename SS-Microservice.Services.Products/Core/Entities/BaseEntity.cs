@@ -6,7 +6,6 @@ namespace SS_Microservice.Services.Products.Core.Entities
     public class BaseEntity
     {
         [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
     }
 }
