@@ -27,5 +27,4 @@
     <Folder Include="wwwroot\" />
     <Folder Include="wwwroot\user-content\" />
   </ItemGroup>
-
 </Project>
