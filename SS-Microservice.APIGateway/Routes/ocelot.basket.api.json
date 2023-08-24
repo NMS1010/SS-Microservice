@@ -1,0 +1,23 @@
+{
+  "Routes": [
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "BasketService",
+      "DownstreamPathTemplate": "/api/baskets/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "basket",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7168
+        }
+      ],
+      "UpstreamPathTemplate": "/baskets/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    }
+  ]
+}

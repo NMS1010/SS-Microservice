@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="routes\ocelot.basket.api.json" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
 	  <PackageReference Include="MMLib.SwaggerForOcelot" Version="6.3.2" />
 	  <PackageReference Include="Ocelot" Version="18.0.0" />
@@ -25,6 +29,6 @@
     <ProjectReference Include="..\SS-Microservice.Common\SS-Microservice.Common.csproj" />
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties routes_4ocelot_1basket_1api_1json__JsonSchema="ocelot" /></VisualStudio></ProjectExtensions>
 
 </Project>

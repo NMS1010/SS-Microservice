@@ -12,6 +12,17 @@
       ]
     },
     {
+      "Key": "basket",
+      "TransformByOcelotConfig": true,
+      "Config": [
+        {
+          "Name": "SS-Microservice.Services.Basket",
+          "Version": "1.0",
+          "Url": "https://localhost:7168/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
       "Key": "products",
       "TransformByOcelotConfig": true,
       "Config": [
