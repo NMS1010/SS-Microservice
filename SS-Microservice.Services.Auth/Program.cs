@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Middleware;
+using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Auth.Application.Common.AutoMapper;
 using SS_Microservice.Services.Auth.Application.Common.Interfaces;
 using SS_Microservice.Services.Auth.Core.Constants;
@@ -31,6 +32,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opts =>
 })
     .AddEntityFrameworkStores<DBContext>()
     .AddDefaultTokenProviders();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 builder.Services.AddControllers();
@@ -41,6 +43,7 @@ builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
 async Task CreateRoles(IServiceProvider serviceProvider)
 {
     var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Services.Basket.Application.Basket.Commands;
 using SS_Microservice.Services.Basket.Application.Basket.Queries;
@@ -70,7 +71,18 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
         {
             var basket = (await _basketRepository.GetAll()).Where(x => x.UserId == query.UserId).FirstOrDefault()
                 ?? throw new NotFoundException("Cannot found basket of this user");
-            return _mapper.Map<BasketDto>(basket);
+
+            var basketItems = await _basketItemRepository.GetBasketItem(basket.BasketId, (int)query.PageIndex, (int)query.PageSize);
+            var basketItemDto = new List<BasketItemDto>();
+            foreach (var item in basketItems.Items)
+            {
+                basketItemDto.Add(_mapper.Map<BasketItemDto>(item));
+            }
+            var basketDto = new BasketDto()
+            {
+                BasketItems = new PaginatedResult<BasketItemDto>(basketItemDto, (int)query.PageIndex, basketItems.TotalCount, (int)query.PageSize)
+            };
+            return basketDto;
         }
 
         private async Task<BasketItem> FindBasketItem(string userId, int basketItemId)

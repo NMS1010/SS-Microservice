@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Products.Application.Common.Interfaces;
 using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Product.Queries;
 
 namespace SS_Microservice.Services.Products.Application.Product.Handlers
 {
-    public class ProductGetAllHandler : IRequestHandler<ProductGetAllQuery, List<ProductDTO>>
+    public class ProductGetAllHandler : IRequestHandler<ProductGetAllQuery, PaginatedResult<ProductDTO>>
     {
         private IProductService _productService;
 
@@ -14,7 +15,7 @@ namespace SS_Microservice.Services.Products.Application.Product.Handlers
             _productService = productService;
         }
 
-        public async Task<List<ProductDTO>> Handle(ProductGetAllQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<ProductDTO>> Handle(ProductGetAllQuery request, CancellationToken cancellationToken)
         {
             return await _productService.GetAllProduct(request);
         }

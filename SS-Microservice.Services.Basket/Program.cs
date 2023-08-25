@@ -20,11 +20,12 @@ var configuration = builder.Configuration;
 builder.Services.AddDbContext<BasketDBContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("BasketDbContext")));
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(BasketProfile).Assembly);
 builder.Services.AddScoped<IBasketItemRepository, BasketItemRepository>();
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.AddScoped<IBasketService, BasketService>();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -1,4 +1,5 @@
-﻿using SS_Microservice.Services.Products.Application.Dto;
+﻿using SS_Microservice.Common.Model.Paging;
+using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Model.Product;
 using SS_Microservice.Services.Products.Application.Product.Commands;
 using SS_Microservice.Services.Products.Application.Product.Queries;
@@ -17,7 +18,7 @@ namespace SS_Microservice.Services.Products.Application.Common.Interfaces
 
         Task<bool> DeleteProductImage(ProductImageDeleteCommand command);
 
-        Task<List<ProductDTO>> GetAllProduct(ProductGetAllQuery query);
+        Task<PaginatedResult<ProductDTO>> GetAllProduct(ProductGetAllQuery query);
 
         Task<ProductDTO> GetProductById(ProductGetByIdQuery query);
     }

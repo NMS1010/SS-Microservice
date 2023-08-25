@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Model.Product;
@@ -32,7 +33,7 @@ namespace SS_Microservice.Services.Products.Controllers
         {
             var query = _mapper.Map<ProductGetAllQuery>(request);
             var res = await _sender.Send(query);
-            return Ok(CustomAPIResponse<List<ProductDTO>>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<PaginatedResult<ProductDTO>>.Success(res, StatusCodes.Status200OK));
         }
 
         [HttpGet("{productId}")]

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
+using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Products.Application.Common.Interfaces;
 using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Model.Product;
@@ -8,6 +9,7 @@ using SS_Microservice.Services.Products.Application.Product.Commands;
 using SS_Microservice.Services.Products.Application.Product.Queries;
 using SS_Microservice.Services.Products.Core.Entities;
 using ZstdSharp.Unsafe;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Services
 {
@@ -76,43 +78,15 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             return isDeleteSuccess;
         }
 
-        private static List<Product> SortProduct(string column, bool isAscending, List<Product> products)
+        public async Task<PaginatedResult<ProductDTO>> GetAllProduct(ProductGetAllQuery query)
         {
-            var tempFunc = column switch
-            {
-                "Description" => new Func<Product, object>(x => x.Description),
-                "Price" => new Func<Product, object>(x => x.Price),
-                "Origin" => new Func<Product, object>(x => x.Origin),
-                "Quantity" => new Func<Product, object>(x => x.Quantity),
-                _ => new Func<Product, object>(x => x.Name),
-            };
-            return (isAscending
-                ? products.OrderBy(tempFunc)
-                : products.OrderByDescending(tempFunc)).ToList();
-        }
-
-        public async Task<List<ProductDTO>> GetAllProduct(ProductGetAllQuery query)
-        {
-            var products = SortProduct(query.ColumnName, query.TypeSort == "ASC", (await _repository.GetAll()).ToList());
-            if (query.Keyword != null)
-            {
-                products = products.Where(x =>
-                    x.Name.ToLower().Contains(query.Keyword.ToString().ToLower())
-                    || x.Description.ToLower().Contains(query.Keyword.ToString().ToLower())
-                    || x.Quantity.ToString().Contains(query.Keyword.ToString())
-                    || x.Price.ToString().Contains(query.Keyword.ToString())
-                    || x.Origin.ToLower().Contains(query.Keyword.ToString().ToLower()))
-                    .ToList();
-            }
-            var result = products
-                .Skip((int)query.PageIndex - 1)
-                .Take((int)query.PageSize).ToList();
+            var result = await _repository.FilterProduct(query);
             var productDtos = new List<ProductDTO>();
-            foreach (var item in result)
+            foreach (var item in result.Items)
             {
                 productDtos.Add(_mapper.Map<Product, ProductDTO>(item));
             }
-            return productDtos;
+            return new PaginatedResult<ProductDTO>(productDtos, (int)query.PageIndex, result.TotalPages, (int)query.PageSize);
         }
 
         public async Task<ProductDTO> GetProductById(ProductGetByIdQuery query)
@@ -161,7 +135,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             var product = await _repository.GetById(command.ProductId) ?? throw new NotFoundException("Cannot find this product");
             var productImg = product.Images.Where(x => x.Id == command.ProductImageId).FirstOrDefault() ?? throw new NotFoundException("Cannot find this product image");
             await _uploadService.DeleteFile(productImg.ImageName);
-            var isRemoveSuccess =  product.Images.Remove(productImg);
+            var isRemoveSuccess = product.Images.Remove(productImg);
             return _repository.Update(product) && isRemoveSuccess;
         }
     }
