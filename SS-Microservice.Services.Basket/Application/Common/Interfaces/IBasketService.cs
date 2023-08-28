@@ -6,6 +6,8 @@ namespace SS_Microservice.Services.Basket.Application.Common.Interfaces
 {
     public interface IBasketService
     {
+        Task<int> CreateBasket(BasketCreateCommand command);
+
         Task<BasketDto> GetBasket(BasketGetQuery query);
 
         Task AddProductToBasket(BasketAddCommand command);

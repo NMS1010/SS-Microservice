@@ -52,6 +52,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Repositories
             try
             {
                 await _entities.AddAsync(entity);
+                await _dbContext.SaveChangesAsync();
             }
             catch
             {

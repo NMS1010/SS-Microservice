@@ -19,20 +19,20 @@ namespace SS_Microservice.Services.Basket.Controllers
     {
         private readonly ISender _sender;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IMapper _mapper;
 
-        public BasketsController(ISender sender, ICurrentUserService currentUserService)
+        public BasketsController(ISender sender, ICurrentUserService currentUserService, IMapper mapper)
         {
             _sender = sender;
             _currentUserService = currentUserService;
+            _mapper = mapper;
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetBasket()
+        public async Task<IActionResult> GetBasket([FromQuery] BasketPagingRequest request)
         {
-            var query = new BasketGetQuery()
-            {
-                UserId = _currentUserService.UserId,
-            };
+            var query = _mapper.Map<BasketGetQuery>(request);
+            query.UserId = _currentUserService.UserId;
             var basket = await _sender.Send(query);
 
             return Ok(CustomAPIResponse<BasketDto>.Success(basket, StatusCodes.Status200OK));

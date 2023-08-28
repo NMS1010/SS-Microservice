@@ -3,7 +3,7 @@
     public class BasketItem
     {
         public int BasketItemId { get; set; }
-        public long BasketId { get; set; }
+        public int BasketId { get; set; }
         public string ProductId { get; set; }
         public long Quantity { get; set; }
         public int IsSelected { get; set; } = 0;

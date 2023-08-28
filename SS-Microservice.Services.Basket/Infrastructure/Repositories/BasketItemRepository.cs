@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Basket.Application.Common.Interfaces;
 using SS_Microservice.Services.Basket.Core.Entities;
@@ -21,6 +22,12 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Repositories
             var res = _dbContext.BasketItems.Where(x => x.BasketId == basketId);
 
             return await res.PaginatedListAsync(pageIndex, pageSize);
+        }
+
+        public async Task<BasketItem> IsBasketItemExist(int basketId, string productId)
+        {
+            return await _dbContext.BasketItems.Where(x => x.BasketId == basketId 
+                && x.ProductId == productId).FirstOrDefaultAsync();
         }
     }
 }

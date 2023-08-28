@@ -3,7 +3,7 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "ProductService",
-      "DownstreamPathTemplate": "/api/products/create/{everything}",
+      "DownstreamPathTemplate": "/api/products/create",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
       "DownstreamHostAndPorts": [
@@ -12,7 +12,7 @@
           "Port": 7096
         }
       ],
-      "UpstreamPathTemplate": "/products/create/{everything}",
+      "UpstreamPathTemplate": "/products/create",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -22,7 +22,7 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "ProductService",
-      "DownstreamPathTemplate": "/api/products/update/{everything}",
+      "DownstreamPathTemplate": "/api/products/update",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
       "DownstreamHostAndPorts": [
@@ -31,7 +31,7 @@
           "Port": 7096
         }
       ],
-      "UpstreamPathTemplate": "/products/update/{everything}",
+      "UpstreamPathTemplate": "/products/update",
       "UpstreamHttpMethod": [ "PUT" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",

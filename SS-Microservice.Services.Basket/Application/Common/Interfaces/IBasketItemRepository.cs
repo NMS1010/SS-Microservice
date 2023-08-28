@@ -7,5 +7,7 @@ namespace SS_Microservice.Services.Basket.Application.Common.Interfaces
     public interface IBasketItemRepository : IGenericRepository<BasketItem>
     {
         Task<PaginatedResult<BasketItem>> GetBasketItem(int basketId, int pageIndex, int pageSize);
+
+        Task<BasketItem> IsBasketItemExist(int basketId, string productId);
     }
 }
