@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace = "SS_Microservice.Common.Grpc.Product.Protos";
+
+package product;
+
+service ProductProtoService {
+	rpc GetProductInformation (GetProductDetail) returns (ProductResponse);
+}
+
+message GetProductDetail{
+	string productId = 1;
+}
+
+message ProductResponse{
+	string Name = 1;
+	string Description = 2;
+	int64 Quantity = 3;
+	double Price = 4;
+	string Origin = 5;
+	string MainImage = 6;
+}

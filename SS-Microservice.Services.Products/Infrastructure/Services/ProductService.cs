@@ -1,19 +1,20 @@
 ﻿using AutoMapper;
+using Grpc.Core;
 using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Products.Application.Common.Interfaces;
 using SS_Microservice.Services.Products.Application.Dto;
-using SS_Microservice.Services.Products.Application.Model.Product;
 using SS_Microservice.Services.Products.Application.Product.Commands;
 using SS_Microservice.Services.Products.Application.Product.Queries;
 using SS_Microservice.Services.Products.Core.Entities;
-using ZstdSharp.Unsafe;
+using SS_Microservice.Services.Products.Core;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using SS_Microservice.Common.Grpc.Product.Protos;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Services
 {
-    public class ProductService : IProductService
+    public class ProductService : ProductProtoService.ProductProtoServiceBase, IProductService
     {
         private readonly IProductRepository _repository;
         private readonly IUploadService _uploadService;
@@ -137,6 +138,21 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             await _uploadService.DeleteFile(productImg.ImageName);
             var isRemoveSuccess = product.Images.Remove(productImg);
             return _repository.Update(product) && isRemoveSuccess;
+        }
+
+        public override async Task<ProductResponse> GetProductInformation(GetProductDetail request, ServerCallContext context)
+        {
+            var product = await _repository.GetById(request.ProductId);
+            var productDto = _mapper.Map<ProductDTO>(product);
+            return new ProductResponse()
+            {
+                Description = productDto.Description,
+                MainImage = productDto.MainImage,
+                Name = productDto.Name,
+                Origin = productDto.Origin,
+                Price = (double)productDto.Price,
+                Quantity = productDto.Quantity,
+            };
         }
     }
 }

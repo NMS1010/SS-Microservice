@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SS-Microservice.Common", "S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{018C7FD4-2F45-4C22-AD6B-9D7F5546220B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SS-Microservice.Services.Basket", "SS-Microservice.Services.Basket\SS-Microservice.Services.Basket.csproj", "{81051C51-93B9-4C24-B597-77A5DC2D6E57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SS-Microservice.Services.Basket", "SS-Microservice.Services.Basket\SS-Microservice.Services.Basket.csproj", "{81051C51-93B9-4C24-B597-77A5DC2D6E57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

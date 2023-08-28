@@ -15,6 +15,7 @@
 	  <PackageReference Include="AutoMapper.Collection" Version="9.0.0" />
 	  <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" Version="6.0.4" />
 	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+	  <PackageReference Include="Grpc.AspNetCore" Version="2.35.0" />
 
 	  <PackageReference Include="MediatR" Version="12.1.1" />
   </ItemGroup>
@@ -27,4 +28,7 @@
     <Folder Include="wwwroot\" />
     <Folder Include="wwwroot\user-content\" />
   </ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="..\SS-Microservice.Common\Grpc\Product\Protos\product.proto" GrpcServices="Server" />
+	</ItemGroup>
 </Project>
