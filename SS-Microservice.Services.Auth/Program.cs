@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Services.CurrentUser;
@@ -18,6 +19,7 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
+builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 // Add services to the container.
 builder.Services.AddDbContext<DBContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("AppDbContext")));
@@ -67,6 +69,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 

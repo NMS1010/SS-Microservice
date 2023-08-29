@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Middleware;
@@ -17,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 // Add services to the container.
+builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 builder.Services.Configure<MongoDBSettings>(
                configuration.GetSection("ProductDatabaseSetting"));
 
@@ -79,6 +81,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseRouting();
 app.UseStaticFiles();
+app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();

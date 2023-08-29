@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Grpc.Product.Protos;
 using SS_Microservice.Common.Jwt;
@@ -17,7 +18,7 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 var configuration = builder.Configuration;
 builder.Services.AddDbContext<BasketDBContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("BasketDbContext")));
@@ -79,6 +80,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
