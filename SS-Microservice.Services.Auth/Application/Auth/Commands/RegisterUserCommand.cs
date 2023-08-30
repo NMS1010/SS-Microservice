@@ -2,7 +2,7 @@
 
 namespace SS_Microservice.Services.Auth.Application.Auth.Commands
 {
-    public class RegisterCommand : IRequest<bool>
+    public class RegisterUserCommand : IRequest<bool>
     {
         public string Username { get; set; }
         public string Password { get; set; }

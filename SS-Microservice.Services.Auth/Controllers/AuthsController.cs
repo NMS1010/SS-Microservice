@@ -33,7 +33,7 @@ namespace SS_Microservice.Services.Auth.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            var success = await _mediator.Send(_mapper.Map<RegisterCommand>(request));
+            var success = await _mediator.Send(_mapper.Map<RegisterUserCommand>(request));
             return Ok(CustomAPIResponse<bool>.Success(success, StatusCodes.Status201Created));
         }
 

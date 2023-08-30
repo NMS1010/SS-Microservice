@@ -81,7 +81,7 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
             return new AuthResponse { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
         }
 
-        public async Task<bool> Register(RegisterCommand request)
+        public async Task<string> Register(RegisterUserCommand request)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
                     //        throw new Exception("Cannot send mail");
                     //    }
                     //}
-                    return true;
+                    return user.Id;
                 }
 
                 string error = "";

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using SS_Microservice.Common.Consul;
+using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Grpc.Product.Protos;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Middleware;
@@ -14,6 +15,9 @@ using SS_Microservice.Services.Basket.Infrastructure.Repositories;
 using SS_Microservice.Services.Basket.Infrastructure.Services;
 using System.Configuration;
 using System.Reflection;
+using SS_Microservice.Services.Basket.Application.User.Handlers;
+using MassTransit;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +34,12 @@ builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.AddScoped<IBasketService, BasketService>();
 builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
+builder.Services.AddMessaging(configuration, new List<Type>()
+{
+    {
+        typeof(RegisterUserHandler)
+    }
+});
 // Grpc Configuration
 builder.Services.AddGrpcClient<ProductProtoService.ProductProtoServiceClient>
             (o => o.Address = new Uri(configuration["GrpcSettings:ProductUrl"]));

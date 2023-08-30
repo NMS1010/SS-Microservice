@@ -1,3 +1,4 @@
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Middleware;
+using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Auth.Application.Common.AutoMapper;
 using SS_Microservice.Services.Auth.Application.Common.Interfaces;
@@ -22,7 +24,7 @@ var configuration = builder.Configuration;
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 // Add services to the container.
 builder.Services.AddDbContext<DBContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("AppDbContext")));
+                options.UseSqlServer(configuration.GetConnectionString("AuthDbContext")));
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(opts =>
 {
@@ -37,6 +39,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opts =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.AddMessaging(configuration);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

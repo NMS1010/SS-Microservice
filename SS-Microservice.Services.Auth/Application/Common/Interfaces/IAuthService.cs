@@ -14,6 +14,6 @@ namespace SS_Microservice.Services.Auth.Application.Common.Interfaces
 
         Task RevokeAllToken();
 
-        Task<bool> Register(RegisterCommand request);
+        Task<string> Register(RegisterUserCommand request);
     }
 }
