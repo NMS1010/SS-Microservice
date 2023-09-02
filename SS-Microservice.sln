@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{018C7FD4-2F4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SS-Microservice.Services.Basket", "SS-Microservice.Services.Basket\SS-Microservice.Services.Basket.csproj", "{81051C51-93B9-4C24-B597-77A5DC2D6E57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SS-Microservice.Services.Order", "SS-Microservice.Services.Order\SS-Microservice.Services.Order.csproj", "{329B760C-9351-40CA-AC61-3F59940CC4EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{81051C51-93B9-4C24-B597-77A5DC2D6E57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81051C51-93B9-4C24-B597-77A5DC2D6E57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81051C51-93B9-4C24-B597-77A5DC2D6E57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{329B760C-9351-40CA-AC61-3F59940CC4EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{329B760C-9351-40CA-AC61-3F59940CC4EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{329B760C-9351-40CA-AC61-3F59940CC4EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{329B760C-9351-40CA-AC61-3F59940CC4EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +57,7 @@ Global
 		{8916BF67-4DFD-493C-A9D6-F1BD2DA76895} = {018C7FD4-2F45-4C22-AD6B-9D7F5546220B}
 		{17FB3084-B842-4DE4-8370-3DF38EF33640} = {018C7FD4-2F45-4C22-AD6B-9D7F5546220B}
 		{81051C51-93B9-4C24-B597-77A5DC2D6E57} = {018C7FD4-2F45-4C22-AD6B-9D7F5546220B}
+		{329B760C-9351-40CA-AC61-3F59940CC4EE} = {018C7FD4-2F45-4C22-AD6B-9D7F5546220B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {658FA103-7432-49F0-ADB5-1F133582C888}

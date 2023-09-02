@@ -1,0 +1,42 @@
+{
+  "Routes": [
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "OrderService",
+      "DownstreamPathTemplate": "/api/orders/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "order",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7037
+        }
+      ],
+      "UpstreamPathTemplate": "/orders/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "OrderService",
+      "DownstreamPathTemplate": "/api/orderstates/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "order",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7037
+        }
+      ],
+      "UpstreamPathTemplate": "/orderstates/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    }
+  ]
+}
