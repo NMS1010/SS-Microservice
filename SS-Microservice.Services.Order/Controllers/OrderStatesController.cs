@@ -30,7 +30,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllOrderStates(OrderStateGetPagingRequest request)
+        public async Task<IActionResult> GetAllOrderStates(GetOrderStatePagingRequest request)
         {
             var query = _mapper.Map<GetAllOrderStateQuery>(request);
 
@@ -52,7 +52,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateOrderState([FromBody] OrderStateCreateRequest request)
+        public async Task<IActionResult> CreateOrderState([FromBody] CreateOrderStateRequest request)
         {
             var command = _mapper.Map<CreateOrderStateCommand>(request);
             await _sender.Send(command);
@@ -61,7 +61,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateOrderState([FromBody] OrderStateUpdateRequest request)
+        public async Task<IActionResult> UpdateOrderState([FromBody] UpdateOrderStateRequest request)
         {
             var command = _mapper.Map<UpdateOrderStateCommand>(request);
             var isSuccess = await _sender.Send(command);

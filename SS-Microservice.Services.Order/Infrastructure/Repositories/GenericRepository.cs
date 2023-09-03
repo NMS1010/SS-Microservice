@@ -43,7 +43,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Repositories
             return await _entities.FindAsync(id) ?? throw new NotFoundException("Cannot find this entity");
         }
 
-        public async Task Insert(T entity)
+        public async Task<bool> Insert(T entity)
         {
             if (entity == null)
             {
@@ -52,7 +52,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Repositories
             try
             {
                 await _entities.AddAsync(entity);
-                await _dbContext.SaveChangesAsync();
+                return await _dbContext.SaveChangesAsync() > 0;
             }
             catch
             {

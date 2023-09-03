@@ -1,4 +1,4 @@
-﻿using SS_Microservice.Services.Products.Application.Common.Interfaces;
+﻿using SS_Microservice.Services.Products.Core.Interfaces;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Data
 {

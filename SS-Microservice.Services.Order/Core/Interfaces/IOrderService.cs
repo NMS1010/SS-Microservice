@@ -11,7 +11,7 @@ namespace SS_Microservice.Services.Order.Core.Interfaces
 
         Task<OrderDto> GetOrder(GetOrderByIdQuery query);
 
-        Task CreateOrder(CreateOrderCommand command);
+        Task<(bool, string)> CreateOrder(CreateOrderCommand command);
 
         Task<bool> UpdateOrder(UpdateOrderCommand command);
 

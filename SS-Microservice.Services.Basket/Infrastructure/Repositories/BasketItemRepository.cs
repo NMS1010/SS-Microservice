@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using SS_Microservice.Common.Model.Paging;
-using SS_Microservice.Services.Basket.Application.Common.Interfaces;
 using SS_Microservice.Services.Basket.Core.Entities;
+using SS_Microservice.Services.Basket.Core.Interfaces;
 using SS_Microservice.Services.Basket.Infrastructure.Data.DBContext;
 using System.Linq.Expressions;
 
@@ -17,6 +17,13 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<bool> DeleteBasketItem(int basketId)
+        {
+            var count = await _dbContext.BasketItems.Where(x => x.BasketId == basketId).ExecuteDeleteAsync();
+
+            return count > 0;
+        }
+
         public async Task<PaginatedResult<BasketItem>> GetBasketItem(int basketId, int pageIndex, int pageSize)
         {
             var res = _dbContext.BasketItems.Where(x => x.BasketId == basketId);
@@ -26,7 +33,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Repositories
 
         public async Task<BasketItem> IsBasketItemExist(int basketId, string productId)
         {
-            return await _dbContext.BasketItems.Where(x => x.BasketId == basketId 
+            return await _dbContext.BasketItems.Where(x => x.BasketId == basketId
                 && x.ProductId == productId).FirstOrDefaultAsync();
         }
     }

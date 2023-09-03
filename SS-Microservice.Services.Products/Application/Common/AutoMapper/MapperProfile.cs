@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using SS_Microservice.Services.Products.Application.Dto;
+using SS_Microservice.Services.Products.Application.Message.Product.Commands;
+using SS_Microservice.Services.Products.Application.Message.Product.Queries;
 using SS_Microservice.Services.Products.Application.Model.Product;
-using SS_Microservice.Services.Products.Application.Product.Commands;
-using SS_Microservice.Services.Products.Application.Product.Queries;
 using SS_Microservice.Services.Products.Core.Entities;
 
 namespace SS_Microservice.Services.Products.Application.Common.AutoMapper
@@ -23,10 +23,10 @@ namespace SS_Microservice.Services.Products.Application.Common.AutoMapper
             CreateMap<Core.Entities.Product, ProductDTO>()
                 .ForMember(des => des.MainImage,
                 act => act.MapFrom(src => GetFile(src.MainImage, httpContextAccessor)));
-            CreateMap<ProductCreateRequest, ProductCreateCommand>();
-            CreateMap<ProductUpdateRequest, ProductUpdateCommand>();
-            CreateMap<ProductPagingRequest, ProductGetAllQuery>();
-            CreateMap<ProductImageUpdateRequest, ProductImageUpdateCommand>();
+            CreateMap<ProductCreateRequest, CreateProductCommand>();
+            CreateMap<ProductUpdateRequest, UpdateProductCommand>();
+            CreateMap<ProductPagingRequest, GetAllProductQuery>();
+            CreateMap<ProductImageUpdateRequest, UpdateProductImageCommand>();
             CreateMap<ProductImage, ProductImageDTO>()
                 .ForMember(des => des.Path,
                 act => act.MapFrom(src => GetFile(src.ImageName, httpContextAccessor)));

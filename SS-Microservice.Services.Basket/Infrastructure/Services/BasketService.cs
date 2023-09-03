@@ -2,11 +2,11 @@
 using Org.BouncyCastle.Bcpg;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
-using SS_Microservice.Services.Basket.Application.Basket.Commands;
-using SS_Microservice.Services.Basket.Application.Basket.Queries;
-using SS_Microservice.Services.Basket.Application.Common.Interfaces;
 using SS_Microservice.Services.Basket.Application.Dto;
+using SS_Microservice.Services.Basket.Application.Message.Basket.Commands;
+using SS_Microservice.Services.Basket.Application.Message.Basket.Queries;
 using SS_Microservice.Services.Basket.Core.Entities;
+using SS_Microservice.Services.Basket.Core.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace SS_Microservice.Services.Basket.Infrastructure.Services
@@ -24,14 +24,14 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public async Task AddProductToBasket(BasketAddCommand command)
+        public async Task<bool> AddProductToBasket(AddBasketCommand command)
         {
             var now = DateTime.Now;
             var basket = (await _basketRepository.GetAll()).Where(x => x.UserId == command.UserId).FirstOrDefault();
             var basketId = basket?.BasketId;
             if (basket == null)
             {
-                basketId = await CreateBasket(new BasketCreateCommand() { UserId = command.UserId });
+                basketId = await CreateBasket(new CreateBasketCommand() { UserId = command.UserId });
                 if (basketId <= 0)
                     throw new NotFoundException("Cannot find user's basket");
             }
@@ -49,21 +49,21 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
             if (b != null)
             {
                 b.Quantity += command.Quantity;
-                _basketItemRepository.Update(b);
+                return _basketItemRepository.Update(b);
             }
             // otherwise, insert new item
             else
             {
-                await _basketItemRepository.Insert(basketItem);
+                return await _basketItemRepository.Insert(basketItem);
             }
         }
 
-        public async Task<BasketDto> GetBasket(BasketGetQuery query)
+        public async Task<BasketDto> GetBasket(GetBasketQuery query)
         {
             var basket = (await _basketRepository.GetAll()).Where(x => x.UserId == query.UserId).FirstOrDefault();
             if (basket == null)
             {
-                var basketId = await CreateBasket(new BasketCreateCommand() { UserId = query.UserId });
+                var basketId = await CreateBasket(new CreateBasketCommand() { UserId = query.UserId });
                 basket = await _basketRepository.GetById(basketId) ?? throw new NotFoundException("Cannot find user's basket");
             }
 
@@ -92,13 +92,13 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
             return basketItem;
         }
 
-        public async Task<bool> RemoveProductFromBasket(BasketDeleteCommand command)
+        public async Task<bool> RemoveProductFromBasket(DeleteBasketCommand command)
         {
             var basketItem = await FindBasketItem(command.UserId, command.BasketItemId);
             return _basketItemRepository.Delete(basketItem);
         }
 
-        public async Task<bool> UpdateProductQuantity(BasketUpdateCommand command)
+        public async Task<bool> UpdateProductQuantity(UpdateBasketCommand command)
         {
             var basketItem = await FindBasketItem(command.UserId, command.BasketItemId);
 
@@ -107,7 +107,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
             return _basketItemRepository.Update(basketItem);
         }
 
-        public async Task<int> CreateBasket(BasketCreateCommand command)
+        public async Task<int> CreateBasket(CreateBasketCommand command)
         {
             var basket = new Core.Entities.Basket()
             {
@@ -115,6 +115,11 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
             };
             await _basketRepository.Insert(basket);
             return basket.BasketId;
+        }
+
+        public async Task<bool> ClearBasket(ClearBasketCommand command)
+        {
+            return await _basketItemRepository.DeleteBasketItem(command.BasketId);
         }
     }
 }

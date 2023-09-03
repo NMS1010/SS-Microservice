@@ -31,7 +31,7 @@ namespace SS_Microservice.Services.Order.Controllers
 
         [HttpGet("all")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllOrders(OrderGetPagingRequest request)
+        public async Task<IActionResult> GetAllOrders(GetOrderPagingRequest request)
         {
             var query = _mapper.Map<GetAllOrderQuery>(request);
 
@@ -41,7 +41,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpGet("me")]
-        public async Task<IActionResult> GetUserOrders(OrderGetPagingRequest request)
+        public async Task<IActionResult> GetUserOrders(GetOrderPagingRequest request)
         {
             var query = _mapper.Map<GetAllOrderQuery>(request);
             query.UserId = _currentUserService.UserId;
@@ -64,7 +64,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateOrder([FromBody] OrderCreateRequest request)
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
         {
             var command = _mapper.Map<CreateOrderCommand>(request);
             command.UserId = _currentUserService.UserId;
@@ -74,7 +74,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateOrder([FromBody] OrderUpdateRequest request)
+        public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderRequest request)
         {
             var command = _mapper.Map<UpdateOrderCommand>(request);
             await _sender.Send(command);

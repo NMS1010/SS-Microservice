@@ -6,9 +6,11 @@ using Serilog;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Middleware;
+using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Services.Products.Application.Common.AutoMapper;
-using SS_Microservice.Services.Products.Application.Common.Interfaces;
+using SS_Microservice.Services.Products.Application.Message.Order.Handler;
+using SS_Microservice.Services.Products.Core.Interfaces;
 using SS_Microservice.Services.Products.Infrastructure.Data;
 using SS_Microservice.Services.Products.Infrastructure.Repositories;
 using SS_Microservice.Services.Products.Infrastructure.Services;
@@ -71,6 +73,12 @@ builder.Services.AddSwaggerGen(s =>
 });
 builder.Services.AddJwtAuthentication(configuration);
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
+builder.Services.AddMessaging(configuration, new List<Type>()
+{
+    {
+        typeof(CreateOrderHandler)
+    }
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

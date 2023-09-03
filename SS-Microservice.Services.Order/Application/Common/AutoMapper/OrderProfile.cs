@@ -16,13 +16,13 @@ namespace SS_Microservice.Services.Order.Application.Common.AutoMapper
             CreateMap<Core.Entities.Order, OrderDto>();
             CreateMap<Core.Entities.OrderItem, OrderItemDto>();
             CreateMap<Core.Entities.OrderState, OrderStateDto>();
-            CreateMap<OrderGetPagingRequest, GetAllOrderQuery>();
-            CreateMap<OrderCreateRequest, CreateOrderCommand>();
-            CreateMap<OrderUpdateRequest, UpdateOrderCommand>();
+            CreateMap<GetOrderPagingRequest, GetAllOrderQuery>();
+            CreateMap<CreateOrderRequest, CreateOrderCommand>();
+            CreateMap<UpdateOrderRequest, UpdateOrderCommand>();
 
-            CreateMap<OrderStateGetPagingRequest, GetAllOrderStateQuery>();
-            CreateMap<OrderStateCreateRequest, CreateOrderStateCommand>();
-            CreateMap<OrderStateUpdateRequest, UpdateOrderStateCommand>();
+            CreateMap<GetOrderStatePagingRequest, GetAllOrderStateQuery>();
+            CreateMap<CreateOrderStateRequest, CreateOrderStateCommand>();
+            CreateMap<UpdateOrderStateRequest, UpdateOrderStateCommand>();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace SS_Microservice.Common.Repository
 
         Task<T> GetById(object id);
 
-        Task Insert(T entity);
+        Task<bool> Insert(T entity);
 
         bool Update(T entity);
 

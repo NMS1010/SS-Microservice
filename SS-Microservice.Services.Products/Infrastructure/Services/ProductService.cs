@@ -3,14 +3,12 @@ using Grpc.Core;
 using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Common.Model.Paging;
-using SS_Microservice.Services.Products.Application.Common.Interfaces;
 using SS_Microservice.Services.Products.Application.Dto;
-using SS_Microservice.Services.Products.Application.Product.Commands;
-using SS_Microservice.Services.Products.Application.Product.Queries;
 using SS_Microservice.Services.Products.Core.Entities;
-using SS_Microservice.Services.Products.Core;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using SS_Microservice.Common.Grpc.Product.Protos;
+using SS_Microservice.Services.Products.Core.Interfaces;
+using SS_Microservice.Services.Products.Application.Message.Product.Commands;
+using SS_Microservice.Services.Products.Application.Message.Product.Queries;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Services
 {
@@ -27,7 +25,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             _uploadService = uploadService;
         }
 
-        public async Task AddProduct(ProductCreateCommand command)
+        public async Task<bool> AddProduct(CreateProductCommand command)
         {
             var product = new Product();
 
@@ -61,10 +59,10 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
                     }
                 }
             }
-            await _repository.Insert(product);
+            return await _repository.Insert(product);
         }
 
-        public async Task<bool> DeleteProduct(ProductDeleteCommand command)
+        public async Task<bool> DeleteProduct(DeleteProductCommand command)
         {
             var product = await _repository.GetById(command.ProductId);
             var isDeleteSuccess = _repository.Delete(product);
@@ -79,7 +77,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             return isDeleteSuccess;
         }
 
-        public async Task<PaginatedResult<ProductDTO>> GetAllProduct(ProductGetAllQuery query)
+        public async Task<PaginatedResult<ProductDTO>> GetAllProduct(GetAllProductQuery query)
         {
             var result = await _repository.FilterProduct(query);
             var productDtos = new List<ProductDTO>();
@@ -90,14 +88,14 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             return new PaginatedResult<ProductDTO>(productDtos, (int)query.PageIndex, result.TotalPages, (int)query.PageSize);
         }
 
-        public async Task<ProductDTO> GetProductById(ProductGetByIdQuery query)
+        public async Task<ProductDTO> GetProductById(GetProductByIdQuery query)
         {
             var product = await _repository.GetById(query.ProductId);
 
             return _mapper.Map<ProductDTO>(product);
         }
 
-        public async Task<bool> UpdateProduct(ProductUpdateCommand command)
+        public async Task<bool> UpdateProduct(UpdateProductCommand command)
         {
             var product = await _repository.GetById(command.Id) ?? throw new NotFoundException("Cannot find this product");
             product.Status = command.Status;
@@ -116,7 +114,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             return _repository.Update(product);
         }
 
-        public async Task<bool> UpdateProductImage(ProductImageUpdateCommand command)
+        public async Task<bool> UpdateProductImage(UpdateProductImageCommand command)
         {
             var product = await _repository.GetById(command.ProductId) ?? throw new NotFoundException("Cannot find this product");
             if (command.Image != null)
@@ -131,7 +129,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             return _repository.Update(product);
         }
 
-        public async Task<bool> DeleteProductImage(ProductImageDeleteCommand command)
+        public async Task<bool> DeleteProductImage(DeleteProductImageCommand command)
         {
             var product = await _repository.GetById(command.ProductId) ?? throw new NotFoundException("Cannot find this product");
             var productImg = product.Images.Where(x => x.Id == command.ProductImageId).FirstOrDefault() ?? throw new NotFoundException("Cannot find this product image");
@@ -153,6 +151,14 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
                 Price = (double)productDto.Price,
                 Quantity = productDto.Quantity,
             };
+        }
+
+        public async Task<bool> UpdateProductQuantity(UpdateProductQuantityCommand command)
+        {
+            var product = await _repository.GetById(command.ProductId) ?? throw new NotFoundException("Cannot find this product");
+
+            product.Quantity -= command.Quantity;
+            return _repository.Update(product);
         }
     }
 }

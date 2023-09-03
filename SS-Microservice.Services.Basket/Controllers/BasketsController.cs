@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
-using SS_Microservice.Services.Basket.Application.Basket.Commands;
-using SS_Microservice.Services.Basket.Application.Basket.Queries;
 using SS_Microservice.Services.Basket.Application.Dto;
+using SS_Microservice.Services.Basket.Application.Message.Basket.Commands;
+using SS_Microservice.Services.Basket.Application.Message.Basket.Queries;
 using SS_Microservice.Services.Basket.Application.Model;
 
 namespace SS_Microservice.Services.Basket.Controllers
@@ -31,7 +31,7 @@ namespace SS_Microservice.Services.Basket.Controllers
         [HttpGet("all")]
         public async Task<IActionResult> GetBasket([FromQuery] BasketPagingRequest request)
         {
-            var query = _mapper.Map<BasketGetQuery>(request);
+            var query = _mapper.Map<GetBasketQuery>(request);
             query.UserId = _currentUserService.UserId;
             var basket = await _sender.Send(query);
 
@@ -41,7 +41,7 @@ namespace SS_Microservice.Services.Basket.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddProductToBasket([FromBody] BasketAddRequest request)
         {
-            var command = new BasketAddCommand()
+            var command = new AddBasketCommand()
             {
                 UserId = _currentUserService.UserId,
                 ProductId = request.ProductId,
@@ -55,7 +55,7 @@ namespace SS_Microservice.Services.Basket.Controllers
         [HttpDelete("delete/{basketItemId}")]
         public async Task<IActionResult> RemoveProductFromBasket(int basketItemId)
         {
-            var command = new BasketDeleteCommand()
+            var command = new DeleteBasketCommand()
             {
                 UserId = _currentUserService.UserId,
                 BasketItemId = basketItemId
@@ -69,7 +69,7 @@ namespace SS_Microservice.Services.Basket.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> UpdateProductQuantity([FromBody] BasketUpdateRequest request)
         {
-            var command = new BasketUpdateCommand()
+            var command = new UpdateBasketCommand()
             {
                 UserId = _currentUserService.UserId,
                 BasketItemId = request.BasketItemId,

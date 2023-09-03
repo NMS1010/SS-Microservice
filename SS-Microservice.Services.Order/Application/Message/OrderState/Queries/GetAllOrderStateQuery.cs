@@ -6,7 +6,7 @@ using SS_Microservice.Services.Order.Application.Models.OrderState;
 
 namespace SS_Microservice.Services.Order.Application.Message.OrderState.Queries
 {
-    public class GetAllOrderStateQuery : OrderStateGetPagingRequest, IRequest<PaginatedResult<OrderStateDto>>
+    public class GetAllOrderStateQuery : GetOrderStatePagingRequest, IRequest<PaginatedResult<OrderStateDto>>
     {
     }
 }

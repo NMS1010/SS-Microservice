@@ -4,6 +4,7 @@ using Serilog;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Middleware;
+using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Order.Application.Common.AutoMapper;
 using SS_Microservice.Services.Order.Core.Interfaces;
@@ -59,11 +60,13 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderStateService, OrderStateService>();
 builder.Services.AddScoped<IOrderStateRepository, OrderStateRepository>();
+builder.Services.AddScoped<IProductGrpcService, ProductGrpcService>();
 builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddJwtAuthentication(configuration);
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
+builder.Services.AddMessaging(configuration);
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

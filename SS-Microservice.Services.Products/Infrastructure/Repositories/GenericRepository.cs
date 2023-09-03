@@ -1,8 +1,8 @@
 ﻿using MongoDB.Driver;
 using SharpCompress.Common;
 using SS_Microservice.Common.Repository;
-using SS_Microservice.Services.Products.Application.Common.Interfaces;
 using SS_Microservice.Services.Products.Core.Entities;
+using SS_Microservice.Services.Products.Core.Interfaces;
 using System.Collections.Generic;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Repositories
@@ -38,9 +38,17 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
             return data;
         }
 
-        public async Task Insert(T entity)
+        public async Task<bool> Insert(T entity)
         {
-            await _dbSet.InsertOneAsync(entity);
+            try
+            {
+                await _dbSet.InsertOneAsync(entity);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public bool Update(T entity)

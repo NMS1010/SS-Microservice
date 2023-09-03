@@ -25,7 +25,7 @@ namespace SS_Microservice.Services.Auth.Application.Auth.Handlers
             if (!string.IsNullOrEmpty(userId))
             {
                 _logger.LogInformation($"Start publishing message with userId = {userId}");
-                await _publisher.Publish(new UserRegisted()
+                await _publisher.Publish(new UserRegistedEvent()
                 {
                     UserId = userId,
                 });

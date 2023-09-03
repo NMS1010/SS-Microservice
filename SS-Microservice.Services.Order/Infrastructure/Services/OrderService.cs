@@ -20,7 +20,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public async Task CreateOrder(CreateOrderCommand command)
+        public async Task<(bool, string)> CreateOrder(CreateOrderCommand command)
         {
             var now = DateTime.Now;
             var orderItems = new List<OrderItem>();
@@ -40,6 +40,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             });
             var order = new Core.Entities.Order()
             {
+                OrderId = Guid.NewGuid().ToString(),
                 Address = command.Address,
                 Email = command.Email,
                 Name = command.Name,
@@ -49,10 +50,13 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                 DateUpdated = now,
                 TotalItemPrice = totalItemPrice,
                 TotalPrice = totalItemPrice,
+                OrderStateId = command.OrderStateId,
                 OrderItems = orderItems
             };
 
-            await _orderRepository.Insert(order);
+            var isSuccess = await _orderRepository.Insert(order);
+
+            return (isSuccess, order.OrderId);
         }
 
         public async Task<bool> DeleteOrder(DeleteOrderCommand command)
