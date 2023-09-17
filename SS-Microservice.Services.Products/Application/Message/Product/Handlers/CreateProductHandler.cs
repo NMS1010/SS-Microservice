@@ -5,7 +5,7 @@ using SS_Microservice.Services.Products.Core.Interfaces;
 
 namespace SS_Microservice.Services.Products.Application.Message.Product.Handlers
 {
-    public class CreateProductHandler : IRequestHandler<CreateProductCommand>
+    public class CreateProductHandler : IRequestHandler<CreateProductCommand, bool>
     {
         private IProductService _productService;
 
@@ -14,9 +14,9 @@ namespace SS_Microservice.Services.Products.Application.Message.Product.Handlers
             _productService = productService;
         }
 
-        public async Task Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            await _productService.AddProduct(request);
+            return await _productService.AddProduct(request);
         }
     }
 }

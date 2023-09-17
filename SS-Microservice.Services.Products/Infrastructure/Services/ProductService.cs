@@ -9,37 +9,39 @@ using SS_Microservice.Common.Grpc.Product.Protos;
 using SS_Microservice.Services.Products.Core.Interfaces;
 using SS_Microservice.Services.Products.Application.Message.Product.Commands;
 using SS_Microservice.Services.Products.Application.Message.Product.Queries;
+using SS_Microservice.Common.StringUtil;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Services
 {
     public class ProductService : ProductProtoService.ProductProtoServiceBase, IProductService
     {
         private readonly IProductRepository _repository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IUploadService _uploadService;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository repository, IMapper mapper, IUploadService uploadService)
+        public ProductService(IProductRepository repository, IMapper mapper, IUploadService uploadService, ICategoryRepository categoryRepository)
         {
             _repository = repository;
             _mapper = mapper;
             _uploadService = uploadService;
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<bool> AddProduct(CreateProductCommand command)
         {
-            var product = new Product();
-
-            var now = DateTime.Now;
-
-            product.Status = command.Status;
-            product.Name = command.Name;
-            product.Description = command.Description;
-            product.Price = command.Price;
-            product.Origin = command.Origin;
-            product.Quantity = command.Quantity;
-            product.Id = Guid.NewGuid().ToString();
-            product.DateCreated = now;
-            product.DateUpdated = now;
+            var product = new Product
+            {
+                Status = command.Status,
+                Name = command.Name,
+                Description = command.Description,
+                Price = command.Price,
+                Origin = command.Origin,
+                Quantity = command.Quantity,
+                Id = Guid.NewGuid().ToString(),
+                Slug = command.Name.Slugify(),
+                CategoryId = command.CategoryId,
+            };
             product.Status = 1;
             if (command.Image != null)
             {
@@ -83,7 +85,10 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             var productDtos = new List<ProductDTO>();
             foreach (var item in result.Items)
             {
-                productDtos.Add(_mapper.Map<Product, ProductDTO>(item));
+                var productDto = _mapper.Map<ProductDTO>(item);
+                var category = await _categoryRepository.GetById(item.CategoryId) ?? throw new NotFoundException("Cannot find product category");
+                productDto.Category = _mapper.Map<CategoryDTO>(category);
+                productDtos.Add(productDto);
             }
             return new PaginatedResult<ProductDTO>(productDtos, (int)query.PageIndex, result.TotalPages, (int)query.PageSize);
         }
@@ -91,8 +96,10 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
         public async Task<ProductDTO> GetProductById(GetProductByIdQuery query)
         {
             var product = await _repository.GetById(query.ProductId);
-
-            return _mapper.Map<ProductDTO>(product);
+            var category = await _categoryRepository.GetById(product.CategoryId) ?? throw new NotFoundException("Cannot find product category");
+            var res = _mapper.Map<ProductDTO>(product);
+            res.Category = _mapper.Map<CategoryDTO>(category);
+            return res;
         }
 
         public async Task<bool> UpdateProduct(UpdateProductCommand command)
@@ -104,14 +111,23 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             product.Price = command.Price;
             product.Origin = command.Origin;
             product.Quantity = command.Quantity;
-            product.DateUpdated = DateTime.Now;
-
+            product.Slug = command.Name.Slugify();
+            product.CategoryId = command.CategoryId;
+            var image = "";
             if (command.Image != null)
             {
+                image = product.MainImage;
                 product.MainImage = await _uploadService.UploadFile(command.Image);
             }
 
-            return _repository.Update(product);
+            var res = _repository.Update(product);
+
+            if (res && !string.IsNullOrEmpty(image))
+            {
+                await _uploadService.DeleteFile(image);
+            }
+
+            return res;
         }
 
         public async Task<bool> UpdateProductImage(UpdateProductImageCommand command)

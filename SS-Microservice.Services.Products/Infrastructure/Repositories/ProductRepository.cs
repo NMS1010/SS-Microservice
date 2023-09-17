@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using SS_Microservice.Common.Model.Paging;
+using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Products.Application.Message.Product.Commands;
 using SS_Microservice.Services.Products.Application.Message.Product.Queries;
 using SS_Microservice.Services.Products.Core.Entities;
@@ -13,11 +14,13 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
     {
         private readonly IMongoCollection<Product> _dbSet;
         private readonly IProductContext _context;
+        private readonly ICurrentUserService _currentUserService;
 
-        public ProductRepository(IProductContext context) : base(context)
+        public ProductRepository(IProductContext context, ICurrentUserService currentUserService) : base(context, currentUserService)
         {
             _dbSet = context.Database.GetCollection<Product>(typeof(Product).Name);
             _context = context;
+            _currentUserService = currentUserService;
         }
 
         private static object GetSortColumn(Product p, string column)
@@ -98,14 +101,16 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
                 session.StartTransaction();
                 try
                 {
+                    var now = DateTime.Now;
                     foreach (var item in command.Products)
                     {
                         var product = await _dbSet.Find(filter: g => g.Id == item.ProductId).SingleOrDefaultAsync();
                         product.Quantity += item.Quantity;
-
+                        product.UpdatedDate = now;
+                        product.UpdatedBy = _currentUserService?.UserId ?? "system";
                         _dbSet.ReplaceOne(filter: g => g.Id == product.Id, replacement: product);
                     }
-
+                    await session.CommitTransactionAsync();
                     return true;
                 }
                 catch

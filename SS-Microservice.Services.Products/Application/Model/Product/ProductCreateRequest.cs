@@ -8,7 +8,7 @@
         public decimal Price { get; set; }
         public string Origin { get; set; }
         public int Status { get; set; }
-
+        public string CategoryId { get; set; }
         public IFormFile Image { get; set; }
 
         public List<IFormFile> SubImages { get; set; }

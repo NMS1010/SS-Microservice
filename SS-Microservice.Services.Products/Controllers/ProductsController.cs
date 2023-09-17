@@ -15,7 +15,7 @@ namespace SS_Microservice.Services.Products.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class ProductsController : ControllerBase
     {
         private ISender _sender;
