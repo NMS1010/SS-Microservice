@@ -9,6 +9,7 @@ using SS_Microservice.Common.Grpc.Product.Protos;
 using SS_Microservice.Services.Products.Core.Interfaces;
 using SS_Microservice.Services.Products.Application.Message.Product.Commands;
 using SS_Microservice.Services.Products.Application.Message.Product.Queries;
+using SS_Microservice.Common.StringUtil;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Services
 {
@@ -27,19 +28,17 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
 
         public async Task<bool> AddProduct(CreateProductCommand command)
         {
-            var product = new Product();
-
-            var now = DateTime.Now;
-
-            product.Status = command.Status;
-            product.Name = command.Name;
-            product.Description = command.Description;
-            product.Price = command.Price;
-            product.Origin = command.Origin;
-            product.Quantity = command.Quantity;
-            product.Id = Guid.NewGuid().ToString();
-            product.DateCreated = now;
-            product.DateUpdated = now;
+            var product = new Product
+            {
+                Status = command.Status,
+                Name = command.Name,
+                Description = command.Description,
+                Price = command.Price,
+                Origin = command.Origin,
+                Quantity = command.Quantity,
+                Id = Guid.NewGuid().ToString(),
+                Slug = command.Name.Slugify()
+            };
             product.Status = 1;
             if (command.Image != null)
             {
@@ -104,14 +103,22 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             product.Price = command.Price;
             product.Origin = command.Origin;
             product.Quantity = command.Quantity;
-            product.DateUpdated = DateTime.Now;
-
+            product.Slug = command.Name.Slugify();
+            var image = "";
             if (command.Image != null)
             {
+                image = product.MainImage;
                 product.MainImage = await _uploadService.UploadFile(command.Image);
             }
 
-            return _repository.Update(product);
+            var res = _repository.Update(product);
+
+            if (res && !string.IsNullOrEmpty(image))
+            {
+                await _uploadService.DeleteFile(image);
+            }
+
+            return res;
         }
 
         public async Task<bool> UpdateProductImage(UpdateProductImageCommand command)

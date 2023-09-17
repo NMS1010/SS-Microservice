@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using SS_Microservice.Services.Products.Application.Dto;
+using SS_Microservice.Services.Products.Application.Message.Category.Commands;
+using SS_Microservice.Services.Products.Application.Message.Category.Queries;
 using SS_Microservice.Services.Products.Application.Message.Product.Commands;
 using SS_Microservice.Services.Products.Application.Message.Product.Queries;
+using SS_Microservice.Services.Products.Application.Model.Category;
 using SS_Microservice.Services.Products.Application.Model.Product;
 using SS_Microservice.Services.Products.Core.Entities;
 
@@ -20,7 +23,7 @@ namespace SS_Microservice.Services.Products.Application.Common.AutoMapper
 
         public MapperProfile(IHttpContextAccessor httpContextAccessor)
         {
-            CreateMap<Core.Entities.Product, ProductDTO>()
+            CreateMap<Product, ProductDTO>()
                 .ForMember(des => des.MainImage,
                 act => act.MapFrom(src => GetFile(src.MainImage, httpContextAccessor)));
             CreateMap<ProductCreateRequest, CreateProductCommand>();
@@ -30,6 +33,13 @@ namespace SS_Microservice.Services.Products.Application.Common.AutoMapper
             CreateMap<ProductImage, ProductImageDTO>()
                 .ForMember(des => des.Path,
                 act => act.MapFrom(src => GetFile(src.ImageName, httpContextAccessor)));
+
+            CreateMap<Category, CategoryDTO>()
+                .ForMember(des => des.Image,
+                act => act.MapFrom(src => GetFile(src.Image, httpContextAccessor)));
+            CreateMap<CategoryCreateRequest, CreateCategoryCommand>();
+            CreateMap<CategoryUpdateRequest, UpdateCategoryCommand>();
+            CreateMap<CategoryPagingRequest, GetAllCategoryQuery>();
         }
     }
 }
