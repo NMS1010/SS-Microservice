@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using SS_Microservice.Common.Consul;
+using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.RabbitMQ;
@@ -72,11 +73,13 @@ builder.Services.AddSwaggerGen(s =>
     });
 });
 builder.Services.AddJwtAuthentication(configuration);
-builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
+builder.Services.AddConsul(configuration.GetConsulConfig());
+builder.Services.AddOpenTracing();
+builder.Services.AddJaeger(configuration.GetJaegerOptions());
 builder.Services.AddMessaging(configuration, new List<Type>()
 {
     {
-        typeof(CreateOrderHandler)
+        typeof(OrderCreatedConsumer)
     }
 });
 var app = builder.Build();

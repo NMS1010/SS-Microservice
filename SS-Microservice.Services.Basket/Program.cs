@@ -18,6 +18,7 @@ using MassTransit;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using SS_Microservice.Services.Basket.Core.Interfaces;
 using SS_Microservice.Services.Basket.Application.Message.User.Handlers;
+using SS_Microservice.Common.Jaeger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,9 +38,12 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Get
 builder.Services.AddMessaging(configuration, new List<Type>()
 {
     {
-        typeof(RegisterUserHandler)
+        typeof(UserRegistedConsumer)
     }
 });
+
+builder.Services.AddOpenTracing();
+builder.Services.AddJaeger(configuration.GetJaegerOptions());
 // Grpc Configuration
 builder.Services.AddGrpcClient<ProductProtoService.ProductProtoServiceClient>
             (o => o.Address = new Uri(configuration["GrpcSettings:ProductUrl"]));

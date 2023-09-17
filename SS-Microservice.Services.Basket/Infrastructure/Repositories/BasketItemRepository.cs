@@ -17,9 +17,9 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<bool> DeleteBasketItem(int basketId)
+        public async Task<bool> DeleteBasketItem(List<string> productIds, int basketId)
         {
-            var count = await _dbContext.BasketItems.Where(x => x.BasketId == basketId).ExecuteDeleteAsync();
+            var count = await _dbContext.BasketItems.Where(x => x.BasketId == basketId && productIds.Contains(x.ProductId)).ExecuteDeleteAsync();
 
             return count > 0;
         }

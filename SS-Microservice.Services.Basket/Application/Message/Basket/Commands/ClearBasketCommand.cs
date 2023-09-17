@@ -5,6 +5,7 @@ namespace SS_Microservice.Services.Basket.Application.Message.Basket.Commands
 {
     public class ClearBasketCommand : IRequest<bool>
     {
-        public int BasketId { get; set; }
+        public string UserId { get; set; }
+        public List<string> ProductIds { get; set; }
     }
 }

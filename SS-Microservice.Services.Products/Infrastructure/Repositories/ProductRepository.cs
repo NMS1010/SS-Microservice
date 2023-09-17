@@ -101,7 +101,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
                     foreach (var item in command.Products)
                     {
                         var product = await _dbSet.Find(filter: g => g.Id == item.ProductId).SingleOrDefaultAsync();
-                        product.Quantity -= item.Quantity;
+                        product.Quantity += item.Quantity;
 
                         _dbSet.ReplaceOne(filter: g => g.Id == product.Id, replacement: product);
                     }

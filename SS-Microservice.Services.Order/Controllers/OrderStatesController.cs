@@ -30,7 +30,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllOrderStates(GetOrderStatePagingRequest request)
+        public async Task<IActionResult> GetAllOrderStates([FromQuery] GetOrderStatePagingRequest request)
         {
             var query = _mapper.Map<GetAllOrderStateQuery>(request);
 
@@ -40,7 +40,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpGet("detail/{orderStateId}")]
-        public async Task<IActionResult> GetOrderById(int orderStateId)
+        public async Task<IActionResult> GetOrderById([FromRoute] int orderStateId)
         {
             var query = new GetOrderStateByIdQuery()
             {

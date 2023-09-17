@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using SS_Microservice.Common.Consul;
+using SS_Microservice.Common.Grpc.Product.Protos;
+using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.RabbitMQ;
@@ -56,14 +58,17 @@ builder.Services.AddSwaggerGen(s =>
         }
     });
 });
+builder.Services.AddGrpcClient<ProductProtoService.ProductProtoServiceClient>
+            (o => o.Address = new Uri(configuration["GrpcSettings:ProductUrl"]));
+builder.Services.AddScoped<IProductGrpcService, ProductGrpcService>();
+builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderStateService, OrderStateService>();
 builder.Services.AddScoped<IOrderStateRepository, OrderStateRepository>();
-builder.Services.AddScoped<IProductGrpcService, ProductGrpcService>();
-builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
+builder.Services.AddOpenTracing();
+builder.Services.AddJaeger(configuration.GetJaegerOptions());
 builder.Services.AddJwtAuthentication(configuration);
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
 builder.Services.AddMessaging(configuration);

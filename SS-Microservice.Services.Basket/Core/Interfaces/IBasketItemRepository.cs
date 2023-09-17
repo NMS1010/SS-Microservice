@@ -10,6 +10,6 @@ namespace SS_Microservice.Services.Basket.Core.Interfaces
 
         Task<BasketItem> IsBasketItemExist(int basketId, string productId);
 
-        Task<bool> DeleteBasketItem(int basketId);
+        Task<bool> DeleteBasketItem(List<string> productIds, int basketId);
     }
 }

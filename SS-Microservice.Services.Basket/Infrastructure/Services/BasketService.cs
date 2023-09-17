@@ -119,7 +119,11 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
 
         public async Task<bool> ClearBasket(ClearBasketCommand command)
         {
-            return await _basketItemRepository.DeleteBasketItem(command.BasketId);
+            var basket = (await _basketRepository.GetAll())
+                .Where(x => x.UserId == command.UserId)
+                .FirstOrDefault();
+            if (basket == null) return false;
+            return await _basketItemRepository.DeleteBasketItem(command.ProductIds, basket.BasketId);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace SS_Microservice.Services.Order.Controllers
 
         [HttpGet("all")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllOrders(GetOrderPagingRequest request)
+        public async Task<IActionResult> GetAllOrders([FromQuery] GetOrderPagingRequest request)
         {
             var query = _mapper.Map<GetAllOrderQuery>(request);
 
@@ -41,7 +41,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpGet("me")]
-        public async Task<IActionResult> GetUserOrders(GetOrderPagingRequest request)
+        public async Task<IActionResult> GetUserOrders([FromQuery] GetOrderPagingRequest request)
         {
             var query = _mapper.Map<GetAllOrderQuery>(request);
             query.UserId = _currentUserService.UserId;
@@ -51,7 +51,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpGet("detail/{orderId}")]
-        public async Task<IActionResult> GetOrderById(string orderId)
+        public async Task<IActionResult> GetOrderById([FromRoute] string orderId)
         {
             var query = new GetOrderByIdQuery()
             {

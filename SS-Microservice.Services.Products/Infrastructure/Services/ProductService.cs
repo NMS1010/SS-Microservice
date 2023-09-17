@@ -155,10 +155,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
 
         public async Task<bool> UpdateProductQuantity(UpdateProductQuantityCommand command)
         {
-            var product = await _repository.GetById(command.ProductId) ?? throw new NotFoundException("Cannot find this product");
-
-            product.Quantity -= command.Quantity;
-            return _repository.Update(product);
+            return await _repository.UpdateProductQuantity(command);
         }
     }
 }
