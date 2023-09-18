@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Order.Application.Dtos;
-using SS_Microservice.Services.Order.Application.Message.OrderState.Commands;
-using SS_Microservice.Services.Order.Application.Message.OrderState.Queries;
-using SS_Microservice.Services.Order.Core.Interfaces;
+using SS_Microservice.Services.Order.Application.Features.OrderState.Commands;
+using SS_Microservice.Services.Order.Application.Features.OrderState.Queries;
+using SS_Microservice.Services.Order.Application.Interfaces;
+using SS_Microservice.Services.Order.Application.Interfaces.Repositories;
 
 namespace SS_Microservice.Services.Order.Infrastructure.Services
 {
@@ -20,7 +21,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
 
         public async Task CreateOrderState(CreateOrderStateCommand command)
         {
-            var orderState = new Core.Entities.OrderState()
+            var orderState = new Domain.Entities.OrderState()
             {
                 HexColor = command.HexColor,
                 OrderStateName = command.OrderStateName,

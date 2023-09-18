@@ -19,34 +19,46 @@ namespace SS_Microservice.Services.Basket.Migrations
                 .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("SS_Microservice.Services.Basket.Core.Entities.Basket", b =>
+            modelBuilder.Entity("SS_Microservice.Services.Basket.Domain.Entities.Basket", b =>
                 {
-                    b.Property<int>("BasketId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("BasketId");
+                    b.HasKey("Id");
 
                     b.ToTable("baskets", (string)null);
                 });
 
-            modelBuilder.Entity("SS_Microservice.Services.Basket.Core.Entities.BasketItem", b =>
+            modelBuilder.Entity("SS_Microservice.Services.Basket.Domain.Entities.BasketItem", b =>
                 {
-                    b.Property<int>("BasketItemId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int>("BasketId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime(6)");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DateUpdated")
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("IsSelected")
@@ -59,16 +71,22 @@ namespace SS_Microservice.Services.Basket.Migrations
                     b.Property<long>("Quantity")
                         .HasColumnType("bigint");
 
-                    b.HasKey("BasketItemId");
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("BasketId");
 
                     b.ToTable("basketItems", (string)null);
                 });
 
-            modelBuilder.Entity("SS_Microservice.Services.Basket.Core.Entities.BasketItem", b =>
+            modelBuilder.Entity("SS_Microservice.Services.Basket.Domain.Entities.BasketItem", b =>
                 {
-                    b.HasOne("SS_Microservice.Services.Basket.Core.Entities.Basket", "Basket")
+                    b.HasOne("SS_Microservice.Services.Basket.Domain.Entities.Basket", "Basket")
                         .WithMany("BasketItems")
                         .HasForeignKey("BasketId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -77,7 +95,7 @@ namespace SS_Microservice.Services.Basket.Migrations
                     b.Navigation("Basket");
                 });
 
-            modelBuilder.Entity("SS_Microservice.Services.Basket.Core.Entities.Basket", b =>
+            modelBuilder.Entity("SS_Microservice.Services.Basket.Domain.Entities.Basket", b =>
                 {
                     b.Navigation("BasketItems");
                 });

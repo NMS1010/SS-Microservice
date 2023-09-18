@@ -8,6 +8,6 @@ namespace SS_Microservice.Common.Messages.Events.Basket
 {
     public class BasketClearedEvent
     {
-        public string OrderId { get; set; }
+        public long OrderId { get; set; }
     }
 }

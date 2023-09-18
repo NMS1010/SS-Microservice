@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using SS_Microservice.Common.Model.Paging;
-using SS_Microservice.Services.Basket.Core.Entities;
-using SS_Microservice.Services.Basket.Core.Interfaces;
+using SS_Microservice.Services.Basket.Application.Interfaces.Repositories;
+using SS_Microservice.Services.Basket.Domain.Entities;
 using SS_Microservice.Services.Basket.Infrastructure.Data.DBContext;
 using System.Linq.Expressions;
 

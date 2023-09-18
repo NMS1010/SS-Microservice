@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Services.Auth.Application.Common.Interfaces;
 using SS_Microservice.Services.Auth.Application.Dto;
-using SS_Microservice.Services.Auth.Application.Message.User.Commands;
-using SS_Microservice.Services.Auth.Application.Message.User.Queries;
-using SS_Microservice.Services.Auth.Core.Entities;
+using SS_Microservice.Services.Auth.Application.Features.User.Commands;
+using SS_Microservice.Services.Auth.Application.Features.User.Queries;
+using SS_Microservice.Services.Auth.Domain.Entities;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SS_Microservice.Services.Auth.Infrastructure.Services

@@ -9,6 +9,6 @@ namespace SS_Microservice.Common.Messages.Events.Product
 {
     public class ProductReleasedEvent
     {
-        public string OrderId { get; set; }
+        public long OrderId { get; set; }
     }
 }

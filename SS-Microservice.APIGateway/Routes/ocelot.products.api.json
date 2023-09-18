@@ -85,7 +85,7 @@
         }
       ],
       "UpstreamPathTemplate": "/categories/{everything}",
-      "UpstreamHttpMethod": [ "POST, PUT, DELETE", "GET" ],
+      "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []

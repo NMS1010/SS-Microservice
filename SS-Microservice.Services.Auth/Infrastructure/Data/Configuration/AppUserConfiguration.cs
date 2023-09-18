@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS_Microservice.Services.Auth.Core.Entities;
+using SS_Microservice.Services.Auth.Domain.Entities;
 
 namespace SS_Microservice.Services.Auth.Infrastructure.Data.Configuration
 {

@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SS_Microservice.Services.Auth.Application.Common.Interfaces;
-using SS_Microservice.Services.Auth.Core.Entities;
+using SS_Microservice.Services.Auth.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;

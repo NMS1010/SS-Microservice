@@ -1,6 +1,6 @@
 ﻿using SS_Microservice.Common.Grpc.Product.Protos;
-using SS_Microservice.Services.Basket.Core;
-using SS_Microservice.Services.Basket.Core.Interfaces;
+using SS_Microservice.Services.Basket.Application.Interfaces;
+using SS_Microservice.Services.Basket.Domain;
 
 namespace SS_Microservice.Services.Basket.Infrastructure.Services
 {

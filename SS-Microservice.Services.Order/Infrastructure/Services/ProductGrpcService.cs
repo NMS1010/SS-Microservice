@@ -1,6 +1,6 @@
 ﻿using SS_Microservice.Common.Grpc.Product.Protos;
-using SS_Microservice.Services.Order.Core;
-using SS_Microservice.Services.Order.Core.Interfaces;
+using SS_Microservice.Services.Order.Application.Interfaces;
+using SS_Microservice.Services.Order.Domain;
 
 namespace SS_Microservice.Services.Order.Infrastructure.Services
 {

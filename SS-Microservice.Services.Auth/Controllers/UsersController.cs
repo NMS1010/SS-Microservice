@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Auth.Application.Dto;
-using SS_Microservice.Services.Auth.Application.Message.User.Commands;
-using SS_Microservice.Services.Auth.Application.Message.User.Queries;
+using SS_Microservice.Services.Auth.Application.Features.User.Commands;
+using SS_Microservice.Services.Auth.Application.Features.User.Queries;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 using SS_Microservice.Services.Auth.Application.Model.User;
 

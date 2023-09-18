@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 using SS_Microservice.Services.Basket.Application.Dto;
-using SS_Microservice.Services.Basket.Application.Message.Basket.Commands;
-using SS_Microservice.Services.Basket.Application.Message.Basket.Queries;
+using SS_Microservice.Services.Basket.Application.Features.Basket.Queries;
+using SS_Microservice.Services.Basket.Application.Features.Basket.Commands;
 using SS_Microservice.Services.Basket.Application.Model;
 
 namespace SS_Microservice.Services.Basket.Controllers

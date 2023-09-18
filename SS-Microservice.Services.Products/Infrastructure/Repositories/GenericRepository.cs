@@ -2,13 +2,13 @@
 using SharpCompress.Common;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
-using SS_Microservice.Services.Products.Core.Entities;
-using SS_Microservice.Services.Products.Core.Interfaces;
+using SS_Microservice.Services.Products.Application.Interfaces;
+using SS_Microservice.Services.Products.Domain.Entities;
 using System.Collections.Generic;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseMongoEntity
     {
         private readonly IMongoDatabase _database;
         private readonly IMongoCollection<T> _dbSet;

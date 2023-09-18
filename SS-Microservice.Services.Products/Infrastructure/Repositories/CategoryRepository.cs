@@ -2,9 +2,10 @@
 using MongoDB.Driver;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Services.CurrentUser;
-using SS_Microservice.Services.Products.Application.Message.Category.Queries;
-using SS_Microservice.Services.Products.Core.Entities;
-using SS_Microservice.Services.Products.Core.Interfaces;
+using SS_Microservice.Services.Products.Application.Features.Category.Queries;
+using SS_Microservice.Services.Products.Application.Interfaces;
+using SS_Microservice.Services.Products.Application.Interfaces.Repositories;
+using SS_Microservice.Services.Products.Domain.Entities;
 using SS_Microservice.Services.Products.Infrastructure.Repositories;
 
 namespace SS_Microservice.Services.Categorys.Infrastructure.Repositories

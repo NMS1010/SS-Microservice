@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using SS_Microservice.Services.Products.Application.Dto;
-using SS_Microservice.Services.Products.Application.Message.Category.Commands;
-using SS_Microservice.Services.Products.Application.Message.Category.Queries;
-using SS_Microservice.Services.Products.Application.Message.Product.Commands;
-using SS_Microservice.Services.Products.Application.Message.Product.Queries;
+using SS_Microservice.Services.Products.Application.Features.Category.Commands;
+using SS_Microservice.Services.Products.Application.Features.Product.Commands;
+using SS_Microservice.Services.Products.Application.Features.Category.Queries;
+using SS_Microservice.Services.Products.Application.Features.Product.Queries;
 using SS_Microservice.Services.Products.Application.Model.Category;
 using SS_Microservice.Services.Products.Application.Model.Product;
-using SS_Microservice.Services.Products.Core.Entities;
+using SS_Microservice.Services.Products.Domain.Entities;
 
 namespace SS_Microservice.Services.Products.Application.Common.AutoMapper
 {

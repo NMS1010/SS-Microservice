@@ -7,8 +7,8 @@ using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 using SS_Microservice.Services.Order.Application.Dtos;
-using SS_Microservice.Services.Order.Application.Message.Order.Commands;
-using SS_Microservice.Services.Order.Application.Message.Order.Queries;
+using SS_Microservice.Services.Order.Application.Features.Order.Commands;
+using SS_Microservice.Services.Order.Application.Features.Order.Queries;
 using SS_Microservice.Services.Order.Application.Models.Order;
 
 namespace SS_Microservice.Services.Order.Controllers
@@ -51,7 +51,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpGet("detail/{orderId}")]
-        public async Task<IActionResult> GetOrderById([FromRoute] string orderId)
+        public async Task<IActionResult> GetOrderById([FromRoute] long orderId)
         {
             var query = new GetOrderByIdQuery()
             {

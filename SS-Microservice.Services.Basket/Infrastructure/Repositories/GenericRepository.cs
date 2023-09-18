@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SS_Microservice.Common.Entities;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Services.Basket.Infrastructure.Data.DBContext;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SS_Microservice.Services.Auth.Core.Entities;
+using SS_Microservice.Services.Auth.Domain.Entities;
 using SS_Microservice.Services.Auth.Infrastructure.Data.Configuration;
 using System.Reflection.Emit;
 

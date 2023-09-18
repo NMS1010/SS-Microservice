@@ -2,7 +2,7 @@
 {
     public class UpdateOrderStateRequest
     {
-        public int OrderStateId { get; set; }
+        public long OrderStateId { get; set; }
         public string OrderStateName { get; set; }
         public int Order { get; set; }
         public string HexColor { get; set; }

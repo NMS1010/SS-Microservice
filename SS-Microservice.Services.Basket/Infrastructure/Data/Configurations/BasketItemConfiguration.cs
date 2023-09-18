@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS_Microservice.Services.Basket.Core.Entities;
+using SS_Microservice.Services.Basket.Domain.Entities;
 
 namespace SS_Microservice.Services.Basket.Infrastructure.Data.Configurations
 {
@@ -10,7 +10,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Data.Configurations
         {
             builder.ToTable("basketItems");
 
-            builder.HasKey(x => x.BasketItemId);
+            builder.HasKey(x => x.Id);
 
             builder.Property(x => x.BasketId).IsRequired();
             builder.Property(x => x.ProductId).IsRequired();

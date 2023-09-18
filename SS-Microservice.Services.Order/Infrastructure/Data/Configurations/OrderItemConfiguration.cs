@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS_Microservice.Services.Order.Core.Entities;
+using SS_Microservice.Services.Order.Domain.Entities;
 
 namespace SS_Microservice.Services.Order.Infrastructure.Data.Configurations
 {
@@ -11,7 +11,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.Configurations
             builder.ToTable("orderitems");
 
             builder
-                .HasKey(x => x.OrderItemId);
+                .HasKey(x => x.Id);
             builder
                 .Property(x => x.ProductId)
                 .IsRequired();

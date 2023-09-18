@@ -1,4 +1,4 @@
-﻿using SS_Microservice.Services.Products.Core.Entities;
+﻿using SS_Microservice.Services.Products.Domain.Entities;
 
 namespace SS_Microservice.Services.Products.Application.Dto
 {

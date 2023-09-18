@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 using SS_Microservice.Services.Order.Application.Dtos;
-using SS_Microservice.Services.Order.Application.Message.Order.Commands;
-using SS_Microservice.Services.Order.Application.Message.Order.Queries;
-using SS_Microservice.Services.Order.Application.Message.OrderState.Commands;
-using SS_Microservice.Services.Order.Application.Message.OrderState.Queries;
-using SS_Microservice.Services.Order.Application.Models.Order;
+using SS_Microservice.Services.Order.Application.Features.OrderState.Commands;
+using SS_Microservice.Services.Order.Application.Features.OrderState.Queries;
 using SS_Microservice.Services.Order.Application.Models.OrderState;
 
 namespace SS_Microservice.Services.Order.Controllers

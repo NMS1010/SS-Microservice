@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 using SS_Microservice.Services.Products.Application.Dto;
-using SS_Microservice.Services.Products.Application.Message.Product.Commands;
-using SS_Microservice.Services.Products.Application.Message.Product.Queries;
+using SS_Microservice.Services.Products.Application.Features.Product.Commands;
+using SS_Microservice.Services.Products.Application.Features.Product.Queries;
 using SS_Microservice.Services.Products.Application.Model.Product;
 
 namespace SS_Microservice.Services.Products.Controllers

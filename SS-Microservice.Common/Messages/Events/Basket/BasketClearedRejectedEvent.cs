@@ -9,7 +9,7 @@ namespace SS_Microservice.Common.Messages.Events.Basket
 {
     public class BasketClearedRejectedEvent
     {
-        public string OrderId { get; set; }
+        public long OrderId { get; set; }
 
         public List<ProductStock> Products { get; set; }
     }

@@ -8,7 +8,7 @@ using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Basket.Application.Common.AutoMapper;
-using SS_Microservice.Services.Basket.Core;
+using SS_Microservice.Services.Basket.Domain;
 using SS_Microservice.Services.Basket.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Basket.Infrastructure.Repositories;
 using SS_Microservice.Services.Basket.Infrastructure.Services;
@@ -16,9 +16,10 @@ using System.Configuration;
 using System.Reflection;
 using MassTransit;
 using static Org.BouncyCastle.Math.EC.ECCurve;
-using SS_Microservice.Services.Basket.Core.Interfaces;
-using SS_Microservice.Services.Basket.Application.Message.User.Handlers;
 using SS_Microservice.Common.Jaeger;
+using SS_Microservice.Services.Basket.Application.Interfaces;
+using SS_Microservice.Services.Basket.Application.Interfaces.Repositories;
+using SS_Microservice.Services.Basket.Application.Features.User.EventConsumer;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -3,8 +3,8 @@ using Consul;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SS_Microservice.Services.Auth.Application.Message.Auth.Commands;
-using SS_Microservice.Services.Auth.Application.Message.Auth.Queries;
+using SS_Microservice.Services.Auth.Application.Features.Auth.Commands;
+using SS_Microservice.Services.Auth.Application.Features.Auth.Queries;
 using SS_Microservice.Services.Auth.Application.Model.Auth;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 

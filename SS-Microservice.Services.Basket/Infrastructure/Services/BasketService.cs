@@ -3,10 +3,11 @@ using Org.BouncyCastle.Bcpg;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Services.Basket.Application.Dto;
-using SS_Microservice.Services.Basket.Application.Message.Basket.Commands;
-using SS_Microservice.Services.Basket.Application.Message.Basket.Queries;
-using SS_Microservice.Services.Basket.Core.Entities;
-using SS_Microservice.Services.Basket.Core.Interfaces;
+using SS_Microservice.Services.Basket.Application.Features.Basket.Commands;
+using SS_Microservice.Services.Basket.Application.Features.Basket.Queries;
+using SS_Microservice.Services.Basket.Application.Interfaces;
+using SS_Microservice.Services.Basket.Application.Interfaces.Repositories;
+using SS_Microservice.Services.Basket.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace SS_Microservice.Services.Basket.Infrastructure.Services
@@ -26,9 +27,8 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
 
         public async Task<bool> AddProductToBasket(AddBasketCommand command)
         {
-            var now = DateTime.Now;
             var basket = (await _basketRepository.GetAll()).Where(x => x.UserId == command.UserId).FirstOrDefault();
-            var basketId = basket?.BasketId;
+            var basketId = basket?.Id;
             if (basket == null)
             {
                 basketId = await CreateBasket(new CreateBasketCommand() { UserId = command.UserId });
@@ -41,8 +41,6 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
                 ProductId = command.ProductId,
                 Quantity = command.Quantity,
                 IsSelected = 0,
-                DateCreated = now,
-                DateUpdated = now,
             };
             var b = await _basketItemRepository.IsBasketItemExist(basketId.Value, command.ProductId);
             // if exist, increase quantity
@@ -67,7 +65,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
                 basket = await _basketRepository.GetById(basketId) ?? throw new NotFoundException("Cannot find user's basket");
             }
 
-            var basketItems = await _basketItemRepository.GetBasketItem(basket.BasketId, (int)query.PageIndex, (int)query.PageSize);
+            var basketItems = await _basketItemRepository.GetBasketItem(basket.Id, (int)query.PageIndex, (int)query.PageSize);
             var basketItemDto = new List<BasketItemDto>();
             foreach (var item in basketItems.Items)
             {
@@ -109,12 +107,12 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
 
         public async Task<int> CreateBasket(CreateBasketCommand command)
         {
-            var basket = new Core.Entities.Basket()
+            var basket = new Domain.Entities.Basket()
             {
                 UserId = command.UserId
             };
             await _basketRepository.Insert(basket);
-            return basket.BasketId;
+            return basket.Id;
         }
 
         public async Task<bool> ClearBasket(ClearBasketCommand command)
@@ -123,7 +121,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
                 .Where(x => x.UserId == command.UserId)
                 .FirstOrDefault();
             if (basket == null) return false;
-            return await _basketItemRepository.DeleteBasketItem(command.ProductIds, basket.BasketId);
+            return await _basketItemRepository.DeleteBasketItem(command.ProductIds, basket.Id);
         }
     }
 }

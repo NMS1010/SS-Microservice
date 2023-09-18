@@ -10,7 +10,7 @@ namespace SS_Microservice.Common.Messages.Events.Order
     public class OrderCreatedEvent
     {
         public string UserId { get; set; }
-        public string OrderId { get; set; }
+        public long OrderId { get; set; }
         public List<ProductStock> Products { get; set; }
     }
 }

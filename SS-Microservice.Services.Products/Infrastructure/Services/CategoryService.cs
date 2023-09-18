@@ -4,10 +4,11 @@ using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Common.StringUtil;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Services.Products.Application.Dto;
-using SS_Microservice.Services.Products.Application.Message.Category.Commands;
-using SS_Microservice.Services.Products.Application.Message.Category.Queries;
-using SS_Microservice.Services.Products.Core.Entities;
-using SS_Microservice.Services.Products.Core.Interfaces;
+using SS_Microservice.Services.Products.Application.Features.Category.Commands;
+using SS_Microservice.Services.Products.Application.Features.Category.Queries;
+using SS_Microservice.Services.Products.Application.Interfaces;
+using SS_Microservice.Services.Products.Application.Interfaces.Repositories;
+using SS_Microservice.Services.Products.Domain.Entities;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Net.Mime.MediaTypeNames;
 

@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Order.Application.Dtos;
-using SS_Microservice.Services.Order.Application.Message.Order.Commands;
-using SS_Microservice.Services.Order.Application.Message.Order.Queries;
-using SS_Microservice.Services.Order.Core.Entities;
-using SS_Microservice.Services.Order.Core.Interfaces;
+using SS_Microservice.Services.Order.Application.Features.Order.Commands;
+using SS_Microservice.Services.Order.Application.Features.Order.Queries;
+using SS_Microservice.Services.Order.Application.Interfaces;
+using SS_Microservice.Services.Order.Application.Interfaces.Repositories;
+using SS_Microservice.Services.Order.Domain.Entities;
 using System.Threading.Tasks;
 
 namespace SS_Microservice.Services.Order.Infrastructure.Services
@@ -20,9 +21,8 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public async Task<(bool, string)> CreateOrder(CreateOrderCommand command)
+        public async Task<(bool, long)> CreateOrder(CreateOrderCommand command)
         {
-            var now = DateTime.Now;
             var orderItems = new List<OrderItem>();
             decimal totalItemPrice = 0;
             command.Items.ForEach(item =>
@@ -38,16 +38,13 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                     TotalPrice = totalPrice,
                 });
             });
-            var order = new Core.Entities.Order()
+            var order = new Domain.Entities.Order()
             {
-                OrderId = Guid.NewGuid().ToString(),
                 Address = command.Address,
                 Email = command.Email,
                 Name = command.Name,
                 Phone = command.Phone,
                 UserId = command.UserId,
-                DateCreated = now,
-                DateUpdated = now,
                 TotalItemPrice = totalItemPrice,
                 TotalPrice = totalItemPrice,
                 OrderStateId = command.OrderStateId,
@@ -56,7 +53,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
 
             var isSuccess = await _orderRepository.Insert(order);
 
-            return (isSuccess, order.OrderId);
+            return (isSuccess, order.Id);
         }
 
         public async Task<bool> DeleteOrder(DeleteOrderCommand command)

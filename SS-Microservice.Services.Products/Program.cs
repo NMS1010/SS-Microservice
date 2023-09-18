@@ -8,11 +8,14 @@ using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.RabbitMQ;
+using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Services.Upload;
+using SS_Microservice.Services.Categorys.Infrastructure.Repositories;
 using SS_Microservice.Services.Products.Application.Common.AutoMapper;
-using SS_Microservice.Services.Products.Application.Message.Order.Handler;
-using SS_Microservice.Services.Products.Core.Interfaces;
-using SS_Microservice.Services.Products.Infrastructure.Data;
+using SS_Microservice.Services.Products.Application.Features.Order.EventConsumer;
+using SS_Microservice.Services.Products.Application.Interfaces;
+using SS_Microservice.Services.Products.Application.Interfaces.Repositories;
+using SS_Microservice.Services.Products.Infrastructure.Data.Context;
 using SS_Microservice.Services.Products.Infrastructure.Repositories;
 using SS_Microservice.Services.Products.Infrastructure.Services;
 using System.Reflection;
@@ -33,10 +36,13 @@ builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
 {
     cfg.AddProfile(new MapperProfile(provider.GetService<IHttpContextAccessor>()));
 }).CreateMapper());
+builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IProductContext, ProductContext>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddGrpc();
 builder.Services.AddControllers();
