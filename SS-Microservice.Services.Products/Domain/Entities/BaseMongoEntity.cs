@@ -6,7 +6,7 @@ namespace SS_Microservice.Services.Products.Domain.Entities
 {
     public class BaseMongoEntity : BaseAuditableEntity<string>
     {
-        [BsonId]
-        public new string Id { get; set; }
+        //[BsonId]
+        //public new string Id { get; set; }
     }
 }

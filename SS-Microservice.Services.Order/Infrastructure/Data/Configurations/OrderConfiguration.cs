@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SS_Microservice.Services.Order.Domain.Entities;
 
 namespace SS_Microservice.Services.Order.Infrastructure.Data.Configurations
 {
@@ -11,22 +12,46 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.Configurations
 
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.UserId).IsRequired();
-            builder.Property(x => x.Name).IsRequired();
-            builder.Property(x => x.Email).IsRequired();
-            builder.Property(x => x.Phone).IsRequired();
-            builder.Property(x => x.Address).IsRequired();
+            builder
+                .Property(x => x.UserId)
+                .IsRequired();
 
-            builder.Property(x => x.DateDone).IsRequired(false);
-            builder.Property(x => x.DatePaid).IsRequired(false);
+            builder.Property(x => x.AddressId)
+                .IsRequired();
+
+            builder.Property(x => x.OtherCancelReason)
+                .IsRequired(false);
+
             builder
-                .Property(x => x.TotalPrice)
+                .Property(x => x.TotalAmount)
                 .HasColumnType("DECIMAL")
                 .IsRequired();
+
             builder
-                .Property(x => x.TotalItemPrice)
+                .Property(x => x.Tax)
                 .HasColumnType("DECIMAL")
                 .IsRequired();
+
+            builder
+                .Property(x => x.ShippingCost)
+                .HasColumnType("DECIMAL")
+                .IsRequired();
+
+            builder.Property(x => x.PaymentStatus)
+                .IsRequired();
+
+            builder.Property(x => x.Note)
+                .IsRequired(false);
+
+            builder.Property(x => x.Code)
+                .IsRequired();
+
+            builder.Property(x => x.DeliveryMethodType)
+                .IsRequired();
+
+            builder.Property(x => x.OrderStateId)
+                .IsRequired();
+
             builder
                 .HasMany(x => x.OrderItems)
                 .WithOne(x => x.Order)
@@ -36,6 +61,14 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.Configurations
                 .HasOne(x => x.OrderState)
                 .WithMany(x => x.Orders)
                 .HasForeignKey(x => x.OrderStateId);
+            builder
+                .HasOne(x => x.OrderCancellationReason)
+                .WithMany(x => x.Orders)
+                .HasForeignKey(x => x.OrderCancellationReasonId);
+            builder
+                .HasOne(x => x.Transaction)
+                .WithOne(x => x.Order)
+                .HasForeignKey<Transaction>(x => x.OrderId);
         }
     }
 }

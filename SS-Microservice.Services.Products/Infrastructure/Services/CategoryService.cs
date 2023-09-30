@@ -9,8 +9,6 @@ using SS_Microservice.Services.Products.Application.Features.Category.Queries;
 using SS_Microservice.Services.Products.Application.Interfaces;
 using SS_Microservice.Services.Products.Application.Interfaces.Repositories;
 using SS_Microservice.Services.Products.Domain.Entities;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Services
 {
@@ -46,7 +44,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
 
         public async Task<bool> DeleteCategory(DeleteCategoryCommand command)
         {
-            var category = await _categoryRepository.GetById(command.CategoryId);
+            var category = await _categoryRepository.GetById(command.Id);
             category.IsDeleted = true;
             var isDeleteSuccess = _categoryRepository.Update(category); ;
             //var isDeleteSuccess = _categoryRepository.Delete(category);
@@ -57,27 +55,29 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             return isDeleteSuccess;
         }
 
-        public async Task<PaginatedResult<CategoryDTO>> GetAllCategory(GetAllCategoryQuery query)
+        public async Task<PaginatedResult<CategoryDto>> GetAllCategory(GetAllCategoryQuery query)
         {
             var result = await _categoryRepository.FilterCategory(query);
-            var categoryDtos = new List<CategoryDTO>();
+            var categoryDtos = new List<CategoryDto>();
             foreach (var item in result.Items)
             {
-                categoryDtos.Add(_mapper.Map<Category, CategoryDTO>(item));
+                categoryDtos.Add(_mapper.Map<CategoryDto>(item));
             }
-            return new PaginatedResult<CategoryDTO>(categoryDtos, (int)query.PageIndex, result.TotalPages, (int)query.PageSize);
+            return new PaginatedResult<CategoryDto>(categoryDtos, (int)query.PageIndex, result.TotalPages, (int)query.PageSize);
         }
 
-        public async Task<CategoryDTO> GetCategoryById(GetCategoryByIdQuery query)
+        public async Task<CategoryDto> GetCategoryById(GetCategoryByIdQuery query)
         {
-            var category = await _categoryRepository.GetById(query.CategoryId);
+            var category = await _categoryRepository.GetById(query.Id)
+                ?? throw new NotFoundException("Cannot find this category");
 
-            return _mapper.Map<CategoryDTO>(category);
+            return _mapper.Map<CategoryDto>(category);
         }
 
         public async Task<bool> UpdateCategory(UpdateCategoryCommand command)
         {
-            var category = await _categoryRepository.GetById(command.Id) ?? throw new NotFoundException("Cannot find this category");
+            var category = await _categoryRepository.GetById(command.Id)
+                ?? throw new NotFoundException("Cannot find this category");
 
             category.Name = command.Name;
             category.Description = command.Description;

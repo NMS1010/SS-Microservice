@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SS_Microservice.Common.Specifications;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,11 @@ namespace SS_Microservice.Common.Repository
         bool Update(T entity);
 
         bool Delete(T entity);
+
+        Task<T> GetEntityWithSpec(ISpecifications<T> specification);
+
+        Task<List<T>> ListAsync(ISpecifications<T> specification);
+
+        Task<int> CountAsync(ISpecifications<T> specifications);
     }
 }

@@ -1,10 +1,16 @@
 {
   "GlobalConfiguration": {
+    "QoSOptions": {
+      "ExceptionsAllowedBeforeBreaking": 2,
+      "DurationOfBreak": 3000,
+      "TimeoutValue": 5000
+    },
     "BaseUrl": "https://localhost:7182",
     "ServiceDiscoveryProvider": {
+      "Scheme": "http",
       "Host": "localhost",
       "Port": 8500,
-      "Type": "PollConsul",
+      "Type": "Consul",
       "PollingInterval": 100
     }
   }

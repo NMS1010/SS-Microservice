@@ -8,18 +8,14 @@ using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Basket.Application.Common.AutoMapper;
-using SS_Microservice.Services.Basket.Domain;
 using SS_Microservice.Services.Basket.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Basket.Infrastructure.Repositories;
 using SS_Microservice.Services.Basket.Infrastructure.Services;
-using System.Configuration;
 using System.Reflection;
-using MassTransit;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Services.Basket.Application.Interfaces;
-using SS_Microservice.Services.Basket.Application.Interfaces.Repositories;
 using SS_Microservice.Services.Basket.Application.Features.User.EventConsumer;
+using SS_Microservice.Common.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,11 +27,15 @@ builder.Services.AddDbContext<BasketDBContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(BasketProfile).Assembly);
-builder.Services.AddScoped<IBasketItemRepository, BasketItemRepository>();
-builder.Services.AddScoped<IBasketRepository, BasketRepository>();
-builder.Services.AddScoped<IBasketService, BasketService>();
-builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
+builder.Services
+            .AddSingleton<ICurrentUserService, CurrentUserService>()
+            .AddScoped<IBasketService, BasketService>()
+            .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
+            .AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
 builder.Services.AddMessaging(configuration, new List<Type>()
 {
     {

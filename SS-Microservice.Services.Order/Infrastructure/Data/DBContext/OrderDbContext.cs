@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SS_Microservice.Common.Entities;
 using SS_Microservice.Common.Services.CurrentUser;
@@ -9,18 +10,11 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.DBContext
 {
     public class OrderDbContext : DbContext
     {
-        private ICurrentUserService _currentUserService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public ICurrentUserService CurrentUserService
+        public OrderDbContext(DbContextOptions options, ICurrentUserService currentUserService) : base(options)
         {
-            set
-            {
-                this._currentUserService = value;
-            }
-        }
-
-        public OrderDbContext(DbContextOptions options) : base(options)
-        {
+            _currentUserService = currentUserService;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -29,6 +23,9 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.DBContext
             builder.ApplyConfiguration(new OrderConfiguration());
             builder.ApplyConfiguration(new OrderItemConfiguration());
             builder.ApplyConfiguration(new OrderStateConfiguration());
+            builder.ApplyConfiguration(new OrderCancellationReasonConfiguration());
+            builder.ApplyConfiguration(new DeliveryConfiguration());
+            builder.ApplyConfiguration(new TransactionConfiguration());
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -54,5 +51,9 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.DBContext
         public DbSet<Domain.Entities.Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OrderState> OrderStates { get; set; }
+        public DbSet<Delivery> Deliveries { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<OrderCancellationReason> OrderCancellationReasons { get; set; }
     }
 }

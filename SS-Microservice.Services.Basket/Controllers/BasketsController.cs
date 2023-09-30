@@ -44,7 +44,7 @@ namespace SS_Microservice.Services.Basket.Controllers
             var command = new AddBasketCommand()
             {
                 UserId = _currentUserService.UserId,
-                ProductId = request.ProductId,
+                VariantId = request.VariantId,
                 Quantity = request.Quantity,
             };
             await _sender.Send(command);

@@ -1,10 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using SS_Microservice.Common.Services.CurrentUser;
 
 namespace SS_Microservice.Services.Order.Infrastructure.Data.DBContext
 {
     public class OrderDbContextFactory : IDesignTimeDbContextFactory<OrderDbContext>
     {
+        private readonly ICurrentUserService _currentService;
+
+        public OrderDbContextFactory()
+        {
+        }
+
+        public OrderDbContextFactory(ICurrentUserService currentService)
+        {
+            _currentService = currentService;
+        }
+
         public OrderDbContext CreateDbContext(string[] args)
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -17,7 +29,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.DBContext
             var optionBuilder = new DbContextOptionsBuilder<OrderDbContext>();
             optionBuilder.UseMySQL(connectionString);
 
-            return new OrderDbContext(optionBuilder.Options);
+            return new OrderDbContext(optionBuilder.Options, _currentService);
         }
     }
 }

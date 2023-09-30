@@ -31,8 +31,8 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
             object res = column switch
             {
                 "Description" => p.Description,
-                "Price" => p.Price,
-                "Origin" => p.Origin,
+                "Price" => p.Variants.Min(x => x.ItemPrice),
+                "Sold" => p.Sold,
                 "Quantity" => p.Quantity,
                 _ => p.Name,
             };
@@ -47,11 +47,11 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
                 : products.SortByDescending(x => x.Name));
         }
 
-        private static IFindFluent<Product, Product> SortByDescription(bool isAscending, IFindFluent<Product, Product> products)
+        private static IFindFluent<Product, Product> SortBySold(bool isAscending, IFindFluent<Product, Product> products)
         {
             return (isAscending
-                ? products.SortBy(x => x.Description)
-                : products.SortByDescending(x => x.Description));
+                ? products.SortBy(x => x.Sold)
+                : products.SortByDescending(x => x.Sold));
         }
 
         private static IFindFluent<Product, Product> SortByQuantity(bool isAscending, IFindFluent<Product, Product> products)
@@ -64,8 +64,8 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
         private static IFindFluent<Product, Product> SortByPrice(bool isAscending, IFindFluent<Product, Product> products)
         {
             return (isAscending
-                ? products.SortBy(x => x.Price)
-                : products.SortByDescending(x => x.Price));
+                ? products.SortBy(x => x.Variants.Min(x => x.ItemPrice))
+                : products.SortByDescending(x => x.Variants.Min(x => x.ItemPrice)));
         }
 
         private static IFindFluent<Product, Product> SortProduct(string column, bool isAscending, IFindFluent<Product, Product> products)
@@ -73,7 +73,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
             return column switch
             {
                 "Name" => SortByName(isAscending, products),
-                "Description" => SortByDescription(isAscending, products),
+                "Sold" => SortBySold(isAscending, products),
                 "Quantity" => SortByQuantity(isAscending, products),
                 "Price" => SortByPrice(isAscending, products),
                 _ => SortByName(isAscending, products)
@@ -82,13 +82,15 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
 
         public async Task<PaginatedResult<Product>> FilterProduct(GetAllProductQuery query)
         {
-            var res = _dbSet.Find(x => query.Keyword != null
-                     ? x.Name.ToLower().Contains(query.Keyword.ToString().ToLower())
-                         || x.Description.ToLower().Contains(query.Keyword.ToString().ToLower())
-                         || x.Quantity.ToString().Contains(query.Keyword.ToString())
-                         || x.Price.ToString().Contains(query.Keyword.ToString())
-                         || x.Origin.ToLower().Contains(query.Keyword.ToString().ToLower())
-                     : true);
+            var key = query.Keyword != null && !string.IsNullOrEmpty(query.Keyword.ToString()) ? query.Keyword.ToString() : "";
+            var res = _dbSet.Find(x => string.IsNullOrEmpty(key)
+                         || x.Name.ToLower().Contains(key)
+                         || x.Description.ToLower().Contains(key)
+                         || x.Quantity.ToString().Contains(key)
+                         || x.ShortDescription.Contains(key)
+                         || x.Status.ToLower().Contains(key)
+                         || x.Slug.ToLower().Contains(key)
+                         || x.Rating.ToString().Contains(key));
             if (query.ColumnName != null)
                 res = SortProduct(query.ColumnName, query.TypeSort == "ASC", res);
 
@@ -120,6 +122,12 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
                     return false;
                 }
             }
+        }
+
+        public async Task<Product> GetProductByVariant(string variantId)
+        {
+            var product = await _dbSet.Find(filter: g => g.Variants.Any(x => x.Id == variantId)).SingleOrDefaultAsync();
+            return product;
         }
     }
 }

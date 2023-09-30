@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using SS_Microservice.Services.Basket.Application.Interfaces;
 
 namespace SS_Microservice.Services.Basket.Application.Features.Basket.Commands
 {
@@ -7,5 +8,20 @@ namespace SS_Microservice.Services.Basket.Application.Features.Basket.Commands
     {
         public string UserId { get; set; }
         public List<string> ProductIds { get; set; }
+    }
+
+    public class ClearBasketHandler : IRequestHandler<ClearBasketCommand, bool>
+    {
+        private readonly IBasketService _basketService;
+
+        public ClearBasketHandler(IBasketService basketService)
+        {
+            _basketService = basketService;
+        }
+
+        public async Task<bool> Handle(ClearBasketCommand request, CancellationToken cancellationToken)
+        {
+            return await _basketService.ClearBasket(request);
+        }
     }
 }

@@ -4,13 +4,16 @@ namespace SS_Microservice.Services.Order.Application.Models.Order
 {
     public class CreateOrderRequest
     {
-        public string UserId { get; set; }
-
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Address { get; set; }
-        public int OrderStateId { get; set; }
+        public int AddressId { get; set; }
+        public long OrderStateId { get; set; }
+        public long DeliveryId { get; set; }
+        public string PaymentMethodId { get; set; }
+        public string PaymentMethodType { get; set; }
+        public string PaypalOrderId { get; set; }
+        public string PaypalOrderStatus { get; set; }
+        public string Note { get; set; }
+        public string OtherCancelReason { get; set; }
+        public long OrderCancellationReasonId { get; set; }
         public List<CreateOrderItemRequest> Items { get; set; }
     }
 }

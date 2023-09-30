@@ -12,5 +12,7 @@ namespace SS_Microservice.Services.Products.Application.Interfaces.Repositories
         Task<PaginatedResult<Product>> FilterProduct(GetAllProductQuery query);
 
         Task<bool> UpdateProductQuantity(UpdateProductQuantityCommand command);
+
+        Task<Product> GetProductByVariant(string variantId);
     }
 }

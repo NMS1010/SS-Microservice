@@ -1,25 +1,25 @@
-﻿namespace SS_Microservice.Services.Order.Application.Dtos
+﻿using SS_Microservice.Common.Entities;
+using SS_Microservice.Services.Order.Domain.Entities;
+
+namespace SS_Microservice.Services.Order.Application.Dtos
 {
-    public class OrderDto
+    public class OrderDto : BaseAuditableEntity<long>
     {
-        public string OrderId { get; set; }
+        public int AddressId { get; set; }
+        public string OtherCancelReason { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal Tax { get; set; }
+        public decimal ShippingCost { get; set; }
+        public bool PaymentStatus { get; set; }
+        public string Note { get; set; }
 
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Address { get; set; }
+        public string Code { get; set; }
+        public string DeliveryMethodType { get; set; }
 
-        public decimal TotalItemPrice { get; set; }
-        public decimal TotalPrice { get; set; }
+        public OrderCancellationReasonDto OrderCancellationReason { get; set; }
+        public OrderStateDto OrderState { get; set; }
 
-        public DateTime DateCreated { get; set; }
-        public DateTime DateUpdated { get; set; }
-
-        public DateTime DateDone { get; set; }
-        public DateTime DatePaid { get; set; }
-
-        public int OrderStateId { get; set; }
-        public string OrderStateName { get; set; }
+        public TransactionDto Transaction { get; set; }
 
         public List<OrderItemDto> OrderItems { get; set; }
     }

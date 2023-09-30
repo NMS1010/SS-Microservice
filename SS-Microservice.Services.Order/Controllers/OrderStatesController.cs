@@ -13,7 +13,7 @@ namespace SS_Microservice.Services.Order.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class OrderStatesController : ControllerBase
     {
         private readonly ISender _sender;
@@ -36,7 +36,8 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpGet("detail/{orderStateId}")]
-        public async Task<IActionResult> GetOrderById([FromRoute] int orderStateId)
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetOrderStateById([FromRoute] long orderStateId)
         {
             var query = new GetOrderStateByIdQuery()
             {
@@ -48,6 +49,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> CreateOrderState([FromBody] CreateOrderStateRequest request)
         {
             var command = _mapper.Map<CreateOrderStateCommand>(request);
@@ -57,6 +59,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> UpdateOrderState([FromBody] UpdateOrderStateRequest request)
         {
             var command = _mapper.Map<UpdateOrderStateCommand>(request);
@@ -70,7 +73,8 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpDelete("delete/{orderStateId}")]
-        public async Task<IActionResult> DeleteOrderState(int orderStateId)
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> DeleteOrderState(long orderStateId)
         {
             var command = new DeleteOrderStateCommand() { OrderStateId = orderStateId };
             var isSuccess = await _sender.Send(command);

@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SS_Microservice.Services.Auth.Application.Common.Constants;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
-using SS_Microservice.Services.Auth.Application.Common.Interfaces;
 using SS_Microservice.Services.Auth.Application.Features.Auth.Commands;
 using SS_Microservice.Services.Auth.Application.Features.Auth.Queries;
+using SS_Microservice.Services.Auth.Application.Interfaces;
 using SS_Microservice.Services.Auth.Application.Model.Auth;
-using SS_Microservice.Services.Auth.Domain.Constants;
 using SS_Microservice.Services.Auth.Domain.Entities;
 
 namespace SS_Microservice.Services.Auth.Infrastructure.Services
@@ -39,7 +39,7 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
                 }
                 if (!res.Succeeded)
                     throw new NotFoundException("Username/password is incorrect");
-                if (user.Status == UserStatus.IN_ACTIVE)
+                if (user.Status == USER_STATUS.IN_ACTIVE)
                     throw new ForbiddenAccessException("Your account has been banned");
                 //if (!user.EmailConfirmed)
                 //    throw new ForbiddenAccessException("Your account hasn't been confirmed");
@@ -92,7 +92,7 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
                     FirstName = request.FirstName,
                     LastName = request.LastName,
                     UserName = request.Username,
-                    Status = UserStatus.ACTIVE,
+                    Status = USER_STATUS.ACTIVE,
                     Avatar = "default-user.png"
                 };
 
@@ -102,7 +102,7 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
                 {
                     List<string> roles = new()
                     {
-                       UserRole.USER
+                       USER_ROLE.USER
                     };
                     await _userManager.AddToRolesAsync(user, roles);
                     //if (!string.IsNullOrEmpty(request.LoginProvider))

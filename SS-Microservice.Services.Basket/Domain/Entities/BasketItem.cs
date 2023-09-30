@@ -2,10 +2,10 @@
 
 namespace SS_Microservice.Services.Basket.Domain.Entities
 {
-    public class BasketItem : BaseAuditableEntity<int>
+    public class BasketItem : BaseAuditableEntity<long>
     {
-        public int BasketId { get; set; }
-        public string ProductId { get; set; }
+        public long BasketId { get; set; }
+        public string VariantId { get; set; }
         public long Quantity { get; set; }
         public int IsSelected { get; set; } = 0;
 

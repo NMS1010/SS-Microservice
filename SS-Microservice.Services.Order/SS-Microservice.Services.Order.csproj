@@ -43,4 +43,9 @@
 	<ItemGroup>
 		<Protobuf Include="..\SS-Microservice.Common\Grpc\Product\Protos\product.proto" GrpcServices="Client" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Application\Interfaces\Repositories\" />
+	  <Folder Include="wwwroot\" />
+	</ItemGroup>
 </Project>

@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -7,10 +8,11 @@ using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.RabbitMQ;
+using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Services.Order.Application.Common.AutoMapper;
 using SS_Microservice.Services.Order.Application.Interfaces;
-using SS_Microservice.Services.Order.Application.Interfaces.Repositories;
 using SS_Microservice.Services.Order.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Order.Infrastructure.Repositories;
 using SS_Microservice.Services.Order.Infrastructure.Services;
@@ -26,7 +28,10 @@ builder.Services.AddDbContext<OrderDbContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("OrderDbContext")));
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddAutoMapper(typeof(OrderProfile).Assembly);
+builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile(new OrderProfile(provider.GetService<IHttpContextAccessor>()));
+}).CreateMapper());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(s =>
@@ -61,12 +66,19 @@ builder.Services.AddSwaggerGen(s =>
 });
 builder.Services.AddGrpcClient<ProductProtoService.ProductProtoServiceClient>
             (o => o.Address = new Uri(configuration["GrpcSettings:ProductUrl"]));
-builder.Services.AddScoped<IProductGrpcService, ProductGrpcService>();
-builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IOrderStateService, OrderStateService>();
-builder.Services.AddScoped<IOrderStateRepository, OrderStateRepository>();
+builder.Services
+    .AddScoped<IProductGrpcService, ProductGrpcService>()
+    .AddSingleton<ICurrentUserService, CurrentUserService>()
+    .AddScoped<IUploadService, UploadService>()
+    .AddScoped<IOrderService, OrderService>()
+    .AddScoped<IOrderStateService, OrderStateService>()
+    .AddScoped<IDeliveryService, DeliveryService>()
+    .AddScoped<IPaymentMethodService, PaymentMethodService>()
+    .AddScoped<IOrderCancellationReasonService, OrderCancellationReasonService>()
+    .AddScoped<ITransactionService, TransactionService>()
+    .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
+    .AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 builder.Services.AddOpenTracing();
 builder.Services.AddJaeger(configuration.GetJaegerOptions());
@@ -83,7 +95,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseStaticFiles();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();

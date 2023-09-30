@@ -13,10 +13,10 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Data.DBContext
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var connectionString = configuration.GetConnectionString("AppDbContext");
+            var connectionString = configuration.GetConnectionString("AuthDbContext");
 
             var optionBuilder = new DbContextOptionsBuilder<DBContext>();
-            optionBuilder.UseSqlServer(connectionString);
+            optionBuilder.UseMySQL(connectionString);
 
             return new DBContext(optionBuilder.Options);
         }

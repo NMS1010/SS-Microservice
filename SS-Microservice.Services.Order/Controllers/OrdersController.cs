@@ -30,7 +30,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpGet("all")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> GetAllOrders([FromQuery] GetOrderPagingRequest request)
         {
             var query = _mapper.Map<GetAllOrderQuery>(request);
@@ -74,6 +74,7 @@ namespace SS_Microservice.Services.Order.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderRequest request)
         {
             var command = _mapper.Map<UpdateOrderCommand>(request);

@@ -5,11 +5,11 @@ option csharp_namespace = "SS_Microservice.Common.Grpc.Product.Protos";
 package product;
 
 service ProductProtoService {
-	rpc GetProductInformation (GetProductDetail) returns (ProductResponse);
+	rpc GetProductInformation (GetProductDetailByVariant) returns (ProductResponse);
 }
 
-message GetProductDetail{
-	string productId = 1;
+message GetProductDetailByVariant{
+	string variantId = 1;
 }
 
 message ProductResponse{
@@ -17,6 +17,22 @@ message ProductResponse{
 	string Description = 2;
 	int64 Quantity = 3;
 	double Price = 4;
-	string Origin = 5;
-	string MainImage = 6;
+	double PromotionalPrice = 5;
+	string CategoryName = 6;
+	string DefaultImage = 7;
+	string Status = 8;
+	string Slug = 9;
+	string CategoryId = 10;
+	string CategorySlug = 11;
+	int64 Rating = 12;
+	int64 Sold = 13;
+	int64 SaleId = 14;
+	string ProductId = 15;
+	string BrandId = 16;
+	string BrandName = 17;
+	string Image = 18;
+	string VariantName = 19;
+	int64 VariantQuantity = 20;
+	double VariantTotalPrice = 21;
+	string Unit = 22;
 }

@@ -1,8 +1,12 @@
-﻿namespace SS_Microservice.Services.Products.Application.Dto
+﻿using SS_Microservice.Services.Products.Domain.Entities;
+
+namespace SS_Microservice.Services.Products.Application.Dto
 {
-    public class ProductImageDTO
+    public class ProductImageDto : BaseMongoEntity
     {
-        public string Id { get; set; }
-        public string Path { get; set; }
+        public string Image { get; set; }
+        public long Size { get; set; }
+        public string ContentType { get; set; }
+        public bool IsDefault { get; set; }
     }
 }

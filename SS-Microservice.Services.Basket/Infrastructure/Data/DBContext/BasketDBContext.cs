@@ -10,18 +10,11 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Data.DBContext
 {
     public class BasketDBContext : DbContext
     {
-        private ICurrentUserService _currentUserService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public ICurrentUserService CurrentUserService
+        public BasketDBContext(DbContextOptions options, ICurrentUserService currentUserService) : base(options)
         {
-            set
-            {
-                this._currentUserService = value;
-            }
-        }
-
-        public BasketDBContext(DbContextOptions options) : base(options)
-        {
+            _currentUserService = currentUserService;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -33,7 +26,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Data.DBContext
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            foreach (EntityEntry<BaseAuditableEntity<int>> entry in ChangeTracker.Entries<BaseAuditableEntity<int>>())
+            foreach (EntityEntry<BaseAuditableEntity<long>> entry in ChangeTracker.Entries<BaseAuditableEntity<long>>())
             {
                 switch (entry.State)
                 {

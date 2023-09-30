@@ -13,14 +13,18 @@ namespace SS_Microservice.Services.Products.Application.Interfaces
 
         Task<bool> UpdateProductQuantity(UpdateProductQuantityCommand command);
 
-        Task<bool> UpdateProductImage(UpdateProductImageCommand command);
-
         Task<bool> DeleteProduct(DeleteProductCommand command);
 
+        Task<PaginatedResult<ProductDto>> GetAllProduct(GetAllProductQuery query);
+
+        Task<PaginatedResult<ProductImageDto>> GetAllProductImage(GetAllProductImageQuery query);
+
+        Task<ProductDto> GetProductById(GetProductByIdQuery query);
+
+        Task<bool> AddProductImage(CreateProductImageCommand command);
+
+        Task<bool> UpdateProductImage(UpdateProductImageCommand command);
+
         Task<bool> DeleteProductImage(DeleteProductImageCommand command);
-
-        Task<PaginatedResult<ProductDTO>> GetAllProduct(GetAllProductQuery query);
-
-        Task<ProductDTO> GetProductById(GetProductByIdQuery query);
     }
 }

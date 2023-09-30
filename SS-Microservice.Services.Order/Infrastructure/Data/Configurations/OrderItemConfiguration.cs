@@ -13,7 +13,10 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.Configurations
             builder
                 .HasKey(x => x.Id);
             builder
-                .Property(x => x.ProductId)
+                .Property(x => x.VariantId)
+                .IsRequired();
+            builder
+                .Property(x => x.OrderId)
                 .IsRequired();
 
             builder
@@ -31,9 +34,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.Configurations
             builder
                 .Property(x => x.OrderId)
                 .IsRequired();
-            builder
-                .Property(x => x.ProductId)
-                .IsRequired();
+
             builder
                 .HasOne(x => x.Order)
                 .WithMany(x => x.OrderItems)

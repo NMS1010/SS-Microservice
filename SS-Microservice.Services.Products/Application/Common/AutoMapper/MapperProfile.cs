@@ -7,6 +7,12 @@ using SS_Microservice.Services.Products.Application.Features.Product.Queries;
 using SS_Microservice.Services.Products.Application.Model.Category;
 using SS_Microservice.Services.Products.Application.Model.Product;
 using SS_Microservice.Services.Products.Domain.Entities;
+using SS_Microservice.Services.Products.Application.Features.Brand.Commands;
+using SS_Microservice.Services.Products.Application.Model.Brand;
+using SS_Microservice.Services.Products.Application.Features.Brand.Queries;
+using SS_Microservice.Services.Products.Application.Features.Variant.Commands;
+using SS_Microservice.Services.Products.Application.Model.Variant;
+using SS_Microservice.Services.Products.Application.Features.Variant.Queries;
 
 namespace SS_Microservice.Services.Products.Application.Common.AutoMapper
 {
@@ -23,23 +29,39 @@ namespace SS_Microservice.Services.Products.Application.Common.AutoMapper
 
         public MapperProfile(IHttpContextAccessor httpContextAccessor)
         {
-            CreateMap<Product, ProductDTO>()
-                .ForMember(des => des.MainImage,
-                act => act.MapFrom(src => GetFile(src.MainImage, httpContextAccessor)));
-            CreateMap<ProductCreateRequest, CreateProductCommand>();
-            CreateMap<ProductUpdateRequest, UpdateProductCommand>();
-            CreateMap<ProductPagingRequest, GetAllProductQuery>();
-            CreateMap<ProductImageUpdateRequest, UpdateProductImageCommand>();
-            CreateMap<ProductImage, ProductImageDTO>()
-                .ForMember(des => des.Path,
-                act => act.MapFrom(src => GetFile(src.ImageName, httpContextAccessor)));
+            CreateMap<Product, ProductDto>()
+                .ForMember(des => des.PromotionalPrice,
+                    act => act.MapFrom(src => src.Variants.Count > 0 ? src.Variants.Min(x => x.PromotionalItemPrice) : 0))
+                .ForMember(des => des.Price,
+                    act => act.MapFrom(src => src.Variants.Count > 0 ? src.Variants.Min(x => x.ItemPrice) : 0));
 
-            CreateMap<Category, CategoryDTO>()
+            CreateMap<Brand, BrandDto>();
+            CreateMap<Variant, VariantDto>();
+            CreateMap<ProductImage, ProductImageDto>()
                 .ForMember(des => des.Image,
                 act => act.MapFrom(src => GetFile(src.Image, httpContextAccessor)));
-            CreateMap<CategoryCreateRequest, CreateCategoryCommand>();
-            CreateMap<CategoryUpdateRequest, UpdateCategoryCommand>();
-            CreateMap<CategoryPagingRequest, GetAllCategoryQuery>();
+
+            CreateMap<Category, CategoryDto>()
+                .ForMember(des => des.Image,
+                act => act.MapFrom(src => GetFile(src.Image, httpContextAccessor)));
+
+            CreateMap<CreateProductRequest, CreateProductCommand>();
+            CreateMap<UpdateProductRequest, UpdateProductCommand>();
+            CreateMap<GetProductPagingRequest, GetAllProductQuery>();
+            CreateMap<CreateProductImageRequest, CreateProductImageCommand>();
+            CreateMap<UpdateProductImageRequest, UpdateProductImageCommand>();
+
+            CreateMap<CreateVariantRequest, CreateVariantCommand>();
+            CreateMap<UpdateVariantRequest, UpdateVariantCommand>();
+            CreateMap<GetVariantPagingRequest, GetAllVariantQuery>();
+
+            CreateMap<CreateCategoryRequest, CreateCategoryCommand>();
+            CreateMap<UpdateCategoryRequest, UpdateCategoryCommand>();
+            CreateMap<GetCategoryPagingRequest, GetAllCategoryQuery>();
+
+            CreateMap<CreateBrandRequest, CreateBrandCommand>();
+            CreateMap<UpdateBrandRequest, UpdateBrandCommand>();
+            CreateMap<GetBrandPagingRequest, GetAllBrandQuery>();
         }
     }
 }

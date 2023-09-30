@@ -11,8 +11,8 @@ using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Auth.Application.Common.AutoMapper;
-using SS_Microservice.Services.Auth.Application.Common.Interfaces;
-using SS_Microservice.Services.Auth.Domain.Constants;
+using SS_Microservice.Services.Auth.Application.Common.Constants;
+using SS_Microservice.Services.Auth.Application.Interfaces;
 using SS_Microservice.Services.Auth.Domain.Entities;
 using SS_Microservice.Services.Auth.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Auth.Infrastructure.Services;
@@ -25,7 +25,7 @@ var configuration = builder.Configuration;
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 // Add services to the container.
 builder.Services.AddDbContext<DBContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("AuthDbContext")));
+                options.UseMySQL(configuration.GetConnectionString("AuthDbContext")));
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(opts =>
 {
@@ -48,15 +48,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
-builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
+builder.Services
+        .AddScoped<IJwtService, JwtService>()
+        .AddScoped<IAuthService, AuthService>()
+        .AddScoped<IUserService, UserService>()
+        .AddSingleton<ICurrentUserService, CurrentUserService>();
 async Task CreateRoles(IServiceProvider serviceProvider)
 {
     var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    foreach (var roleName in UserRole.Roles)
+    foreach (var roleName in USER_ROLE.Roles)
     {
         var roleExist = await RoleManager.RoleExistsAsync(roleName);
         if (!roleExist)

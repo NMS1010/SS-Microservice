@@ -2,6 +2,7 @@
 using SharpCompress.Common;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Specifications;
 using SS_Microservice.Services.Products.Application.Interfaces;
 using SS_Microservice.Services.Products.Domain.Entities;
 using System.Collections.Generic;
@@ -19,6 +20,11 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
             _database = context.Database;
             _dbSet = _database.GetCollection<T>(typeof(T).Name);
             _currentUserService = currentUserService;
+        }
+
+        public Task<int> CountAsync(ISpecifications<T> specifications)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Delete(T entity)
@@ -41,6 +47,11 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
             return data;
         }
 
+        public Task<T> GetEntityWithSpec(ISpecifications<T> specification)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> Insert(T entity)
         {
             try
@@ -57,6 +68,11 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
             {
                 return false;
             }
+        }
+
+        public Task<List<T>> ListAsync(ISpecifications<T> specification)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Update(T entity)

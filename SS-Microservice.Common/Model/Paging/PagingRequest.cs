@@ -8,7 +8,14 @@ namespace SS_Microservice.Common.Model.Paging
 {
     public class PagingRequest
     {
-        public object Keyword { get; set; }
+        private string _keyword;
+
+        public string Keyword
+        {
+            get => _keyword;
+            set => _keyword = value?.ToLower();
+        }
+
         public long PageIndex { get; set; } = 1;
         public long PageSize { get; set; } = 1000;
 

@@ -21,9 +21,9 @@ namespace SS_Microservice.Services.Basket.Migrations
 
             modelBuilder.Entity("SS_Microservice.Services.Basket.Domain.Entities.Basket", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("longtext");
@@ -48,12 +48,12 @@ namespace SS_Microservice.Services.Basket.Migrations
 
             modelBuilder.Entity("SS_Microservice.Services.Basket.Domain.Entities.BasketItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("BasketId")
-                        .HasColumnType("int");
+                    b.Property<long>("BasketId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("longtext");
@@ -64,10 +64,6 @@ namespace SS_Microservice.Services.Basket.Migrations
                     b.Property<int>("IsSelected")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<long>("Quantity")
                         .HasColumnType("bigint");
 
@@ -76,6 +72,10 @@ namespace SS_Microservice.Services.Basket.Migrations
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("VariantId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

@@ -1,70 +1,128 @@
 ﻿using AutoMapper;
 using SS_Microservice.Common.Model.Paging;
+using SS_Microservice.Common.Repository;
 using SS_Microservice.Services.Order.Application.Dtos;
 using SS_Microservice.Services.Order.Application.Features.OrderState.Commands;
 using SS_Microservice.Services.Order.Application.Features.OrderState.Queries;
 using SS_Microservice.Services.Order.Application.Interfaces;
-using SS_Microservice.Services.Order.Application.Interfaces.Repositories;
+using SS_Microservice.Services.Order.Application.Specifications;
+using SS_Microservice.Services.Order.Domain.Entities;
 
 namespace SS_Microservice.Services.Order.Infrastructure.Services
 {
     public class OrderStateService : IOrderStateService
     {
-        private readonly IOrderStateRepository _orderStateRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public OrderStateService(IOrderStateRepository orderStateRepository, IMapper mapper)
+        public OrderStateService(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _orderStateRepository = orderStateRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task CreateOrderState(CreateOrderStateCommand command)
+        public async Task<bool> CreateOrderState(CreateOrderStateCommand command)
         {
-            var orderState = new Domain.Entities.OrderState()
+            try
             {
-                HexColor = command.HexColor,
-                OrderStateName = command.OrderStateName,
-                Order = command.Order,
-            };
-            await _orderStateRepository.Insert(orderState);
+                await _unitOfWork.CreateTransaction();
+                var orderState = new OrderState()
+                {
+                    HexColor = command.HexColor,
+                    OrderStateName = command.OrderStateName,
+                    Status = 1,
+                    Order = command.Order,
+                };
+                await _unitOfWork.Repository<OrderState>().Insert(orderState);
+                var isSuccess = await _unitOfWork.Save() > 0;
+                if (!isSuccess)
+                {
+                    throw new Exception("Cannot create order state");
+                }
+                await _unitOfWork.Commit();
+                return isSuccess;
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.Rollback();
+                throw ex;
+            }
         }
 
         public async Task<bool> DeleteOrderState(DeleteOrderStateCommand command)
         {
-            var orderState = await _orderStateRepository.GetById(command.OrderStateId);
+            try
+            {
+                await _unitOfWork.CreateTransaction();
+                var orderState = await _unitOfWork.Repository<OrderState>().GetById(command.OrderStateId);
+                orderState.Status = 0;
+                orderState.DeletedAt = DateTime.UtcNow;
+                _unitOfWork.Repository<OrderState>().Update(orderState);
 
-            return _orderStateRepository.Delete(orderState);
+                var isSuccess = await _unitOfWork.Save() > 0;
+                if (!isSuccess)
+                {
+                    throw new Exception("Cannot delete this order state");
+                }
+                await _unitOfWork.Commit();
+                return isSuccess;
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.Rollback();
+                throw ex;
+            }
         }
 
         public async Task<OrderStateDto> GetOrderState(GetOrderStateByIdQuery query)
         {
-            var orderState = await _orderStateRepository.GetById(query);
+            var orderState = await _unitOfWork.Repository<OrderState>().GetById(query.OrderStateId);
             return _mapper.Map<OrderStateDto>(orderState);
         }
 
         public async Task<PaginatedResult<OrderStateDto>> GetOrderStateList(GetAllOrderStateQuery query)
         {
-            var res = await _orderStateRepository.GetOrderStateList(query);
-            var orderStates = res.Items;
+            var spec = new OrderStateSpecification(query, isPaging: true);
+
+            var orderStates = await _unitOfWork.Repository<OrderState>().ListAsync(spec);
+
+            var countSpec = new OrderStateSpecification(query);
+            var totalCount = await _unitOfWork.Repository<OrderState>().CountAsync(countSpec);
+
             var orderStateDto = new List<OrderStateDto>();
             foreach (var item in orderStates)
             {
                 orderStateDto.Add(_mapper.Map<OrderStateDto>(item));
             }
 
-            return new PaginatedResult<OrderStateDto>(orderStateDto, res.PageIndex, res.TotalCount, (int)query.PageSize);
+            return new PaginatedResult<OrderStateDto>(orderStateDto, (int)query.PageIndex, totalCount, (int)query.PageSize);
         }
 
         public async Task<bool> UpdateOrderState(UpdateOrderStateCommand command)
         {
-            var orderState = await _orderStateRepository.GetById(command.OrderStateId);
+            try
+            {
+                await _unitOfWork.CreateTransaction();
+                var orderState = await _unitOfWork.Repository<OrderState>().GetById(command.OrderStateId);
+                orderState.Order = command.Order;
+                orderState.OrderStateName = command.OrderStateName;
+                orderState.HexColor = command.HexColor;
+                orderState.Status = command.Status;
+                _unitOfWork.Repository<OrderState>().Update(orderState);
 
-            orderState.Order = command.Order;
-            orderState.OrderStateName = command.OrderStateName;
-            orderState.HexColor = command.HexColor;
-
-            return _orderStateRepository.Update(orderState);
+                var isSuccess = await _unitOfWork.Save() > 0;
+                if (!isSuccess)
+                {
+                    throw new Exception("Cannot delete this order state");
+                }
+                await _unitOfWork.Commit();
+                return isSuccess;
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.Rollback();
+                throw ex;
+            }
         }
     }
 }

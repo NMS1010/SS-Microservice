@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
-using SS_Microservice.Services.Auth.Application.Common.Interfaces;
+using SS_Microservice.Services.Auth.Application.Interfaces;
 using SS_Microservice.Services.Auth.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -45,7 +45,7 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
             var token = new JwtSecurityToken(_configuration["Tokens:Issuer"],
                 _configuration["Tokens:Issuer"],
                 claims,
-                expires: DateTime.Now.AddMinutes(10),
+                expires: DateTime.Now.AddDays(100),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

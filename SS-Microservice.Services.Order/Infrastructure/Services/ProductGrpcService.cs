@@ -15,10 +15,10 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             _logger = logger;
         }
 
-        public async Task<ProductResponse> GetProductById(string productId)
+        public async Task<ProductResponse> GetProductByVariantId(string variantId)
         {
             _logger.LogInformation("Starting gRPC connection from Order to Product Service");
-            var product = await _productProtoServiceClient.GetProductInformationAsync(new GetProductDetail() { ProductId = productId });
+            var product = await _productProtoServiceClient.GetProductInformationAsync(new GetProductDetailByVariant() { VariantId = variantId });
             if (product == null)
             {
                 _logger.LogError("Failed to get result from gRPC service");

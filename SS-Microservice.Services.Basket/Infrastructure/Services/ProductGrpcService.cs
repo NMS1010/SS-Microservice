@@ -15,7 +15,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
             _logger = logger;
         }
 
-        public async Task<ProductResponse> GetProductById(GetProductDetail request)
+        public async Task<ProductResponse> GetProductByVariantId(GetProductDetailByVariant request)
         {
             _logger.LogInformation("Starting gRPC connection from Basket to Product Service");
             var product = await _productProtoServiceClient.GetProductInformationAsync(request);

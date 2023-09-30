@@ -1,8 +1,12 @@
-﻿namespace SS_Microservice.Services.Products.Domain.Entities
+﻿using SS_Microservice.Common.Entities;
+
+namespace SS_Microservice.Services.Products.Domain.Entities
 {
-    public class ProductImage
+    public class ProductImage : BaseAuditableEntity<string>
     {
-        public string Id { get; set; }
-        public string ImageName { get; set; }
+        public string Image { get; set; }
+        public long Size { get; set; }
+        public string ContentType { get; set; }
+        public bool IsDefault { get; set; }
     }
 }

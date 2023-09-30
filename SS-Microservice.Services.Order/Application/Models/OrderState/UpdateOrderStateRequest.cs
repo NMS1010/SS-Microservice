@@ -6,5 +6,6 @@
         public string OrderStateName { get; set; }
         public int Order { get; set; }
         public string HexColor { get; set; }
+        public int Status { get; set; }
     }
 }

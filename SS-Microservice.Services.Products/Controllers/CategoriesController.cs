@@ -15,7 +15,7 @@ namespace SS_Microservice.Services.Categories.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "ADMIN")]
     public class CategoriesController : ControllerBase
     {
         private ISender _sender;
@@ -29,22 +29,22 @@ namespace SS_Microservice.Services.Categories.Controllers
 
         [HttpGet("all")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetCategories([FromQuery] CategoryPagingRequest request)
+        public async Task<IActionResult> GetCategories([FromQuery] GetCategoryPagingRequest request)
         {
             var query = _mapper.Map<GetAllCategoryQuery>(request);
             var res = await _sender.Send(query);
-            return Ok(CustomAPIResponse<PaginatedResult<CategoryDTO>>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<PaginatedResult<CategoryDto>>.Success(res, StatusCodes.Status200OK));
         }
 
         [HttpGet("{categoryId}")]
         public async Task<IActionResult> GetCategoryById([FromRoute] string categoryId)
         {
-            var res = await _sender.Send(new GetCategoryByIdQuery() { CategoryId = categoryId });
-            return Ok(CustomAPIResponse<CategoryDTO>.Success(res, StatusCodes.Status200OK));
+            var res = await _sender.Send(new GetCategoryByIdQuery() { Id = categoryId });
+            return Ok(CustomAPIResponse<CategoryDto>.Success(res, StatusCodes.Status200OK));
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> AddCategory([FromForm] CategoryCreateRequest request)
+        public async Task<IActionResult> AddCategory([FromForm] CreateCategoryRequest request)
         {
             var command = _mapper.Map<CreateCategoryCommand>(request);
             await _sender.Send(command);
@@ -52,7 +52,7 @@ namespace SS_Microservice.Services.Categories.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateCategory([FromForm] CategoryUpdateRequest request)
+        public async Task<IActionResult> UpdateCategory([FromForm] UpdateCategoryRequest request)
         {
             var command = _mapper.Map<UpdateCategoryCommand>(request);
             var res = await _sender.Send(command);
@@ -64,7 +64,7 @@ namespace SS_Microservice.Services.Categories.Controllers
         [HttpDelete("delete/{categoryId}")]
         public async Task<IActionResult> DeleteCategory(string categoryId)
         {
-            var res = await _sender.Send(new DeleteCategoryCommand() { CategoryId = categoryId });
+            var res = await _sender.Send(new DeleteCategoryCommand() { Id = categoryId });
             if (!res)
                 return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this category"));
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));

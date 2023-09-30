@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="routes\ocelot.basket.api.json" />
+    <_ContentIncludedByDefault Remove="routes\ocelot.category.api.json" />
     <_ContentIncludedByDefault Remove="routes\ocelot.order.api.json" />
   </ItemGroup>
 
@@ -24,7 +25,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Routes\" />
   </ItemGroup>
 
   <ItemGroup>

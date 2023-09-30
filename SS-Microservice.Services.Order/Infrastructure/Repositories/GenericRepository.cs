@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SS_Microservice.Common.Repository;
+using SS_Microservice.Common.Specifications;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Services.Order.Infrastructure.Data.DBContext;
 
@@ -24,8 +25,8 @@ namespace SS_Microservice.Services.Order.Infrastructure.Repositories
             }
             try
             {
-                _entities.Remove(entity);
-                return _dbContext.SaveChanges() > 0;
+                var x = _entities.Remove(entity);
+                return x.State == EntityState.Deleted;
             }
             catch
             {
@@ -51,8 +52,8 @@ namespace SS_Microservice.Services.Order.Infrastructure.Repositories
             }
             try
             {
-                await _entities.AddAsync(entity);
-                return await _dbContext.SaveChangesAsync() > 0;
+                var x = await _entities.AddAsync(entity);
+                return x.State == EntityState.Added;
             }
             catch
             {
@@ -69,12 +70,33 @@ namespace SS_Microservice.Services.Order.Infrastructure.Repositories
             try
             {
                 _dbContext.Entry(entity).State = EntityState.Modified;
-                return _dbContext.SaveChanges() > 0;
+                return true;
             }
             catch
             {
                 throw new Exception("Cannot update this entity");
             }
+        }
+
+        // Specification Pattern
+        public async Task<List<T>> ListAsync(ISpecifications<T> specification)
+        {
+            return await ApplySpecification(specification).ToListAsync();
+        }
+
+        public async Task<T> GetEntityWithSpec(ISpecifications<T> specification)
+        {
+            return await ApplySpecification(specification).FirstOrDefaultAsync();
+        }
+
+        public async Task<int> CountAsync(ISpecifications<T> specifications)
+        {
+            return await ApplySpecification(specifications).CountAsync();
+        }
+
+        private IQueryable<T> ApplySpecification(ISpecifications<T> specifications)
+        {
+            return SpecificationEvaluator<T>.GetQuery(_entities.AsQueryable(), specifications);
         }
     }
 }

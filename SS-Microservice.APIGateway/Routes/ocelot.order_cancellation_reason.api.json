@@ -1,0 +1,23 @@
+{
+  "Routes": [
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "OrderService",
+      "DownstreamPathTemplate": "/api/ordercancellationreasons/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "order",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7037
+        }
+      ],
+      "UpstreamPathTemplate": "/ordercancellationreasons/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    }
+  ]
+}

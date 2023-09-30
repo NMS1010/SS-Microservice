@@ -7,6 +7,8 @@ namespace SS_Microservice.Services.Order.Domain.Entities
         public string OrderStateName { get; set; }
         public int Order { get; set; }
         public string HexColor { get; set; }
+        public int Status { get; set; }
+        public DateTime? DeletedAt { get; set; }
         public ICollection<Order> Orders { get; set; }
     }
 }

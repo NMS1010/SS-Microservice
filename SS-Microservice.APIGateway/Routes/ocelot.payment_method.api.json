@@ -1,0 +1,23 @@
+{
+  "Routes": [
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "OrderService",
+      "DownstreamPathTemplate": "/api/paymentmethods/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "order",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7037
+        }
+      ],
+      "UpstreamPathTemplate": "/paymentmethods/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    }
+  ]
+}

@@ -13,8 +13,8 @@ namespace SS_Microservice.Services.Products.Application.Interfaces
 
         Task<bool> DeleteCategory(DeleteCategoryCommand command);
 
-        Task<PaginatedResult<CategoryDTO>> GetAllCategory(GetAllCategoryQuery query);
+        Task<PaginatedResult<CategoryDto>> GetAllCategory(GetAllCategoryQuery query);
 
-        Task<CategoryDTO> GetCategoryById(GetCategoryByIdQuery query);
+        Task<CategoryDto> GetCategoryById(GetCategoryByIdQuery query);
     }
 }

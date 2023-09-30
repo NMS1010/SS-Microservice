@@ -35,6 +35,7 @@ namespace SS_Microservice.Services.Auth.Controllers
         }
 
         [HttpGet("{userId}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> GetUserById(string userId)
         {
             var res = await _mediator.Send(new GetUserQuery() { UserId = userId });

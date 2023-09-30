@@ -45,10 +45,9 @@ namespace SS_Microservice.Services.Categorys.Infrastructure.Repositories
 
         public async Task<PaginatedResult<Category>> FilterCategory(GetAllCategoryQuery query)
         {
-            var res = _dbSet.Find(x => query.Keyword != null
-                     ? x.Name.ToLower().Contains(query.Keyword.ToString().ToLower())
-                         || x.Description.ToLower().Contains(query.Keyword.ToString().ToLower())
-                     : true);
+            var res = _dbSet.Find(x => query.Keyword == null
+                        || x.Name.ToLower().Contains(query.Keyword.ToString().ToLower())
+                        || x.Description.ToLower().Contains(query.Keyword.ToString().ToLower()));
             if (query.ColumnName != null)
                 res = SortCategory(query.ColumnName, query.TypeSort == "ASC", res);
 

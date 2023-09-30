@@ -3,7 +3,7 @@
     public class BasketUpdateRequest
     {
         public string UserId { get; set; }
-        public int BasketItemId { get; set; }
+        public long BasketItemId { get; set; }
         public long Quantity { get; set; }
     }
 }

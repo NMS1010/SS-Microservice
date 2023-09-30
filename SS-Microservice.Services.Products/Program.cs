@@ -36,13 +36,17 @@ builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
 {
     cfg.AddProfile(new MapperProfile(provider.GetService<IHttpContextAccessor>()));
 }).CreateMapper());
-builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IProductContext, ProductContext>();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IUploadService, UploadService>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services
+    .AddSingleton<ICurrentUserService, CurrentUserService>()
+    .AddScoped<IProductContext, ProductContext>()
+    .AddScoped<IUploadService, UploadService>()
+    .AddScoped<IProductRepository, ProductRepository>()
+    .AddScoped<IProductService, ProductService>()
+    .AddScoped<IBrandRepository, BrandRepository>()
+    .AddScoped<IBrandService, BrandService>()
+    .AddScoped<IProductVariantService, ProductVariantService>()
+    .AddScoped<ICategoryRepository, CategoryRepository>()
+    .AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddGrpc();
 builder.Services.AddControllers();

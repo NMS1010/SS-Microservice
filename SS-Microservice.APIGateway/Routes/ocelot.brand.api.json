@@ -1,0 +1,38 @@
+{
+  "Routes": [
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "ProductService",
+      "DownstreamPathTemplate": "/api/brands/all",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "products",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7096
+        }
+      ],
+      "UpstreamPathTemplate": "/brands/all",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "ProductService",
+      "DownstreamPathTemplate": "/api/brands/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "products",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7096
+        }
+      ],
+      "UpstreamPathTemplate": "/brands/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    }
+  ]
+}

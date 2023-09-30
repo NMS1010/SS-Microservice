@@ -10,12 +10,13 @@ using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Features.Product.Commands;
 using SS_Microservice.Services.Products.Application.Features.Product.Queries;
 using SS_Microservice.Services.Products.Application.Model.Product;
+using SS_Microservice.Services.Products.Application.Model.Variant;
 
 namespace SS_Microservice.Services.Products.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "ADMIN")]
     public class ProductsController : ControllerBase
     {
         private ISender _sender;
@@ -29,11 +30,11 @@ namespace SS_Microservice.Services.Products.Controllers
 
         [HttpGet("all")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetProducts([FromQuery] ProductPagingRequest request)
+        public async Task<IActionResult> GetProducts([FromQuery] GetProductPagingRequest request)
         {
             var query = _mapper.Map<GetAllProductQuery>(request);
             var res = await _sender.Send(query);
-            return Ok(CustomAPIResponse<PaginatedResult<ProductDTO>>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<PaginatedResult<ProductDto>>.Success(res, StatusCodes.Status200OK));
         }
 
         [HttpGet("{productId}")]
@@ -41,11 +42,11 @@ namespace SS_Microservice.Services.Products.Controllers
         public async Task<IActionResult> GetProductById(string productId)
         {
             var res = await _sender.Send(new GetProductByIdQuery() { ProductId = productId });
-            return Ok(CustomAPIResponse<ProductDTO>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<ProductDto>.Success(res, StatusCodes.Status200OK));
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> AddProduct([FromForm] ProductCreateRequest request)
+        public async Task<IActionResult> AddProduct([FromForm] CreateProductRequest request)
         {
             var command = _mapper.Map<CreateProductCommand>(request);
             await _sender.Send(command);
@@ -53,22 +54,12 @@ namespace SS_Microservice.Services.Products.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateProduct([FromForm] ProductUpdateRequest request)
+        public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductRequest request)
         {
             var command = _mapper.Map<UpdateProductCommand>(request);
             var res = await _sender.Send(command);
             if (!res)
                 return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this product"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
-        }
-
-        [HttpPut("update/images")]
-        public async Task<IActionResult> UpdateProductImage([FromForm] ProductImageUpdateRequest request)
-        {
-            var command = _mapper.Map<UpdateProductImageCommand>(request);
-            var res = await _sender.Send(command);
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update images for this product"));
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
         }
 
@@ -81,7 +72,28 @@ namespace SS_Microservice.Services.Products.Controllers
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
         }
 
-        [HttpDelete("delete/images/{productId}/{productImageId}")]
+        // product image
+        [HttpPost("images/add")]
+        public async Task<IActionResult> CreateProductImage([FromForm] CreateProductImageRequest request)
+        {
+            var command = _mapper.Map<CreateProductImageCommand>(request);
+            var res = await _sender.Send(command);
+            if (!res)
+                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create image for this product"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+        }
+
+        [HttpPut("images/update")]
+        public async Task<IActionResult> UpdateProductImage([FromForm] UpdateProductImageRequest request)
+        {
+            var command = _mapper.Map<UpdateProductImageCommand>(request);
+            var res = await _sender.Send(command);
+            if (!res)
+                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update image for this product"));
+            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+        }
+
+        [HttpDelete("images/delete/{productId}/{productImageId}")]
         public async Task<IActionResult> DeleteProductImage(string productId, string productImageId)
         {
             var res = await _sender.Send(new DeleteProductImageCommand() { ProductId = productId, ProductImageId = productImageId });

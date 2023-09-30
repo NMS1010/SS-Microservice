@@ -13,7 +13,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Data.Configurations
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.BasketId).IsRequired();
-            builder.Property(x => x.ProductId).IsRequired();
+            builder.Property(x => x.VariantId).IsRequired();
             builder.Property(x => x.Quantity).IsRequired();
 
             builder
