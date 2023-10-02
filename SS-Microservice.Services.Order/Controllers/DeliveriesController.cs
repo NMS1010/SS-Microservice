@@ -38,7 +38,7 @@ namespace SS_Microservice.Services.Order.Controllers
 
         [HttpGet("detail/{deliveryId}")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> GetDeliveryById([FromRoute] int deliveryId)
+        public async Task<IActionResult> GetDeliveryById([FromRoute] long deliveryId)
         {
             var query = new GetDeliveryByIdQuery()
             {
@@ -75,7 +75,7 @@ namespace SS_Microservice.Services.Order.Controllers
 
         [HttpDelete("delete/{deliveryId}")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> DeleteDelivery(int deliveryId)
+        public async Task<IActionResult> DeleteDelivery(long deliveryId)
         {
             var command = new DeleteDeliveryCommand() { Id = deliveryId };
             var isSuccess = await _sender.Send(command);

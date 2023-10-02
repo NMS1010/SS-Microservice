@@ -12,10 +12,12 @@ using Microsoft.IdentityModel.Tokens;
 using Ocelot.Values;
 using SS_Microservice.Common.Jwt;
 using Serilog;
+using SS_Microservice.Common.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+//builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+builder.Host.UseLogging();
 // Add services to the container.
 var routes = "Routes";
 

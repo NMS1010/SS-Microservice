@@ -54,6 +54,17 @@
           "Url": "https://localhost:7026/swagger/v1/swagger.json"
         }
       ]
+    },
+    {
+      "Key": "address",
+      "TransformByOcelotConfig": true,
+      "Config": [
+        {
+          "Name": "SS-Microservice.Services.Address",
+          "Version": "1.0",
+          "Url": "https://localhost:7075/swagger/v1/swagger.json"
+        }
+      ]
     }
   ]
 }
