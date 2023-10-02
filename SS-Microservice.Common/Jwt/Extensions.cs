@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
+using SS_Microservice.Common.Configuration;
 
 namespace SS_Microservice.Common.Jwt
 {
@@ -14,11 +15,13 @@ namespace SS_Microservice.Common.Jwt
     {
         private static JwtConfig GetJwtConfig(IConfiguration configuration)
         {
-            return new JwtConfig()
-            {
-                Issuer = configuration["Tokens:Issuer"],
-                SigningKey = configuration["Tokens:Key"]
-            };
+            //return new JwtConfig()
+            //{
+            //    Issuer = configuration["Tokens:Issuer"],
+            //    SigningKey = configuration["Tokens:Key"]
+            //};
+
+            return configuration.GetOptions<JwtConfig>("Tokens");
         }
 
         public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)

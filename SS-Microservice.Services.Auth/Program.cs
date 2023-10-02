@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jaeger;
+using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Services.CurrentUser;
@@ -22,7 +23,8 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
-builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+//builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+builder.Host.UseLogging();
 // Add services to the container.
 builder.Services.AddDbContext<DBContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("AuthDbContext")));

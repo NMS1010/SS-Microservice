@@ -16,11 +16,13 @@ using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Services.Basket.Application.Interfaces;
 using SS_Microservice.Services.Basket.Application.Features.User.EventConsumer;
 using SS_Microservice.Common.Repository;
+using SS_Microservice.Common.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+//builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+builder.Host.UseLogging();
 var configuration = builder.Configuration;
 builder.Services.AddDbContext<BasketDBContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("BasketDbContext")));

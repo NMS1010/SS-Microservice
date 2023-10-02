@@ -6,6 +6,7 @@ using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Grpc.Product.Protos;
 using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
+using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
@@ -22,7 +23,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+//builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+builder.Host.UseLogging();
 var configuration = builder.Configuration;
 builder.Services.AddDbContext<OrderDbContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("OrderDbContext")));

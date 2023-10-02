@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SS_Microservice.Common.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,17 +20,17 @@ namespace SS_Microservice.Common.Consul
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            var consulConfig = new ConsulConfig
-            {
-                Id = configuration["ConsulConfig:Id"],
-                Name = configuration["ConsulConfig:Name"],
-                Address = configuration["ConsulConfig:Address"],
-                Port = int.Parse(configuration["ConsulConfig:Port"]),
-                DiscoveryAddress = new Uri(configuration["ConsulConfig:DiscoveryAddress"]),
-                HealthCheckEndPoint = configuration["ConsulConfig:HealthCheckEndPoint"],
-            };
+            //var consulConfig = new ConsulConfig
+            //{
+            //    Id = configuration["ConsulConfig:Id"],
+            //    Name = configuration["ConsulConfig:Name"],
+            //    Address = configuration["ConsulConfig:Address"],
+            //    Port = int.Parse(configuration["ConsulConfig:Port"]),
+            //    DiscoveryAddress = new Uri(configuration["ConsulConfig:DiscoveryAddress"]),
+            //    HealthCheckEndPoint = configuration["ConsulConfig:HealthCheckEndPoint"],
+            //};
 
-            return consulConfig;
+            return configuration.GetOptions<ConsulConfig>("ConsulConfig");
         }
 
         public static void AddConsul(this IServiceCollection services, ConsulConfig consulConfig)

@@ -11,22 +11,20 @@
 	  <PackageReference Include="MassTransit" Version="8.1.0" />
 	  <PackageReference Include="MassTransit.RabbitMQ" Version="8.1.0" />
 	  <PackageReference Include="Consul" Version="1.6.10.9" />
-	  <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
 	  <PackageReference Include="MongoDB.Driver" Version="2.21.0" />
+	  <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+	  <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Grpc\Product\Protos\product.proto">
       <GrpcServices>Server</GrpcServices>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Constants\" />
   </ItemGroup>
 
 </Project>

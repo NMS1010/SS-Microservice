@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SS_Microservice.Common.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace SS_Microservice.Common.RabbitMQ
         [Obsolete]
         public static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration, List<Type> consumers = null)
         {
-            var rabbitMqSettings = configuration.GetSection(nameof(RabbitMqSettings)).Get<RabbitMqSettings>();
+            var rabbitMqSettings = configuration.GetOptions<RabbitMqSettings>("RabbitMqSettings");
             services
                 .AddMassTransit(mt =>
                 {
