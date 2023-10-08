@@ -15,11 +15,11 @@ namespace SS_Microservice.Services.Products.Application.Common
 
         public static void SetAuditable(DateTime now, IAuditableEntity<string> entity, bool isUpdate = false)
         {
-            entity.UpdatedDate = now;
+            entity.UpdatedAt = now;
             entity.UpdatedBy = _currentUserService?.UserId ?? "system";
             if (!isUpdate)
             {
-                entity.CreatedDate = now;
+                entity.CreatedAt = now;
                 entity.CreatedBy = _currentUserService?.UserId ?? "system";
             }
         }

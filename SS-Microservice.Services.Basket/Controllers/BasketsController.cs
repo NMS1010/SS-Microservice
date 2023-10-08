@@ -61,9 +61,8 @@ namespace SS_Microservice.Services.Basket.Controllers
                 BasketItemId = basketItemId
             };
             var isSuccess = await _sender.Send(command);
-            if (isSuccess)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Failed to remove this product"));
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpPut("update")]
@@ -77,9 +76,7 @@ namespace SS_Microservice.Services.Basket.Controllers
             };
             var isSuccess = await _sender.Send(command);
 
-            if (isSuccess)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Failed to update quantity for this product"));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
     }
 }

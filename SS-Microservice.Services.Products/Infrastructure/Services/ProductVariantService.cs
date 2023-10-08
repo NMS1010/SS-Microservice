@@ -32,7 +32,6 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             var variant = new Variant()
             {
                 Id = Guid.NewGuid().ToString(),
-                ItemCost = command.ItemCost,
                 ItemPrice = command.ItemPrice,
                 Quantity = command.Quantity,
                 Name = command.Name,
@@ -85,7 +84,6 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
                 ?? throw new NotFoundException("Cannot find this product");
             var variant = product.Variants.Where(x => x.Id == command.VariantId).FirstOrDefault()
                 ?? throw new NotFoundException("Cannot find this variant of product");
-            variant.ItemCost = command.ItemCost;
             variant.ItemPrice = command.ItemPrice;
             variant.Quantity = command.Quantity;
             variant.Name = command.Name;

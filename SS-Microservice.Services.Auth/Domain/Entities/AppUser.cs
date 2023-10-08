@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SS_Microservice.Common.Entities.Intefaces;
 
 namespace SS_Microservice.Services.Auth.Domain.Entities
 {
@@ -10,7 +11,10 @@ namespace SS_Microservice.Services.Auth.Domain.Entities
         public string Gender { get; set; }
         public int Status { get; set; }
         public string Avatar { get; set; }
-        public string RefreshToken { get; set; }
-        public DateTime? RefreshTokenExpiredTime { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
+        public ICollection<AppUserTokens> AppUserTokens { get; set; } = new List<AppUserTokens>();
     }
 }

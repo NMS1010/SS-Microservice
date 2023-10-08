@@ -8,6 +8,6 @@ namespace SS_Microservice.Services.Auth.Application.Interfaces
     {
         public Task<UserDto> GetUser(GetUserQuery query);
 
-        public Task<bool> UpdateUser(UserUpdateCommand command);
+        public Task<bool> UpdateUser(UpdateUserCommand command);
     }
 }

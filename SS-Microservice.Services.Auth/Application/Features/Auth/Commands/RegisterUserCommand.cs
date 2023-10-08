@@ -2,18 +2,12 @@
 using MediatR;
 using SS_Microservice.Common.Messages.Events.User;
 using SS_Microservice.Services.Auth.Application.Interfaces;
+using SS_Microservice.Services.Auth.Application.Model.Auth;
 
 namespace SS_Microservice.Services.Auth.Application.Features.Auth.Commands
 {
-    public class RegisterUserCommand : IRequest<bool>
+    public class RegisterUserCommand : RegisterRequest, IRequest<bool>
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; } = DateTime.Now;
-        public int Status { get; set; } = 1;
     }
 
     public class RegisterHandler : IRequestHandler<RegisterUserCommand, bool>
@@ -37,6 +31,7 @@ namespace SS_Microservice.Services.Auth.Application.Features.Auth.Commands
                 _logger.LogInformation($"Start publishing message with userId = {userId}");
                 await _publisher.Publish(new UserRegistedEvent()
                 {
+                    Email = request.Email,
                     UserId = userId,
                 });
                 _logger.LogInformation($"Message is published");

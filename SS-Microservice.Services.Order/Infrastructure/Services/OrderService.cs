@@ -2,6 +2,7 @@
 using SS_Microservice.Common.Constants;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Repository;
+using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Services.Order.Application.Common;
 using SS_Microservice.Services.Order.Application.Common.Constants;
@@ -19,11 +20,13 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICurrentUserService _currentUserService;
 
-        public OrderService(IMapper mapper, IUnitOfWork unitOfWork)
+        public OrderService(IMapper mapper, IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _currentUserService = currentUserService;
         }
 
         public async Task<(bool, long)> CreateOrder(CreateOrderCommand command)
@@ -102,10 +105,15 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             {
                 await _unitOfWork.CreateTransaction();
                 var orderRepo = _unitOfWork.Repository<Domain.Entities.Order>();
+                var orderitemRepo = _unitOfWork.Repository<Domain.Entities.OrderItem>();
                 var transactionRepo = _unitOfWork.Repository<Transaction>();
-                var order = await orderRepo.GetById(command.OrderId);
-                var transaction = await transactionRepo.GetEntityWithSpec(new TransactionSpecification(order.Id));
 
+                var order = await orderRepo.GetEntityWithSpec(new OrderSpecification(command.OrderId, _currentUserService.UserId));
+                var transaction = await transactionRepo.GetEntityWithSpec(new TransactionSpecification(order.Id));
+                foreach (var oi in order.OrderItems)
+                {
+                    orderitemRepo.Delete(oi);
+                }
                 transactionRepo.Delete(transaction);
                 orderRepo.Delete(order);
                 var res = await _unitOfWork.Save();

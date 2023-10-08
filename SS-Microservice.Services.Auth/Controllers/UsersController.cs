@@ -36,16 +36,16 @@ namespace SS_Microservice.Services.Auth.Controllers
 
         [HttpGet("{userId}")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> GetUserById(string userId)
+        public async Task<IActionResult> GetUserById([FromRoute] string userId)
         {
             var res = await _mediator.Send(new GetUserQuery() { UserId = userId });
             return Ok(CustomAPIResponse<UserDto>.Success(res, StatusCodes.Status200OK));
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateUser(UserUpdateRequest request)
+        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserRequest request)
         {
-            var userUpdateCommand = _mapper.Map<UserUpdateCommand>(request);
+            var userUpdateCommand = _mapper.Map<UpdateUserCommand>(request);
             await _mediator.Send(userUpdateCommand);
             return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
         }

@@ -20,6 +20,10 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Data.Configuration
 
             builder.Property(x => x.Status)
                 .IsRequired();
+
+            builder.HasMany(x => x.AppUserTokens)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
         }
     }
 }

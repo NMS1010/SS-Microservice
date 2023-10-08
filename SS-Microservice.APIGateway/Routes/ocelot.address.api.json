@@ -18,6 +18,21 @@
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []
       }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "AddressService",
+      "DownstreamPathTemplate": "/api/addresses/p/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "address",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7075
+        }
+      ],
+      "UpstreamPathTemplate": "/addresses/p/{everything}",
+      "UpstreamHttpMethod": [ "GET" ]
     }
   ]
 }

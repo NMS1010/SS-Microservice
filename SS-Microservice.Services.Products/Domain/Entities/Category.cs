@@ -7,6 +7,6 @@
         public string Image { get; set; }
         public string ParentId { get; set; }
         public string Slug { get; set; }
-        public bool IsDeleted { get; set; } = false;
+        public bool Status { get; set; } = true;
     }
 }

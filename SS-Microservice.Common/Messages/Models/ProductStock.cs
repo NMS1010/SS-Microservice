@@ -9,6 +9,7 @@ namespace SS_Microservice.Common.Messages.Models
     public class ProductStock
     {
         public string ProductId { get; set; }
+        public string VariantId { get; set; }
         public long Quantity { get; set; }
     }
 }

@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Features\Basket\EventConsumer\" />
+    <Folder Include="Application\Validators\Category\" />
     <Folder Include="wwwroot\" />
     <Folder Include="wwwroot\user-content\" />
   </ItemGroup>

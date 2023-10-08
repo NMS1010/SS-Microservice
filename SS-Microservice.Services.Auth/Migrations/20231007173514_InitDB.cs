@@ -41,8 +41,10 @@ namespace SS_Microservice.Services.Auth.Migrations
                     Gender = table.Column<string>(type: "longtext", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Avatar = table.Column<string>(type: "longtext", nullable: true),
-                    RefreshToken = table.Column<string>(type: "longtext", nullable: true),
-                    RefreshTokenExpiredTime = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "longtext", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "longtext", nullable: true),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
@@ -81,6 +83,33 @@ namespace SS_Microservice.Services.Auth.Migrations
                         name: "FK_RoleClaims_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "AppUserToken",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: false),
+                    Token = table.Column<string>(type: "longtext", nullable: false),
+                    ExpiredAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    Type = table.Column<string>(type: "longtext", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "longtext", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "longtext", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUserToken", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppUserToken_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -176,6 +205,11 @@ namespace SS_Microservice.Services.Auth.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppUserToken_UserId",
+                table: "AppUserToken",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
                 table: "RoleClaims",
                 column: "RoleId");
@@ -216,6 +250,9 @@ namespace SS_Microservice.Services.Auth.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AppUserToken");
+
             migrationBuilder.DropTable(
                 name: "RoleClaims");
 

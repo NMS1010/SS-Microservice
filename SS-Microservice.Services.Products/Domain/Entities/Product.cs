@@ -17,7 +17,8 @@ namespace SS_Microservice.Services.Products.Domain.Entities
         public string Unit { get; set; }
         public string Status { get; set; }
         public string Slug { get; set; }
-        public int Rating { get; set; }
+        public double Rating { get; set; }
+        public decimal Cost { get; set; }
         public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
         public ICollection<Variant> Variants { get; set; } = new List<Variant>();
     }

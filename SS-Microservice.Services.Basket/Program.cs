@@ -17,16 +17,23 @@ using SS_Microservice.Services.Basket.Application.Interfaces;
 using SS_Microservice.Services.Basket.Application.Features.User.EventConsumer;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Logging;
+using SS_Microservice.Common.Model.CustomResponse;
+using Hellang.Middleware.ProblemDetails;
+using FluentValidation;
+using SS_Microservice.Common.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 //builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 builder.Host.UseLogging();
+builder.Services.AddProblemDetailsSetup();
 var configuration = builder.Configuration;
 builder.Services.AddDbContext<BasketDBContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("BasketDbContext")));
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureValidationErrorResponse();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(BasketProfile).Assembly);
 
@@ -95,7 +102,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseProblemDetails();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();

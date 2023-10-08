@@ -6,7 +6,7 @@
 
         public string Name { get; set; }
         public string Code { get; set; }
-        public int Status { get; set; }
+        public bool Status { get; set; }
         public IFormFile Image { get; set; }
     }
 }

@@ -1,3 +1,5 @@
+using FluentValidation;
+using Hellang.Middleware.ProblemDetails;
 using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -9,8 +11,10 @@ using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Middleware;
+using SS_Microservice.Common.Model.CustomResponse;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Auth.Application.Common.AutoMapper;
 using SS_Microservice.Services.Auth.Application.Common.Constants;
 using SS_Microservice.Services.Auth.Application.Interfaces;
@@ -25,6 +29,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 //builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 builder.Host.UseLogging();
+builder.Services.AddProblemDetailsSetup();
 // Add services to the container.
 builder.Services.AddDbContext<DBContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("AuthDbContext")));
@@ -45,7 +50,9 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Get
 builder.Services.AddMessaging(configuration);
 builder.Services.AddOpenTracing();
 builder.Services.AddJaeger(configuration.GetJaegerOptions());
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureValidationErrorResponse();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -77,7 +84,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseProblemDetails();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();

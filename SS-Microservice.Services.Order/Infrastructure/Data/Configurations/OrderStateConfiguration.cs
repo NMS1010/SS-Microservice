@@ -13,9 +13,6 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.Configurations
             builder.HasKey(x => x.Id);
 
             builder
-                .Property(x => x.DeletedAt)
-                .IsRequired(false);
-            builder
                 .Property(x => x.HexColor)
                 .IsRequired();
             builder

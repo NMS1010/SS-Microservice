@@ -64,12 +64,7 @@ namespace SS_Microservice.Services.Order.Controllers
         {
             var command = _mapper.Map<UpdateOrderStateCommand>(request);
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this orderState"));
-            }
-
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpDelete("delete/{orderStateId}")]
@@ -78,12 +73,8 @@ namespace SS_Microservice.Services.Order.Controllers
         {
             var command = new DeleteOrderStateCommand() { OrderStateId = orderStateId };
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this orderState"));
-            }
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
     }
 }

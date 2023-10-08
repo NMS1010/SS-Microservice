@@ -11,7 +11,7 @@ using SS_Microservice.Services.Basket.Infrastructure.Data.DBContext;
 namespace SS_Microservice.Services.Basket.Migrations
 {
     [DbContext(typeof(BasketDBContext))]
-    [Migration("20230929092055_InitDB")]
+    [Migration("20231008052441_InitDB")]
     partial class InitDB
     {
         /// <inheritdoc />
@@ -28,17 +28,17 @@ namespace SS_Microservice.Services.Basket.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -58,11 +58,11 @@ namespace SS_Microservice.Services.Basket.Migrations
                     b.Property<long>("BasketId")
                         .HasColumnType("bigint");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("IsSelected")
                         .HasColumnType("int");
@@ -70,11 +70,11 @@ namespace SS_Microservice.Services.Basket.Migrations
                     b.Property<long>("Quantity")
                         .HasColumnType("bigint");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("VariantId")
                         .IsRequired()

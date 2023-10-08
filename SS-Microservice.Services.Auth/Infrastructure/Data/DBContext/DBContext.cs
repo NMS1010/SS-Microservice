@@ -23,7 +23,10 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Data.DBContext
                     type.SetTableName(tableName.Substring(6));
                 }
                 builder.ApplyConfiguration(new AppUserConfiguration());
+                builder.ApplyConfiguration(new AppUserTokenConfiguration());
             }
         }
+
+        public DbSet<AppUserTokens> AppUserTokens { get; set; }
     }
 }

@@ -22,8 +22,8 @@ namespace SS_Microservice.Services.Basket.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<string>(type: "longtext", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "longtext", nullable: true),
                     UpdatedBy = table.Column<string>(type: "longtext", nullable: true)
                 },
@@ -43,8 +43,8 @@ namespace SS_Microservice.Services.Basket.Migrations
                     VariantId = table.Column<string>(type: "longtext", nullable: false),
                     Quantity = table.Column<long>(type: "bigint", nullable: false),
                     IsSelected = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "longtext", nullable: true),
                     UpdatedBy = table.Column<string>(type: "longtext", nullable: true)
                 },

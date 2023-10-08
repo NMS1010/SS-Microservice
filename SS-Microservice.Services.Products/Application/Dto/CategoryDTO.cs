@@ -9,6 +9,6 @@ namespace SS_Microservice.Services.Products.Application.Dto
         public string Image { get; set; }
         public string Slug { get; set; }
         public string ParentId { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool Status { get; set; }
     }
 }

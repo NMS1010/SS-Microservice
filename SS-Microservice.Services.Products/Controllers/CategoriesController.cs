@@ -47,27 +47,25 @@ namespace SS_Microservice.Services.Categories.Controllers
         public async Task<IActionResult> AddCategory([FromForm] CreateCategoryRequest request)
         {
             var command = _mapper.Map<CreateCategoryCommand>(request);
-            await _sender.Send(command);
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
+            var isSuccess = await _sender.Send(command);
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status201Created));
         }
 
         [HttpPut("update")]
         public async Task<IActionResult> UpdateCategory([FromForm] UpdateCategoryRequest request)
         {
             var command = _mapper.Map<UpdateCategoryCommand>(request);
-            var res = await _sender.Send(command);
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this category"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var isSuccess = await _sender.Send(command);
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpDelete("delete/{categoryId}")]
         public async Task<IActionResult> DeleteCategory(string categoryId)
         {
-            var res = await _sender.Send(new DeleteCategoryCommand() { Id = categoryId });
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this category"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var isSuccess = await _sender.Send(new DeleteCategoryCommand() { Id = categoryId });
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
     }
 }

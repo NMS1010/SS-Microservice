@@ -7,5 +7,6 @@
         public string Description { get; set; }
         public IFormFile Image { get; set; }
         public string ParentId { get; set; }
+        public bool Status { get; set; }
     }
 }

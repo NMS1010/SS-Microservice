@@ -6,7 +6,7 @@ namespace SS_Microservice.Services.Order.Domain.Entities
     {
         public string Name { get; set; }
         public string Code { get; set; }
-        public int Status { get; set; }
+        public bool Status { get; set; } = true;
         public string Image { get; set; }
     }
 }

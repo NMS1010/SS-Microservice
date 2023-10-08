@@ -27,7 +27,7 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
             return _mapper.Map<UserDto>(user);
         }
 
-        public async Task<bool> UpdateUser(UserUpdateCommand command)
+        public async Task<bool> UpdateUser(UpdateUserCommand command)
         {
             var user = await _userManager.FindByIdAsync(command.UserId) ?? throw new NotFoundException("Cannot find this user");
 

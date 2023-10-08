@@ -46,27 +46,24 @@ namespace SS_Microservice.Services.Products.Controllers
         public async Task<IActionResult> AddBrand([FromForm] CreateBrandRequest request)
         {
             var command = _mapper.Map<CreateBrandCommand>(request);
-            await _sender.Send(command);
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
+            var isSuccess = await _sender.Send(command);
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status201Created));
         }
 
         [HttpPut("update")]
         public async Task<IActionResult> UpdateBrand([FromForm] UpdateBrandRequest request)
         {
             var command = _mapper.Map<UpdateBrandCommand>(request);
-            var res = await _sender.Send(command);
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this brand"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var isSuccess = await _sender.Send(command);
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpDelete("delete/{brandId}")]
         public async Task<IActionResult> DeleteBrand(string brandId)
         {
-            var res = await _sender.Send(new DeleteBrandCommand() { Id = brandId });
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this brand"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var isSuccess = await _sender.Send(new DeleteBrandCommand() { Id = brandId });
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
     }
 }

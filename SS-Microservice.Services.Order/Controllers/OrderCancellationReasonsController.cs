@@ -55,12 +55,8 @@ namespace SS_Microservice.Services.Order.Controllers
         {
             var command = _mapper.Map<CreateOrderCancellationReasonCommand>(request);
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create orderCancellationReason"));
-            }
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status201Created));
         }
 
         [HttpPut("update")]
@@ -69,12 +65,8 @@ namespace SS_Microservice.Services.Order.Controllers
         {
             var command = _mapper.Map<UpdateOrderCancellationReasonCommand>(request);
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this orderCancellationReason"));
-            }
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpDelete("delete/{orderCancellationReasonId}")]
@@ -83,12 +75,8 @@ namespace SS_Microservice.Services.Order.Controllers
         {
             var command = new DeleteOrderCancellationReasonCommand() { Id = orderCancellationReasonId };
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this orderCancellationReason"));
-            }
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
     }
 }

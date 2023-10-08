@@ -107,9 +107,10 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
                     var now = DateTime.Now;
                     foreach (var item in command.Products)
                     {
-                        var product = await _dbSet.Find(filter: g => g.Id == item.ProductId).SingleOrDefaultAsync();
+                        var product = await _dbSet.Find(filter: g => g.Variants.Any(x => x.Id == item.VariantId)).SingleOrDefaultAsync()
+                            ?? throw new Exception();
                         product.Quantity += item.Quantity;
-                        product.UpdatedDate = now;
+                        product.UpdatedAt = now;
                         product.UpdatedBy = _currentUserService?.UserId ?? "system";
                         _dbSet.ReplaceOne(filter: g => g.Id == product.Id, replacement: product);
                     }

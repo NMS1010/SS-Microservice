@@ -30,7 +30,6 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                 {
                     HexColor = command.HexColor,
                     OrderStateName = command.OrderStateName,
-                    Status = 1,
                     Order = command.Order,
                 };
                 await _unitOfWork.Repository<OrderState>().Insert(orderState);
@@ -55,8 +54,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             {
                 await _unitOfWork.CreateTransaction();
                 var orderState = await _unitOfWork.Repository<OrderState>().GetById(command.OrderStateId);
-                orderState.Status = 0;
-                orderState.DeletedAt = DateTime.UtcNow;
+                orderState.Status = false;
                 _unitOfWork.Repository<OrderState>().Update(orderState);
 
                 var isSuccess = await _unitOfWork.Save() > 0;

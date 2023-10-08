@@ -16,7 +16,7 @@ namespace SS_Microservice.Services.Auth.Application.Common.AutoMapper
             CreateMap<LoginRequest, LoginQuery>();
             CreateMap<RegisterRequest, RegisterUserCommand>();
             CreateMap<RefreshTokenRequest, RefreshTokenCommand>();
-            CreateMap<UserUpdateRequest, UserUpdateCommand>();
+            CreateMap<UpdateUserRequest, UpdateUserCommand>();
             CreateMap<AppUser, UserDto>();
         }
     }

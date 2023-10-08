@@ -4,10 +4,8 @@ using SS_Microservice.Services.Auth.Application.Model.Auth;
 
 namespace SS_Microservice.Services.Auth.Application.Features.Auth.Commands
 {
-    public class RefreshTokenCommand : IRequest<AuthResponse>
+    public class RefreshTokenCommand : RefreshTokenRequest, IRequest<AuthResponse>
     {
-        public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
     }
 
     public class RefreshTokenHandler : IRequestHandler<RefreshTokenCommand, AuthResponse>

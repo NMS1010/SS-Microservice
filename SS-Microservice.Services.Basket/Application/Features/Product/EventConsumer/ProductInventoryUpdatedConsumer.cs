@@ -20,11 +20,11 @@ namespace SS_Microservice.Services.Basket.Application.Features.Product.EventCons
         public async Task Consume(ConsumeContext<ProductInventoryUpdatedEvent> context)
         {
             var msg = context.Message;
-            var productIds = msg.Products.Select(x => x.ProductId).ToList();
+            var variantIds = msg.Products.Select(x => x.VariantId).ToList();
 
             var isSuccess = await _basketService.ClearBasket(new ClearBasketCommand()
             {
-                ProductIds = productIds,
+                VariantIds = variantIds,
                 UserId = msg.UserId
             });
 

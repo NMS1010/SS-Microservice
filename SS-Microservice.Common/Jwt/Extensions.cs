@@ -27,7 +27,7 @@ namespace SS_Microservice.Common.Jwt
         public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtConfig = GetJwtConfig(configuration);
-            byte[] signingKeyBytes = Encoding.UTF8.GetBytes(jwtConfig.SigningKey);
+            byte[] signingKeyBytes = Encoding.UTF8.GetBytes(jwtConfig.Key);
             services
                 .AddAuthentication(opts =>
                 {

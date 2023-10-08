@@ -65,12 +65,8 @@ namespace SS_Microservice.Services.Order.Controllers
         {
             var command = _mapper.Map<UpdateDeliveryCommand>(request);
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this delivery"));
-            }
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpDelete("delete/{deliveryId}")]
@@ -79,12 +75,8 @@ namespace SS_Microservice.Services.Order.Controllers
         {
             var command = new DeleteDeliveryCommand() { Id = deliveryId };
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this delivery"));
-            }
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
     }
 }

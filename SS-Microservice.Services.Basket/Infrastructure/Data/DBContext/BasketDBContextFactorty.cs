@@ -9,6 +9,10 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Data.DBContext
     {
         private readonly ICurrentUserService _currentService;
 
+        public BasketDBContextFactorty()
+        {
+        }
+
         public BasketDBContextFactorty(ICurrentUserService currentService)
         {
             _currentService = currentService;

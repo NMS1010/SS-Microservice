@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
@@ -10,9 +12,12 @@ namespace SS_Microservice.Common.Middleware
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-        public ExceptionMiddleware(RequestDelegate next)
-        { _next = next; }
+        public ExceptionMiddleware(RequestDelegate next, ProblemDetailsFactory problemDetailsFactory)
+        {
+            _next = next; _problemDetailsFactory = problemDetailsFactory;
+        }
 
         public async Task Invoke(HttpContext context)
         {
@@ -22,19 +27,19 @@ namespace SS_Microservice.Common.Middleware
             }
             catch (Exception error)
             {
-                var response = new CustomAPIResponse<NoContentAPIResponse>();
-                response.StatusCode = error switch
+                var statusCode = error switch
                 {
-                    ForbiddenAccessException e => (int)HttpStatusCode.Forbidden,
-                    NotFoundException e => (int)HttpStatusCode.NotFound,
-                    SecurityTokenException e => (int)HttpStatusCode.BadRequest,
-                    UnauthorizedException e => (int)HttpStatusCode.Unauthorized,
-                    ValidationException e => (int)HttpStatusCode.BadRequest,
+                    ForbiddenAccessException => (int)HttpStatusCode.Forbidden,
+                    NotFoundException => (int)HttpStatusCode.NotFound,
+                    UnauthorizedException => (int)HttpStatusCode.Unauthorized,
+                    ValidationException => (int)HttpStatusCode.BadRequest,
                     _ => (int)HttpStatusCode.InternalServerError,
                 };
-                response.IsSuccess = false;
-                response.Errors = new List<string> { error.Message };
-                await context.Response.WriteAsJsonAsync(response);
+
+                var problemDetails = _problemDetailsFactory
+                    .CreateProblemDetails(context, statusCode: statusCode, detail: error.Message, instance: context.Request.Path);
+
+                await context.Response.WriteAsJsonAsync(problemDetails);
             }
         }
     }

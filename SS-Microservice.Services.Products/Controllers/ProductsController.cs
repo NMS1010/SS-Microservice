@@ -49,27 +49,25 @@ namespace SS_Microservice.Services.Products.Controllers
         public async Task<IActionResult> AddProduct([FromForm] CreateProductRequest request)
         {
             var command = _mapper.Map<CreateProductCommand>(request);
-            await _sender.Send(command);
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
+            var isSuccess = await _sender.Send(command);
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status201Created));
         }
 
         [HttpPut("update")]
         public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductRequest request)
         {
             var command = _mapper.Map<UpdateProductCommand>(request);
-            var res = await _sender.Send(command);
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this product"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var isSuccess = await _sender.Send(command);
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpDelete("delete/{productId}")]
         public async Task<IActionResult> DeleteProduct(string productId)
         {
-            var res = await _sender.Send(new DeleteProductCommand() { ProductId = productId });
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this product"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var isSuccess = await _sender.Send(new DeleteProductCommand() { ProductId = productId });
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         // product image
@@ -77,29 +75,26 @@ namespace SS_Microservice.Services.Products.Controllers
         public async Task<IActionResult> CreateProductImage([FromForm] CreateProductImageRequest request)
         {
             var command = _mapper.Map<CreateProductImageCommand>(request);
-            var res = await _sender.Send(command);
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create image for this product"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var isSuccess = await _sender.Send(command);
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpPut("images/update")]
         public async Task<IActionResult> UpdateProductImage([FromForm] UpdateProductImageRequest request)
         {
             var command = _mapper.Map<UpdateProductImageCommand>(request);
-            var res = await _sender.Send(command);
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update image for this product"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var isSuccess = await _sender.Send(command);
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpDelete("images/delete/{productId}/{productImageId}")]
         public async Task<IActionResult> DeleteProductImage(string productId, string productImageId)
         {
-            var res = await _sender.Send(new DeleteProductImageCommand() { ProductId = productId, ProductImageId = productImageId });
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete image for this product"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var isSuccess = await _sender.Send(new DeleteProductImageCommand() { ProductId = productId, ProductImageId = productImageId });
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
     }
 }

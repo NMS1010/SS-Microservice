@@ -20,6 +20,9 @@ using SS_Microservice.Services.Products.Infrastructure.Data.Context;
 using SS_Microservice.Services.Products.Infrastructure.Repositories;
 using SS_Microservice.Services.Products.Infrastructure.Services;
 using System.Reflection;
+using FluentValidation;
+using SS_Microservice.Common.Model.CustomResponse;
+using SS_Microservice.Common.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +30,7 @@ var configuration = builder.Configuration;
 // Add services to the container.
 //builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 builder.Host.UseLogging();
+builder.Services.AddProblemDetailsSetup();
 builder.Services.Configure<MongoDBSettings>(
                configuration.GetSection("ProductDatabaseSetting"));
 
@@ -51,7 +55,9 @@ builder.Services
     .AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddGrpc();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureValidationErrorResponse();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(s =>

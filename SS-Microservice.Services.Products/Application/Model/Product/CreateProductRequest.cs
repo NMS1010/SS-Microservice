@@ -15,6 +15,7 @@ namespace SS_Microservice.Services.Products.Application.Model.Product
         public long Quantity { get; set; }
         public string Unit { get; set; }
         public string Status { get; set; }
+        public decimal Cost { get; set; }
         public IFormFile Image { get; set; }
 
         public List<IFormFile> SubImages { get; set; }

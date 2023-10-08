@@ -18,6 +18,7 @@ namespace SS_Microservice.Common.Model.Paging
         public bool HasPreviousPage { get; set; }
 
         public bool HasNextPage { get; set; }
+        public int PageSize { get; set; }
 
         public PaginatedResult(List<T> items, int pageIndex, long totalCount, int pageSize)
         {
@@ -28,6 +29,7 @@ namespace SS_Microservice.Common.Model.Paging
             TotalPages = totalPage;
             HasPreviousPage = pageIndex > 1;
             HasNextPage = pageIndex < totalPage;
+            PageSize = pageSize;
         }
 
         public static async Task<PaginatedResult<T>> CreatePaginatedList(IQueryable<T> source, int pageIndex, int pageSize)

@@ -36,12 +36,12 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.DBContext
                 {
                     case EntityState.Added:
                         entry.Entity.CreatedBy = _currentUserService?.UserId ?? "System";
-                        entry.Entity.CreatedDate = DateTime.Now;
+                        entry.Entity.CreatedAt = DateTime.Now;
                         break;
 
                     case EntityState.Modified:
                         entry.Entity.UpdatedBy = _currentUserService?.UserId ?? "System";
-                        entry.Entity.UpdatedDate = DateTime.Now;
+                        entry.Entity.UpdatedAt = DateTime.Now;
                         break;
                 }
             }

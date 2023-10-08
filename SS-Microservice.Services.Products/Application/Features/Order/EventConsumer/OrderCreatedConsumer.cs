@@ -32,6 +32,7 @@ namespace SS_Microservice.Services.Products.Application.Features.Order.EventCons
                 {
                     OrderId = msg.OrderId,
                     UserId = msg.UserId,
+                    Products = msg.Products,
                 });
             }
             else

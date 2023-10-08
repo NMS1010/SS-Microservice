@@ -1,4 +1,6 @@
 using AutoMapper;
+using FluentValidation;
+using Hellang.Middleware.ProblemDetails;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -8,10 +10,12 @@ using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Middleware;
+using SS_Microservice.Common.Model.CustomResponse;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Services.Upload;
+using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Order.Application.Common.AutoMapper;
 using SS_Microservice.Services.Order.Application.Interfaces;
 using SS_Microservice.Services.Order.Infrastructure.Data.DBContext;
@@ -25,11 +29,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 //builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 builder.Host.UseLogging();
+builder.Services.AddProblemDetailsSetup();
 var configuration = builder.Configuration;
 builder.Services.AddDbContext<OrderDbContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("OrderDbContext")));
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureValidationErrorResponse();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
 {
     cfg.AddProfile(new OrderProfile(provider.GetService<IHttpContextAccessor>()));
@@ -97,6 +104,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseProblemDetails();
 app.UseStaticFiles();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();

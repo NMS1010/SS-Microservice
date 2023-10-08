@@ -31,7 +31,8 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
                 Name = command.Name,
                 Description = command.Description,
                 Id = Guid.NewGuid().ToString(),
-                Code = command.Code
+                Code = command.Code,
+                Status = true
             };
 
             return await _brandRepository.Insert(brand);
@@ -41,7 +42,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
         {
             var brand = await _brandRepository.GetById(command.Id)
                 ?? throw new NotFoundException("Cannot find this brand");
-            brand.IsDeleted = true;
+            brand.Status = false;
             var isDeleteSuccess = _brandRepository.Update(brand); ;
             return isDeleteSuccess;
         }
@@ -73,6 +74,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             brand.Name = command.Name;
             brand.Description = command.Description;
             brand.Code = command.Code;
+            brand.Status = command.Status;
 
             return _brandRepository.Update(brand);
         }

@@ -35,4 +35,5 @@ message ProductResponse{
 	int64 VariantQuantity = 20;
 	double VariantTotalPrice = 21;
 	string Unit = 22;
+	double Cost = 23;
 }

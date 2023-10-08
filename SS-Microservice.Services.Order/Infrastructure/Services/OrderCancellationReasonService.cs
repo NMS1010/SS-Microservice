@@ -29,8 +29,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                 var orderCancellationReason = new OrderCancellationReason()
                 {
                     Name = command.Name,
-                    Note = command.Note,
-                    Status = 1
+                    Note = command.Note
                 };
                 await _unitOfWork.Repository<OrderCancellationReason>().Insert(orderCancellationReason);
                 var isSuccess = await _unitOfWork.Save() > 0;
@@ -54,8 +53,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             {
                 await _unitOfWork.CreateTransaction();
                 var orderCancellationReason = await _unitOfWork.Repository<OrderCancellationReason>().GetById(command.Id);
-                orderCancellationReason.Status = 0;
-                orderCancellationReason.DeletedAt = DateTime.UtcNow;
+                orderCancellationReason.Status = false;
                 _unitOfWork.Repository<OrderCancellationReason>().Update(orderCancellationReason);
 
                 var isSuccess = await _unitOfWork.Save() > 0;

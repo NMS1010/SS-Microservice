@@ -45,27 +45,25 @@ namespace SS_Microservice.Services.Products.Controllers
         public async Task<IActionResult> AddVariant([FromForm] CreateVariantRequest request)
         {
             var command = _mapper.Map<CreateVariantCommand>(request);
-            await _sender.Send(command);
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
+            var isSuccess = await _sender.Send(command);
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status201Created));
         }
 
         [HttpPut("update")]
         public async Task<IActionResult> UpdateVariant([FromForm] UpdateVariantRequest request)
         {
             var command = _mapper.Map<UpdateVariantCommand>(request);
-            var res = await _sender.Send(command);
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this variant"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var isSuccess = await _sender.Send(command);
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpDelete("delete/{productId}/{variantId}")]
         public async Task<IActionResult> DeleteVariant([FromRoute] string variantId, [FromRoute] string productId)
         {
-            var res = await _sender.Send(new DeleteVariantCommand() { ProductId = productId, VariantId = variantId });
-            if (!res)
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this variant"));
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var isSuccess = await _sender.Send(new DeleteVariantCommand() { ProductId = productId, VariantId = variantId });
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
     }
 }

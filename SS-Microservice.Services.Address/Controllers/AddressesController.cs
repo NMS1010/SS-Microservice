@@ -8,7 +8,13 @@ using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Address.Application.Dto;
 using SS_Microservice.Services.Address.Application.Features.Address.Commands;
 using SS_Microservice.Services.Address.Application.Features.Address.Queries;
+using SS_Microservice.Services.Address.Application.Features.District.Queries;
+using SS_Microservice.Services.Address.Application.Features.Province.Queries;
+using SS_Microservice.Services.Address.Application.Features.Ward.Queries;
 using SS_Microservice.Services.Address.Application.Models.Address;
+using SS_Microservice.Services.Address.Application.Models.District;
+using SS_Microservice.Services.Address.Application.Models.Province;
+using SS_Microservice.Services.Address.Application.Models.Ward;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 
 namespace SS_Microservice.Services.Address.Controllers
@@ -57,9 +63,9 @@ namespace SS_Microservice.Services.Address.Controllers
         {
             var command = _mapper.Map<CreateAddressCommand>(request);
             command.UserId = _currentUserService.UserId;
-            await _sender.Send(command);
+            var res = await _sender.Send(command);
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status201Created));
         }
 
         [HttpPut("update")]
@@ -68,12 +74,8 @@ namespace SS_Microservice.Services.Address.Controllers
             var command = _mapper.Map<UpdateAddressCommand>(request);
             command.UserId = _currentUserService.UserId;
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this address"));
-            }
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpDelete("delete/{addressId}")]
@@ -81,12 +83,43 @@ namespace SS_Microservice.Services.Address.Controllers
         {
             var command = new DeleteAddressCommand() { Id = addressId, UserId = _currentUserService.UserId };
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this address"));
-            }
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+        }
+
+        // province, district, ward
+
+        [HttpGet("p/all")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllProvince([FromQuery] GetProvincePagingRequest request)
+        {
+            var query = _mapper.Map<GetAllProvinceQuery>(request);
+
+            var res = await _sender.Send(query);
+
+            return Ok(CustomAPIResponse<PaginatedResult<ProvinceDto>>.Success(res, StatusCodes.Status200OK));
+        }
+
+        [HttpGet("p/d/all")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetDistrictByProvinceId([FromQuery] GetDistrictPagingRequest request)
+        {
+            var query = _mapper.Map<GetDistrictByProvinceIdQuery>(request);
+
+            var res = await _sender.Send(query);
+
+            return Ok(CustomAPIResponse<PaginatedResult<DistrictDto>>.Success(res, StatusCodes.Status200OK));
+        }
+
+        [HttpGet("p/d/w/all")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetWardByDistrictId([FromQuery] GetWardPagingRequest request)
+        {
+            var query = _mapper.Map<GetWardByDistrictIdQuery>(request);
+
+            var res = await _sender.Send(query);
+
+            return Ok(CustomAPIResponse<PaginatedResult<WardDto>>.Success(res, StatusCodes.Status200OK));
         }
     }
 }

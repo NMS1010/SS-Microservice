@@ -55,7 +55,8 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
                 Id = Guid.NewGuid().ToString(),
                 Slug = command.Name.Slugify(),
                 CategoryId = command.CategoryId,
-                SaleId = command.SaleId
+                SaleId = command.SaleId,
+                Cost = command.Cost,
             };
 
             if (command.Image != null)
@@ -175,7 +176,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             product.Quantity = command.Quantity;
             product.Slug = command.Name.Slugify();
             product.SaleId = command.SaleId;
-
+            product.Cost = command.Cost;
             var image = "";
             //if (command.Image != null)
             //{
@@ -269,7 +270,8 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
                 VariantName = variant.Name,
                 VariantQuantity = variant.Quantity,
                 VariantTotalPrice = (double)(variant.TotalPrice),
-                Unit = product.Unit
+                Unit = product.Unit,
+                Cost = (double)product.Cost
             };
         }
 

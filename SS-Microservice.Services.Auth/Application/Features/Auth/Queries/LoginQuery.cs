@@ -4,10 +4,8 @@ using SS_Microservice.Services.Auth.Application.Model.Auth;
 
 namespace SS_Microservice.Services.Auth.Application.Features.Auth.Queries
 {
-    public class LoginQuery : IRequest<AuthResponse>
+    public class LoginQuery : LoginRequest, IRequest<AuthResponse>
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
     }
 
     public class LoginHandler : IRequestHandler<LoginQuery, AuthResponse>

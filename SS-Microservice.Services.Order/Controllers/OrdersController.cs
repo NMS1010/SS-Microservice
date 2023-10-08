@@ -68,9 +68,9 @@ namespace SS_Microservice.Services.Order.Controllers
         {
             var command = _mapper.Map<CreateOrderCommand>(request);
             command.UserId = _currentUserService.UserId;
-            await _sender.Send(command);
+            var success = await _sender.Send(command);
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
+            return Ok(CustomAPIResponse<bool>.Success(success, StatusCodes.Status201Created));
         }
 
         [HttpPut("update")]
@@ -78,9 +78,9 @@ namespace SS_Microservice.Services.Order.Controllers
         public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderRequest request)
         {
             var command = _mapper.Map<UpdateOrderCommand>(request);
-            await _sender.Send(command);
+            var success = await _sender.Send(command);
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(success, StatusCodes.Status204NoContent));
         }
     }
 }

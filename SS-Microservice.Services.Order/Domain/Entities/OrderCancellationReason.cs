@@ -6,8 +6,7 @@ namespace SS_Microservice.Services.Order.Domain.Entities
     {
         public string Name { get; set; }
         public string Note { get; set; }
-        public int Status { get; set; }
-        public DateTime? DeletedAt { get; set; }
+        public bool Status { get; set; } = true;
         public ICollection<Order> Orders { get; set; }
     }
 }

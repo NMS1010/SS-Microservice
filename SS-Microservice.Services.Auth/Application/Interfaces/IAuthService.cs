@@ -10,9 +10,9 @@ namespace SS_Microservice.Services.Auth.Application.Interfaces
 
         Task<AuthResponse> RefreshToken(RefreshTokenCommand request);
 
-        Task RevokeToken(string userId);
+        Task RevokeRefreshToken(string userId);
 
-        Task RevokeAllToken();
+        Task RevokeAllRefreshToken();
 
         Task<string> Register(RegisterUserCommand request);
     }

@@ -33,7 +33,8 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
                 Description = command.Description,
                 Id = Guid.NewGuid().ToString(),
                 ParentId = command.ParentId,
-                Slug = command.Name.Slugify()
+                Slug = command.Name.Slugify(),
+                Status = true
             };
             if (command.Image != null)
             {
@@ -45,7 +46,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
         public async Task<bool> DeleteCategory(DeleteCategoryCommand command)
         {
             var category = await _categoryRepository.GetById(command.Id);
-            category.IsDeleted = true;
+            category.Status = false;
             var isDeleteSuccess = _categoryRepository.Update(category); ;
             //var isDeleteSuccess = _categoryRepository.Delete(category);
             //if (isDeleteSuccess)
@@ -83,6 +84,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             category.Description = command.Description;
             category.ParentId = command.ParentId;
             category.Slug = command.Name.Slugify();
+            category.Status = command.Status;
             var image = "";
             if (command.Image != null)
             {

@@ -14,6 +14,7 @@ namespace SS_Microservice.Services.Products.Application.Model.Product
         public string Code { get; set; }
         public long Quantity { get; set; }
         public string Unit { get; set; }
+        public decimal Cost { get; set; }
         public string Status { get; set; }
     }
 }

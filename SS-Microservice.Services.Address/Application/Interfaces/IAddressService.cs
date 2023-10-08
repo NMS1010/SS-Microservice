@@ -2,6 +2,9 @@
 using SS_Microservice.Services.Address.Application.Dto;
 using SS_Microservice.Services.Address.Application.Features.Address.Commands;
 using SS_Microservice.Services.Address.Application.Features.Address.Queries;
+using SS_Microservice.Services.Address.Application.Features.District.Queries;
+using SS_Microservice.Services.Address.Application.Features.Province.Queries;
+using SS_Microservice.Services.Address.Application.Features.Ward.Queries;
 
 namespace SS_Microservice.Services.Address.Application.Interfaces
 {
@@ -16,5 +19,11 @@ namespace SS_Microservice.Services.Address.Application.Interfaces
         Task<bool> UpdateAddress(UpdateAddressCommand command);
 
         Task<bool> DeleteAddress(DeleteAddressCommand command);
+
+        Task<PaginatedResult<ProvinceDto>> GetProvinceList(GetAllProvinceQuery query);
+
+        Task<PaginatedResult<DistrictDto>> GetDistrictListByProvince(GetDistrictByProvinceIdQuery query);
+
+        Task<PaginatedResult<WardDto>> GetWardListByDistrict(GetWardByDistrictIdQuery query);
     }
 }

@@ -7,7 +7,7 @@ namespace SS_Microservice.Services.Order.Application.Dtos
         public string OrderStateName { get; set; }
         public int Order { get; set; }
         public string HexColor { get; set; }
-        public int Status { get; set; }
+        public bool Status { get; set; }
         public DateTime? DeletedAt { get; set; }
     }
 }

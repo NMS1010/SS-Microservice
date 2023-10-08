@@ -55,12 +55,7 @@ namespace SS_Microservice.Services.Order.Controllers
         {
             var command = _mapper.Map<CreatePaymentMethodCommand>(request);
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot create paymentMethod"));
-            }
-
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status201Created));
         }
 
         [HttpPut("update")]
@@ -69,12 +64,8 @@ namespace SS_Microservice.Services.Order.Controllers
         {
             var command = _mapper.Map<UpdatePaymentMethodCommand>(request);
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot update this paymentMethod"));
-            }
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
 
         [HttpDelete("delete/{paymentMethodId}")]
@@ -83,12 +74,7 @@ namespace SS_Microservice.Services.Order.Controllers
         {
             var command = new DeletePaymentMethodCommand() { Id = paymentMethodId };
             var isSuccess = await _sender.Send(command);
-            if (!isSuccess)
-            {
-                return Ok(CustomAPIResponse<NoContentAPIResponse>.Fail(StatusCodes.Status400BadRequest, "Cannot delete this paymentMethod"));
-            }
-
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
     }
 }

@@ -34,8 +34,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                     Name = command.Name,
                     Description = command.Description,
                     Image = await _uploadService.UploadFile(command.Image),
-                    Price = command.Price,
-                    Status = 1
+                    Price = command.Price
                 };
 
                 await _unitOfWork.Repository<Delivery>().Insert(delivery);
@@ -61,8 +60,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             {
                 await _unitOfWork.CreateTransaction();
                 var delivery = await _unitOfWork.Repository<Delivery>().GetById(command.Id);
-                delivery.DeletedAt = DateTime.UtcNow;
-                delivery.Status = 0;
+                delivery.Status = false;
                 _unitOfWork.Repository<Delivery>().Update(delivery);
                 var isSuccess = await _unitOfWork.Save() > 0;
                 if (!isSuccess)

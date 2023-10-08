@@ -57,8 +57,8 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
             try
             {
                 var now = DateTime.Now;
-                entity.CreatedDate = now;
-                entity.UpdatedDate = now;
+                entity.CreatedAt = now;
+                entity.UpdatedAt = now;
                 entity.CreatedBy = _currentUserService?.UserId ?? "system";
                 entity.UpdatedBy = _currentUserService?.UserId ?? "system";
                 await _dbSet.InsertOneAsync(entity);
@@ -78,7 +78,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
         public bool Update(T entity)
         {
             var now = DateTime.Now;
-            entity.UpdatedDate = now;
+            entity.UpdatedAt = now;
             entity.UpdatedBy = _currentUserService?.UserId ?? "system";
             var updateResult = _dbSet.ReplaceOne(filter: g => g.Id == entity.Id, replacement: entity);
 

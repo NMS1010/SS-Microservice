@@ -41,6 +41,7 @@ namespace SS_Microservice.Services.Order.Application.Features.Order.Commands
                     e.Products.Add(new SS_Microservice.Common.Messages.Models.ProductStock()
                     {
                         ProductId = item.VariantId,
+                        VariantId = item.VariantId,
                         Quantity = item.Quantity,
                     });
                 });

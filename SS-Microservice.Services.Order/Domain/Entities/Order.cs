@@ -5,7 +5,7 @@ namespace SS_Microservice.Services.Order.Domain.Entities
     public class Order : BaseAuditableEntity<long>
     {
         public string UserId { get; set; }
-        public int AddressId { get; set; }
+        public long AddressId { get; set; }
         public string OtherCancelReason { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal Tax { get; set; }

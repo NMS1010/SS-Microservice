@@ -11,7 +11,7 @@ using SS_Microservice.Services.Auth.Infrastructure.Data.DBContext;
 namespace SS_Microservice.Services.Auth.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230929100003_InitDB")]
+    [Migration("20231007173514_InitDB")]
     partial class InitDB
     {
         /// <inheritdoc />
@@ -165,6 +165,12 @@ namespace SS_Microservice.Services.Auth.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime(6)");
 
@@ -211,12 +217,6 @@ namespace SS_Microservice.Services.Auth.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("RefreshTokenExpiredTime")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext");
 
@@ -225,6 +225,12 @@ namespace SS_Microservice.Services.Auth.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -240,6 +246,46 @@ namespace SS_Microservice.Services.Auth.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("User", (string)null);
+                });
+
+            modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.AppUserTokens", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("ExpiredAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AppUserToken", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -291,6 +337,22 @@ namespace SS_Microservice.Services.Auth.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.AppUserTokens", b =>
+                {
+                    b.HasOne("SS_Microservice.Services.Auth.Domain.Entities.AppUser", "User")
+                        .WithMany("AppUserTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.AppUser", b =>
+                {
+                    b.Navigation("AppUserTokens");
                 });
 #pragma warning restore 612, 618
         }

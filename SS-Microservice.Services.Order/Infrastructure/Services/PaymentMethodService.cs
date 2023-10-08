@@ -33,7 +33,6 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                 {
                     Name = command.Name,
                     Code = command.Code,
-                    Status = 1,
                     Image = await _uploadService.UploadFile(command.Image),
                 };
                 await _unitOfWork.Repository<PaymentMethod>().Insert(paymentMethod);
@@ -58,7 +57,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             {
                 await _unitOfWork.CreateTransaction();
                 var paymentMethod = await _unitOfWork.Repository<PaymentMethod>().GetById(command.Id);
-                paymentMethod.Status = 0;
+                paymentMethod.Status = false;
                 _unitOfWork.Repository<PaymentMethod>().Update(paymentMethod);
 
                 var isSuccess = await _unitOfWork.Save() > 0;

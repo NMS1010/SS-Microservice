@@ -29,16 +29,16 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
         {
             try
             {
-                var user = await _userManager.FindByNameAsync(request.Username);
+                var user = await _userManager.FindByEmailAsync(request.Email);
                 if (user == null)
-                    throw new NotFoundException("Username/password is incorrect");
+                    throw new NotFoundException("Email is incorrect, cannot login");
                 var res = await _signInManager.PasswordSignInAsync(user, request.Password, false, lockoutOnFailure: true);
                 if (res.IsLockedOut)
                 {
                     throw new ForbiddenAccessException("Your account has been lockout, unlock in " + user.LockoutEnd);
                 }
                 if (!res.Succeeded)
-                    throw new NotFoundException("Username/password is incorrect");
+                    throw new NotFoundException("Password is incorrect");
                 if (user.Status == USER_STATUS.IN_ACTIVE)
                     throw new ForbiddenAccessException("Your account has been banned");
                 //if (!user.EmailConfirmed)
@@ -47,8 +47,13 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
                 string accessToken = await _jwtService.CreateJWT(user.Id);
                 string refreshToken = _jwtService.CreateRefreshToken();
                 DateTime refreshTokenExpiredTime = DateTime.Now.AddDays(7);
-                user.RefreshToken = refreshToken;
-                user.RefreshTokenExpiredTime = refreshTokenExpiredTime;
+                user.AppUserTokens.Add(new AppUserTokens()
+                {
+                    Token = refreshToken,
+                    ExpiredAt = refreshTokenExpiredTime,
+                    Type = TOKEN_TYPE.REFRESH_TOKEN
+                });
+
                 var isSuccess = await _userManager.UpdateAsync(user);
                 if (!isSuccess.Succeeded)
                     throw new Exception("Cannot login, please contact administrator");
@@ -69,13 +74,14 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
             }
             var userName = userPrincipal.Identity.Name;
             var user = await _userManager.FindByNameAsync(userName);
-            if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiredTime <= DateTime.Now)
+            var userToken = user.AppUserTokens.FirstOrDefault(x => x.Type == TOKEN_TYPE.REFRESH_TOKEN);
+            if (user is null || userToken is null || userToken.Token != request.RefreshToken || userToken.ExpiredAt <= DateTime.Now)
             {
                 throw new UnauthorizedException("Invalid access token or refresh token");
             }
             var newAccessToken = await _jwtService.CreateJWT(user.Id);
             var newRefreshToken = _jwtService.CreateRefreshToken();
-            user.RefreshToken = newRefreshToken;
+            userToken.Token = newRefreshToken;
             await _userManager.UpdateAsync(user);
 
             return new AuthResponse { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
@@ -87,7 +93,6 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
             {
                 var user = new AppUser()
                 {
-                    DateOfBirth = request.DateOfBirth,
                     Email = request.Email,
                     FirstName = request.FirstName,
                     LastName = request.LastName,
@@ -130,22 +135,27 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
             }
         }
 
-        public async Task RevokeAllToken()
+        public async Task RevokeAllRefreshToken()
         {
             var users = await _userManager.Users.ToListAsync();
             foreach (var user in users)
             {
-                user.RefreshToken = null;
-                user.RefreshTokenExpiredTime = null;
+                var userToken = user.AppUserTokens.FirstOrDefault(x => x.Type == TOKEN_TYPE.REFRESH_TOKEN)
+                    ?? throw new NotFoundException("Refresh token of user is not found");
+                userToken.Token = null;
+                userToken.ExpiredAt = null;
                 await _userManager.UpdateAsync(user);
             }
         }
 
-        public async Task RevokeToken(string userId)
+        public async Task RevokeRefreshToken(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId) ?? throw new NotFoundException("User not found");
-            user.RefreshToken = null;
-            user.RefreshTokenExpiredTime = null;
+            var user = await _userManager.FindByIdAsync(userId)
+                ?? throw new NotFoundException("User is not found");
+            var userToken = user.AppUserTokens.FirstOrDefault(x => x.Type == TOKEN_TYPE.REFRESH_TOKEN)
+                ?? throw new NotFoundException("Refresh token of user is not found");
+            userToken.Token = null;
+            userToken.ExpiredAt = null;
             await _userManager.UpdateAsync(user);
         }
     }

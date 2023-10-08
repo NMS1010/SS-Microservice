@@ -188,7 +188,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
                 if (basket == null)
                     return false;
 
-                var basketItemSpec = new BasketItemSpecification(command.ProductIds, basket.Id);
+                var basketItemSpec = new BasketItemSpecification(command.VariantIds, basket.Id);
                 var basketItems = await _unitOfWork.Repository<BasketItem>().ListAsync(basketItemSpec);
 
                 await _unitOfWork.CreateTransaction();
