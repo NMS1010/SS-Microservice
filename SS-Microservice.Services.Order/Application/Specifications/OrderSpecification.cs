@@ -10,7 +10,7 @@ namespace SS_Microservice.Services.Order.Application.Specifications
         public OrderSpecification(GetAllOrderQuery query, bool isPaging = true)
         {
             var userId = query.UserId;
-            var key = query.Keyword;
+            var key = query.Search;
 
             if (!string.IsNullOrEmpty(query.UserId))
             {
@@ -36,9 +36,9 @@ namespace SS_Microservice.Services.Order.Application.Specifications
             AddInclude(x => x.OrderItems);
 
             if (!isPaging) return;
-            int skip = (int)((query.PageIndex - 1) * query.PageSize);
-            int take = (int)query.PageSize;
-            ApplyPagging(take, skip);
+            int skip = (query.PageIndex - 1) * query.PageSize;
+            int take = query.PageSize;
+            ApplyPaging(take, skip);
         }
 
         public OrderSpecification(long orderId, string userId)

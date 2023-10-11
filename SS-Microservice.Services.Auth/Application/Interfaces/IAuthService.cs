@@ -1,16 +1,16 @@
-﻿using SS_Microservice.Services.Auth.Application.Features.Auth.Commands;
+﻿using SS_Microservice.Services.Auth.Application.Dto;
+using SS_Microservice.Services.Auth.Application.Features.Auth.Commands;
 using SS_Microservice.Services.Auth.Application.Features.Auth.Queries;
-using SS_Microservice.Services.Auth.Application.Model.Auth;
 
 namespace SS_Microservice.Services.Auth.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<AuthResponse> Authenticate(LoginQuery request);
+        Task<AuthDto> Authenticate(LoginQuery request);
 
-        Task<AuthResponse> RefreshToken(RefreshTokenCommand request);
+        Task<AuthDto> RefreshToken(RefreshTokenCommand request);
 
-        Task RevokeRefreshToken(string userId);
+        Task<bool> RevokeRefreshToken(string userId);
 
         Task RevokeAllRefreshToken();
 

@@ -10,26 +10,22 @@ namespace SS_Microservice.Common.Model.Paging
 {
     public class PaginatedResult<T>
     {
-        public List<T> Items { get; set; }
+        public int CurrentItemCount { get; set; }
+        public int ItemsPerPage { get; set; }
+        public long TotalItems { get; set; }
         public int PageIndex { get; set; }
-        public long TotalCount { get; set; }
         public int TotalPages { get; set; }
-
-        public bool HasPreviousPage { get; set; }
-
-        public bool HasNextPage { get; set; }
-        public int PageSize { get; set; }
+        public List<T> Items { get; set; } = new List<T>();
 
         public PaginatedResult(List<T> items, int pageIndex, long totalCount, int pageSize)
         {
             var totalPage = (int)Math.Ceiling(totalCount / (double)pageSize);
             Items = items;
             PageIndex = pageIndex;
-            TotalCount = totalCount;
+            TotalItems = totalCount;
             TotalPages = totalPage;
-            HasPreviousPage = pageIndex > 1;
-            HasNextPage = pageIndex < totalPage;
-            PageSize = pageSize;
+            ItemsPerPage = pageSize;
+            CurrentItemCount = items.Count;
         }
 
         public static async Task<PaginatedResult<T>> CreatePaginatedList(IQueryable<T> source, int pageIndex, int pageSize)

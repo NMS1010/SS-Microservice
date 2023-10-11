@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Auth.Application.Dto;
 using SS_Microservice.Services.Auth.Application.Features.User.Commands;
@@ -27,27 +28,66 @@ namespace SS_Microservice.Services.Auth.Controllers
             _currentUserService = currentUserService;
         }
 
-        [HttpGet("me")]
-        public async Task<IActionResult> GetMe()
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
-            var res = await _mediator.Send(new GetUserQuery() { UserId = _currentUserService.UserId });
-            return Ok(CustomAPIResponse<UserDto>.Success(res, StatusCodes.Status200OK));
+            request.UserId = _currentUserService.UserId;
+            var res = await _mediator.Send(_mapper.Map<ChangePasswordCommand>(request));
+
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status200OK));
+        }
+
+        [HttpPut("toggle/{userId}")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> ToggleUserStatus([FromRoute] string userId)
+        {
+            var res = await _mediator.Send(new ToggleUserCommand() { UserId = userId });
+
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status200OK));
+        }
+
+        [HttpPut("disable-list")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> DisableListUsersStatus([FromQuery] List<string> userIds)
+        {
+            var res = await _mediator.Send(new DisableListUserCommand() { UserIds = userIds });
+
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status200OK));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserRequest request)
+        {
+            request.UserId = _currentUserService.UserId;
+            var res = await _mediator.Send(_mapper.Map<UpdateUserCommand>(request));
+
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status200OK));
         }
 
         [HttpGet("{userId}")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> GetUserById([FromRoute] string userId)
+        public async Task<IActionResult> GetUser([FromRoute] string userId)
         {
             var res = await _mediator.Send(new GetUserQuery() { UserId = userId });
+
             return Ok(CustomAPIResponse<UserDto>.Success(res, StatusCodes.Status200OK));
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserRequest request)
+        [HttpGet("profile/me")]
+        public async Task<IActionResult> GetMe()
         {
-            var userUpdateCommand = _mapper.Map<UpdateUserCommand>(request);
-            await _mediator.Send(userUpdateCommand);
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status204NoContent));
+            var res = await _mediator.Send(new GetUserQuery() { UserId = _currentUserService.UserId });
+
+            return Ok(CustomAPIResponse<UserDto>.Success(res, StatusCodes.Status200OK));
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetListUser([FromQuery] GetUserPagingRequest request)
+        {
+            var res = await _mediator.Send(_mapper.Map<GetListUserQuery>(request));
+
+            return Ok(CustomAPIResponse<PaginatedResult<UserDto>>.Success(res, StatusCodes.Status200OK));
         }
     }
 }

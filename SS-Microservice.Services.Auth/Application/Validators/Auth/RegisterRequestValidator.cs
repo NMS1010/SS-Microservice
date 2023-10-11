@@ -20,10 +20,6 @@ namespace SS_Microservice.Services.Auth.Application.Validators.Auth
                 .EmailAddress()
                 .NotNull();
 
-            RuleFor(x => x.Username)
-                .NotEmpty()
-                .NotNull();
-
             RuleFor(x => x.Password)
                 .NotEmpty()
                 .NotNull();

@@ -82,7 +82,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
 
         public async Task<PaginatedResult<Product>> FilterProduct(GetAllProductQuery query)
         {
-            var key = query.Keyword != null && !string.IsNullOrEmpty(query.Keyword.ToString()) ? query.Keyword.ToString() : "";
+            var key = query.Search != null && !string.IsNullOrEmpty(query.Search.ToString()) ? query.Search.ToString() : "";
             var res = _dbSet.Find(x => string.IsNullOrEmpty(key)
                          || x.Name.ToLower().Contains(key)
                          || x.Description.ToLower().Contains(key)
@@ -92,7 +92,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Repositories
                          || x.Slug.ToLower().Contains(key)
                          || x.Rating.ToString().Contains(key));
             if (query.ColumnName != null)
-                res = SortProduct(query.ColumnName, query.TypeSort == "ASC", res);
+                res = SortProduct(query.ColumnName, query.IsSortAccending, res);
 
             return await res.PaginatedListMongoAsync((int)query.PageIndex, (int)query.PageSize);
         }

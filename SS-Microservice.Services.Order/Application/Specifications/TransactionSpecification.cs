@@ -6,12 +6,8 @@ namespace SS_Microservice.Services.Order.Application.Specifications
     public class TransactionSpecification : BaseSpecification<Domain.Entities.Transaction>
     {
         public TransactionSpecification(GetAllTransactionQuery query, bool isPaging = false)
-            : base(x => query.Keyword == null || string.IsNullOrEmpty(query.Keyword)
-                 || x.PaymentMethodType.ToLower().Contains(query.Keyword) ||
-                    x.Id.ToString().Contains(query.Keyword) ||
-                    x.TotalPay.ToString().Contains(query.Keyword))
         {
-            string key = query.Keyword;
+            string key = query.Search;
             if (!string.IsNullOrEmpty(key))
             {
                 Criteria = x => x.PaymentMethodType.ToLower().Contains(key)
@@ -21,9 +17,9 @@ namespace SS_Microservice.Services.Order.Application.Specifications
             }
             AddInclude(x => x.Order);
             if (!isPaging) return;
-            int skip = (int)((query.PageIndex - 1) * query.PageSize);
-            int take = (int)query.PageSize;
-            ApplyPagging(take, skip);
+            int skip = (query.PageIndex - 1) * query.PageSize;
+            int take = query.PageSize;
+            ApplyPaging(take, skip);
         }
 
         public TransactionSpecification(long id)

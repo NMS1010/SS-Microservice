@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SS_Microservice.Services.Auth.Infrastructure.Data.DBContext;
 
@@ -11,42 +10,14 @@ using SS_Microservice.Services.Auth.Infrastructure.Data.DBContext;
 namespace SS_Microservice.Services.Auth.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20231007173514_InitDB")]
-    partial class InitDB
+    partial class AuthDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
-
-                    b.ToTable("Roles", (string)null);
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
@@ -150,6 +121,76 @@ namespace SS_Microservice.Services.Auth.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.AppRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("Roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "76304bc7-b2b0-4feb-99aa-5e8cd6f54bde",
+                            ConcurrencyStamp = "ce478605-e504-436a-af67-8728f2a3c3ab",
+                            CreatedAt = new DateTime(2023, 10, 12, 0, 27, 55, 12, DateTimeKind.Local).AddTicks(7036),
+                            CreatedBy = "System",
+                            Name = "ADMIN",
+                            NormalizedName = "ADMIN",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = "a9a6731c-3ccd-4f11-8da3-c5dc17caad8d",
+                            ConcurrencyStamp = "088e9bd2-be69-479a-b348-b9508269b897",
+                            CreatedAt = new DateTime(2023, 10, 12, 0, 27, 55, 12, DateTimeKind.Local).AddTicks(7036),
+                            CreatedBy = "System",
+                            Name = "USER",
+                            NormalizedName = "USER",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = "24b6aca6-5f46-4202-b4b5-48c5c970f65f",
+                            ConcurrencyStamp = "2261037f-fd53-4c84-9c85-e9c439b0eebe",
+                            CreatedAt = new DateTime(2023, 10, 12, 0, 27, 55, 12, DateTimeKind.Local).AddTicks(7036),
+                            CreatedBy = "System",
+                            Name = "STAFF",
+                            NormalizedName = "STAFF",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
             modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -171,7 +212,7 @@ namespace SS_Microservice.Services.Auth.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("Dob")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -245,10 +286,10 @@ namespace SS_Microservice.Services.Auth.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.AppUserTokens", b =>
+            modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.AppUserToken", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -285,12 +326,47 @@ namespace SS_Microservice.Services.Auth.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AppUserToken", (string)null);
+                    b.ToTable("AppUserTokens");
+                });
+
+            modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.Staff", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Staffs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("SS_Microservice.Services.Auth.Domain.Entities.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -317,7 +393,7 @@ namespace SS_Microservice.Services.Auth.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("SS_Microservice.Services.Auth.Domain.Entities.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -339,7 +415,7 @@ namespace SS_Microservice.Services.Auth.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.AppUserTokens", b =>
+            modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.AppUserToken", b =>
                 {
                     b.HasOne("SS_Microservice.Services.Auth.Domain.Entities.AppUser", "User")
                         .WithMany("AppUserTokens")
@@ -350,9 +426,20 @@ namespace SS_Microservice.Services.Auth.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.Staff", b =>
+                {
+                    b.HasOne("SS_Microservice.Services.Auth.Domain.Entities.AppUser", "User")
+                        .WithOne("Staff")
+                        .HasForeignKey("SS_Microservice.Services.Auth.Domain.Entities.Staff", "UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SS_Microservice.Services.Auth.Domain.Entities.AppUser", b =>
                 {
                     b.Navigation("AppUserTokens");
+
+                    b.Navigation("Staff");
                 });
 #pragma warning restore 612, 618
         }

@@ -14,7 +14,7 @@ namespace SS_Microservice.Services.Address.Application.Specifications
 
         public AddressSpecification(GetAllAddressQuery query, bool isPaging = false)
         {
-            string key = query.Keyword;
+            string key = query.Search;
 
             if (!string.IsNullOrEmpty(query.UserId))
             {
@@ -41,7 +41,7 @@ namespace SS_Microservice.Services.Address.Application.Specifications
             if (!isPaging) return;
             int skip = (int)((query.PageIndex - 1) * query.PageSize);
             int take = (int)query.PageSize;
-            ApplyPagging(take, skip);
+            ApplyPaging(take, skip);
         }
     }
 }

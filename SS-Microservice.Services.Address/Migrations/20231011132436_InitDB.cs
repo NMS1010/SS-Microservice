@@ -16,26 +16,26 @@ namespace SS_Microservice.Services.Address.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Province",
+                name: "Provinces",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false),
                     Code = table.Column<string>(type: "longtext", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "longtext", nullable: true),
                     UpdatedBy = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Province", x => x.Id);
+                    table.PrimaryKey("PK_Provinces", x => x.Id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "District",
+                name: "Districts",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -43,25 +43,25 @@ namespace SS_Microservice.Services.Address.Migrations
                     Name = table.Column<string>(type: "longtext", nullable: false),
                     Code = table.Column<string>(type: "longtext", nullable: false),
                     ProvinceId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "longtext", nullable: true),
                     UpdatedBy = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_District", x => x.Id);
+                    table.PrimaryKey("PK_Districts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_District_Province_ProvinceId",
+                        name: "FK_Districts_Provinces_ProvinceId",
                         column: x => x.ProvinceId,
-                        principalTable: "Province",
+                        principalTable: "Provinces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Ward",
+                name: "Wards",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -69,25 +69,25 @@ namespace SS_Microservice.Services.Address.Migrations
                     Name = table.Column<string>(type: "longtext", nullable: false),
                     Code = table.Column<string>(type: "longtext", nullable: false),
                     DistrictId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "longtext", nullable: true),
                     UpdatedBy = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ward", x => x.Id);
+                    table.PrimaryKey("PK_Wards", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Ward_District_DistrictId",
+                        name: "FK_Wards_Districts_DistrictId",
                         column: x => x.DistrictId,
-                        principalTable: "District",
+                        principalTable: "Districts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Address",
+                name: "Addresses",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -102,58 +102,58 @@ namespace SS_Microservice.Services.Address.Migrations
                     ProvinceId = table.Column<long>(type: "bigint", nullable: false),
                     DistrictId = table.Column<long>(type: "bigint", nullable: false),
                     WardId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "longtext", nullable: true),
                     UpdatedBy = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Address", x => x.Id);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Address_District_DistrictId",
+                        name: "FK_Addresses_Districts_DistrictId",
                         column: x => x.DistrictId,
-                        principalTable: "District",
+                        principalTable: "Districts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Address_Province_ProvinceId",
+                        name: "FK_Addresses_Provinces_ProvinceId",
                         column: x => x.ProvinceId,
-                        principalTable: "Province",
+                        principalTable: "Provinces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Address_Ward_WardId",
+                        name: "FK_Addresses_Wards_WardId",
                         column: x => x.WardId,
-                        principalTable: "Ward",
+                        principalTable: "Wards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Address_DistrictId",
-                table: "Address",
+                name: "IX_Addresses_DistrictId",
+                table: "Addresses",
                 column: "DistrictId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Address_ProvinceId",
-                table: "Address",
+                name: "IX_Addresses_ProvinceId",
+                table: "Addresses",
                 column: "ProvinceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Address_WardId",
-                table: "Address",
+                name: "IX_Addresses_WardId",
+                table: "Addresses",
                 column: "WardId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_District_ProvinceId",
-                table: "District",
+                name: "IX_Districts_ProvinceId",
+                table: "Districts",
                 column: "ProvinceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ward_DistrictId",
-                table: "Ward",
+                name: "IX_Wards_DistrictId",
+                table: "Wards",
                 column: "DistrictId");
         }
 
@@ -161,16 +161,16 @@ namespace SS_Microservice.Services.Address.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Address");
+                name: "Addresses");
 
             migrationBuilder.DropTable(
-                name: "Ward");
+                name: "Wards");
 
             migrationBuilder.DropTable(
-                name: "District");
+                name: "Districts");
 
             migrationBuilder.DropTable(
-                name: "Province");
+                name: "Provinces");
         }
     }
 }

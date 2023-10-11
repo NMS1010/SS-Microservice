@@ -42,12 +42,12 @@ namespace SS_Microservice.Common.Specifications
             OrderBy = orderByExpression;
         }
 
-        public void AddOrderByDecending(Expression<Func<T, object>> orderByDecending)
+        public void AddOrderByDescending(Expression<Func<T, object>> orderByDecending)
         {
             OrderByDescending = orderByDecending;
         }
 
-        public void ApplyPagging(int take, int skip)
+        public void ApplyPaging(int take, int skip)
         {
             Take = take;
             Skip = skip;

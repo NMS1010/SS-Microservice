@@ -4,12 +4,10 @@ using SS_Microservice.Services.Auth.Domain.Entities;
 
 namespace SS_Microservice.Services.Auth.Infrastructure.Data.Configuration
 {
-    public class AppUserTokenConfiguration : IEntityTypeConfiguration<AppUserTokens>
+    public class AppUserTokenConfiguration : IEntityTypeConfiguration<AppUserToken>
     {
-        public void Configure(EntityTypeBuilder<AppUserTokens> builder)
+        public void Configure(EntityTypeBuilder<AppUserToken> builder)
         {
-            builder.ToTable("AppUserToken");
-
             builder.Property(x => x.UserId)
                 .IsRequired();
 

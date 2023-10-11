@@ -45,11 +45,11 @@ namespace SS_Microservice.Services.Categorys.Infrastructure.Repositories
 
         public async Task<PaginatedResult<Category>> FilterCategory(GetAllCategoryQuery query)
         {
-            var res = _dbSet.Find(x => query.Keyword == null
-                        || x.Name.ToLower().Contains(query.Keyword.ToString().ToLower())
-                        || x.Description.ToLower().Contains(query.Keyword.ToString().ToLower()));
+            var res = _dbSet.Find(x => query.Search == null
+                        || x.Name.ToLower().Contains(query.Search.ToString().ToLower())
+                        || x.Description.ToLower().Contains(query.Search.ToString().ToLower()));
             if (query.ColumnName != null)
-                res = SortCategory(query.ColumnName, query.TypeSort == "ASC", res);
+                res = SortCategory(query.ColumnName, query.IsSortAccending, res);
 
             return await res.PaginatedListMongoAsync((int)query.PageIndex, (int)query.PageSize);
         }

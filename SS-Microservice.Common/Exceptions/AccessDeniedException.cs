@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace SS_Microservice.Services.Auth.Application.Common.Exceptions
 {
-    public class ForbiddenAccessException : Exception
+    public class AccessDeniedException : Exception
     {
-        public ForbiddenAccessException() : base("Not permission to access this resource")
+        public AccessDeniedException() : base("Not permission to access this resource")
         { }
 
-        public ForbiddenAccessException(string message) : base(message)
+        public AccessDeniedException(string message) : base(message)
         {
         }
     }

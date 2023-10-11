@@ -9,7 +9,7 @@ namespace SS_Microservice.Services.Address.Application.Specifications
     {
         public ProvinceSpecification(GetAllProvinceQuery query, bool isPaging = false)
         {
-            string key = query.Keyword;
+            string key = query.Search;
             if (!string.IsNullOrEmpty(key))
             {
                 Criteria = x =>
@@ -17,9 +17,9 @@ namespace SS_Microservice.Services.Address.Application.Specifications
                  || x.Code.ToLower().Contains(key);
             }
             if (!isPaging) return;
-            int skip = (int)((query.PageIndex - 1) * query.PageSize);
-            int take = (int)query.PageSize;
-            ApplyPagging(take, skip);
+            int skip = (query.PageIndex - 1) * query.PageSize;
+            int take = query.PageSize;
+            ApplyPaging(take, skip);
         }
     }
 }

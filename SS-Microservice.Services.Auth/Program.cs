@@ -15,6 +15,7 @@ using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.Model.CustomResponse;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Auth.Application.Common.AutoMapper;
 using SS_Microservice.Services.Auth.Application.Common.Constants;
@@ -62,6 +63,7 @@ builder.Services
         .AddScoped<IJwtService, JwtService>()
         .AddScoped<IAuthService, AuthService>()
         .AddScoped<IUserService, UserService>()
+        .AddScoped<IUploadService, UploadService>()
         .AddSingleton<ICurrentUserService, CurrentUserService>();
 
 var app = builder.Build();

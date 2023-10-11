@@ -11,7 +11,7 @@ using SS_Microservice.Services.Address.Infrastructure.Data.DBContext;
 namespace SS_Microservice.Services.Address.Migrations
 {
     [DbContext(typeof(AddressDbContext))]
-    [Migration("20231002054708_InitDB")]
+    [Migration("20231011132436_InitDB")]
     partial class InitDB
     {
         /// <inheritdoc />
@@ -28,11 +28,11 @@ namespace SS_Microservice.Services.Address.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<long>("DistrictId")
                         .HasColumnType("bigint");
@@ -62,11 +62,11 @@ namespace SS_Microservice.Services.Address.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -83,7 +83,7 @@ namespace SS_Microservice.Services.Address.Migrations
 
                     b.HasIndex("WardId");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("SS_Microservice.Services.Address.Domain.Entities.District", b =>
@@ -96,11 +96,11 @@ namespace SS_Microservice.Services.Address.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -109,17 +109,17 @@ namespace SS_Microservice.Services.Address.Migrations
                     b.Property<long>("ProvinceId")
                         .HasColumnType("bigint");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProvinceId");
 
-                    b.ToTable("District", (string)null);
+                    b.ToTable("Districts");
                 });
 
             modelBuilder.Entity("SS_Microservice.Services.Address.Domain.Entities.Province", b =>
@@ -132,25 +132,25 @@ namespace SS_Microservice.Services.Address.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
-
                     b.HasKey("Id");
 
-                    b.ToTable("Province", (string)null);
+                    b.ToTable("Provinces");
                 });
 
             modelBuilder.Entity("SS_Microservice.Services.Address.Domain.Entities.Ward", b =>
@@ -163,11 +163,11 @@ namespace SS_Microservice.Services.Address.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<long>("DistrictId")
                         .HasColumnType("bigint");
@@ -176,17 +176,17 @@ namespace SS_Microservice.Services.Address.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DistrictId");
 
-                    b.ToTable("Ward", (string)null);
+                    b.ToTable("Wards");
                 });
 
             modelBuilder.Entity("SS_Microservice.Services.Address.Domain.Entities.Address", b =>

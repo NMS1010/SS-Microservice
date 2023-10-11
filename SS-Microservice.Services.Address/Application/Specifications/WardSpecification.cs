@@ -8,7 +8,7 @@ namespace SS_Microservice.Services.Address.Application.Specifications
     {
         public WardSpecification(GetWardByDistrictIdQuery query, bool isPaging = false)
         {
-            string key = query.Keyword;
+            string key = query.Search;
             if (query.DistrictId != -1)
             {
                 if (!string.IsNullOrEmpty(key))
@@ -24,9 +24,9 @@ namespace SS_Microservice.Services.Address.Application.Specifications
                 }
             }
             if (!isPaging) return;
-            int skip = (int)((query.PageIndex - 1) * query.PageSize);
-            int take = (int)query.PageSize;
-            ApplyPagging(take, skip);
+            int skip = (query.PageIndex - 1) * query.PageSize;
+            int take = query.PageSize;
+            ApplyPaging(take, skip);
         }
     }
 }

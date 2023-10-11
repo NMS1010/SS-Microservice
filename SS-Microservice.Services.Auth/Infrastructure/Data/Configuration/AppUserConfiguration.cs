@@ -8,8 +8,6 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
-            builder.ToTable("User");
-
             builder.Property(x => x.FirstName)
                 .HasMaxLength(100)
                 .IsRequired();

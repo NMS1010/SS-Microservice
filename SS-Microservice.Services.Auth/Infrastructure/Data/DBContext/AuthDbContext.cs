@@ -22,10 +22,11 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Data.DBContext
                 {
                     type.SetTableName(tableName.Substring(6));
                 }
-                builder.ApplyConfigurationsFromAssembly(typeof(AppUserConfiguration).Assembly);
             }
+            builder.ApplyConfigurationsFromAssembly(typeof(AppUserConfiguration).Assembly);
         }
 
-        public DbSet<AppUserTokens> AppUserTokens { get; set; }
+        public DbSet<AppUserToken> AppUserTokens { get; set; }
+        public DbSet<Staff> Staffs { get; set; }
     }
 }

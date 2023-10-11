@@ -29,7 +29,7 @@ namespace SS_Microservice.Common.Middleware
             {
                 var statusCode = error switch
                 {
-                    ForbiddenAccessException => (int)HttpStatusCode.Forbidden,
+                    AccessDeniedException => (int)HttpStatusCode.Forbidden,
                     NotFoundException => (int)HttpStatusCode.NotFound,
                     UnauthorizedException => (int)HttpStatusCode.Unauthorized,
                     ValidationException => (int)HttpStatusCode.BadRequest,

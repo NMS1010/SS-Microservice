@@ -7,7 +7,7 @@ namespace SS_Microservice.Services.Infrastructure.Application.Specifications
     {
         public NotifcationSpecification(GetAllNotificationQuery query, bool isPaging = false)
         {
-            var key = query.Keyword;
+            var key = query.Search;
             if (!string.IsNullOrEmpty(query.UserId))
             {
                 if (query.Status == -1)
@@ -20,11 +20,11 @@ namespace SS_Microservice.Services.Infrastructure.Application.Specifications
                         && x.Status == Convert.ToBoolean(query.Status);
                 }
             }
-            AddOrderByDecending(x => x.CreatedAt);
+            AddOrderByDescending(x => x.CreatedAt);
             if (!isPaging) return;
-            int skip = (int)((query.PageIndex - 1) * query.PageSize);
-            int take = (int)query.PageSize;
-            ApplyPagging(take, skip);
+            int skip = (query.PageIndex - 1) * query.PageSize;
+            int take = query.PageSize;
+            ApplyPaging(take, skip);
         }
     }
 }

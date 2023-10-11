@@ -9,7 +9,7 @@ namespace SS_Microservice.Services.Order.Application.Specifications
     {
         public PaymentMethodSpecification(GetAllPaymentMethodQuery query, bool isPaging = false)
         {
-            string key = query.Keyword;
+            string key = query.Search;
             if (!string.IsNullOrEmpty(key))
             {
                 Criteria = x => x.Name.ToLower().Contains(key)
@@ -17,9 +17,9 @@ namespace SS_Microservice.Services.Order.Application.Specifications
                 || x.Code.Contains(key);
             }
             if (!isPaging) return;
-            int skip = (int)((query.PageIndex - 1) * query.PageSize);
-            int take = (int)query.PageSize;
-            ApplyPagging(take, skip);
+            int skip = (query.PageIndex - 1) * query.PageSize;
+            int take = query.PageSize;
+            ApplyPaging(take, skip);
         }
     }
 }

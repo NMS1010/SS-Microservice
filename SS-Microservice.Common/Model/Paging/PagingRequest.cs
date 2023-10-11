@@ -8,19 +8,17 @@ namespace SS_Microservice.Common.Model.Paging
 {
     public class PagingRequest
     {
-        private string _keyword;
+        private string _search;
 
-        public string Keyword
+        public string Search
         {
-            get => _keyword;
-            set => _keyword = value?.ToLower();
+            get => _search;
+            set => _search = value?.ToLower();
         }
 
-        public long PageIndex { get; set; } = 1;
-        public long PageSize { get; set; } = 1000;
-
-        public string ColumnName { get; set; }
-        public string TypeSort { get; set; } = "ASC";
-        public int SortBy { get; set; }
+        public bool IsSortAccending { get; set; } = true;
+        public int PageIndex { get; set; } = 1;
+        public int PageSize { get; set; } = 1000;
+        public string ColumnName { get; set; } = "Id";
     }
 }

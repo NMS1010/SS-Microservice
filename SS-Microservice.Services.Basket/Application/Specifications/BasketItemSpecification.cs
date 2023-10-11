@@ -12,9 +12,9 @@ namespace SS_Microservice.Services.Basket.Application.Specifications
             AddInclude(x => x.Basket);
 
             if (!isPaging) return;
-            int skip = (int)((query.PageIndex - 1) * query.PageSize);
-            int take = (int)query.PageSize;
-            ApplyPagging(take, skip);
+            int skip = (query.PageIndex - 1) * query.PageSize;
+            int take = query.PageSize;
+            ApplyPaging(take, skip);
         }
 
         public BasketItemSpecification(long basketId, string variantId)

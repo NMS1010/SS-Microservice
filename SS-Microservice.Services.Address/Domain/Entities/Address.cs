@@ -9,8 +9,10 @@ namespace SS_Microservice.Services.Address.Domain.Entities
         public string Phone { get; set; }
         public string Email { get; set; }
         public string Street { get; set; }
-        public bool IsDefault { get; set; }
+
+        public bool IsDefault { get; set; } = true;
         public int Status { get; set; } = 1;
+
         public long ProvinceId { get; set; }
         public long DistrictId { get; set; }
         public long WardId { get; set; }

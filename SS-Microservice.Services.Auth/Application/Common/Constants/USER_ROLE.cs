@@ -4,11 +4,13 @@
     {
         public static string ADMIN = "ADMIN";
         public static string USER = "USER";
+        public static string STAFF = "STAFF";
 
         public static List<string> Roles = new List<string>()
         {
             ADMIN,
-            USER
+            USER,
+            STAFF
         };
     }
 }
