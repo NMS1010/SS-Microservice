@@ -13,19 +13,20 @@ namespace SS_Microservice.Common.RabbitMQ
     public static class Extension
     {
         [Obsolete]
-        public static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration, List<Type> consumers = null)
+        public static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration, params Type[] consumers)
         {
             var rabbitMqSettings = configuration.GetOptions<RabbitMqSettings>("RabbitMqSettings");
             services
                 .AddMassTransit(mt =>
                 {
-                    consumers?.ForEach(consumer => mt.AddConsumer(consumer));
+                    var consumerList = consumers.ToList();
+                    consumerList?.ForEach(consumer => mt.AddConsumer(consumer));
 
                     mt.AddBus(bus => Bus.Factory.CreateUsingRabbitMq(rmq =>
                     {
                         rmq.Host(rabbitMqSettings.Uri);
 
-                        consumers?.ForEach(consumer => rmq.ReceiveEndpoint(consumer.FullName, endpoint =>
+                        consumerList?.ForEach(consumer => rmq.ReceiveEndpoint(consumer.FullName, endpoint =>
                         {
                             endpoint.ConfigureConsumer(bus, consumer);
                         }));

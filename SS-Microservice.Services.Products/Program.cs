@@ -94,12 +94,7 @@ builder.Services.AddJwtAuthentication(configuration);
 builder.Services.AddConsul(configuration.GetConsulConfig());
 builder.Services.AddOpenTracing();
 builder.Services.AddJaeger(configuration.GetJaegerOptions());
-builder.Services.AddMessaging(configuration, new List<Type>()
-{
-    {
-        typeof(OrderCreatedConsumer)
-    }
-});
+builder.Services.AddMessaging(configuration, typeof(OrderCreatedConsumer));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

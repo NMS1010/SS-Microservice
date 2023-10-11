@@ -1,17 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using SS_Microservice.Common.Repository;
-using SS_Microservice.Services.Basket.Infrastructure.Data.DBContext;
+using SS_Microservice.Services.Infrastructure.Infrastructure.Data.DBContext;
 using System.Collections;
 
-namespace SS_Microservice.Services.Basket.Infrastructure.Repositories
+namespace SS_Microservice.Services.Infrastructure.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
         private Hashtable _repositories;
 
-        public BasketDBContext Context { get; }
+        public InfrastructureDbContext Context { get; }
 
-        public UnitOfWork(BasketDBContext context)
+        public UnitOfWork(InfrastructureDbContext context)
         {
             Context = context;
         }
@@ -58,9 +58,9 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Repositories
             {
                 return await Context.SaveChangesAsync();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                throw new Exception("Error while executing this operation");
             }
         }
     }

@@ -8,8 +8,6 @@ namespace SS_Microservice.Services.Address.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Ward> builder)
         {
-            builder.ToTable(nameof(Ward));
-
             builder.HasKey(p => p.Id);
 
             builder.Property(p => p.Name).IsRequired();

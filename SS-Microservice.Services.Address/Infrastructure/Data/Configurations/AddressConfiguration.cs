@@ -8,8 +8,6 @@ namespace SS_Microservice.Services.Address.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Domain.Entities.Address> builder)
         {
-            builder.ToTable(nameof(Domain.Entities.Address));
-
             builder.HasKey(x => x.Id);
             builder.Property(x => x.UserId).IsRequired();
             builder.Property(x => x.Street).IsRequired();
