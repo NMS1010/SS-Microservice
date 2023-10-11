@@ -11,6 +11,7 @@ using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Middleware;
+using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.Model.CustomResponse;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Services.CurrentUser;
@@ -31,10 +32,10 @@ var configuration = builder.Configuration;
 builder.Host.UseLogging();
 builder.Services.AddProblemDetailsSetup();
 // Add services to the container.
-builder.Services.AddDbContext<DBContext>(options =>
+builder.Services.AddDbContext<AuthDbContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("AuthDbContext")));
 
-builder.Services.AddIdentity<AppUser, IdentityRole>(opts =>
+builder.Services.AddIdentity<AppUser, AppRole>(opts =>
 {
     opts.Password.RequireNonAlphanumeric = false;
     opts.Password.RequiredLength = 5;
@@ -42,7 +43,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opts =>
     opts.Password.RequireLowercase = false;
     opts.Password.RequireUppercase = false;
 })
-    .AddEntityFrameworkStores<DBContext>()
+    .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
@@ -62,20 +63,7 @@ builder.Services
         .AddScoped<IAuthService, AuthService>()
         .AddScoped<IUserService, UserService>()
         .AddSingleton<ICurrentUserService, CurrentUserService>();
-async Task CreateRoles(IServiceProvider serviceProvider)
-{
-    var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    foreach (var roleName in USER_ROLE.Roles)
-    {
-        var roleExist = await RoleManager.RoleExistsAsync(roleName);
-        if (!roleExist)
-        {
-            await RoleManager.CreateAsync(new IdentityRole(roleName));
-        }
-    }
-}
-await CreateRoles(builder.Services.BuildServiceProvider());
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -93,4 +81,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MigrateDatabase<AuthDbContext>();
 app.Run();

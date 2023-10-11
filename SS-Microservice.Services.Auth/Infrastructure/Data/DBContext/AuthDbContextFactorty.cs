@@ -4,9 +4,9 @@ using System;
 
 namespace SS_Microservice.Services.Auth.Infrastructure.Data.DBContext
 {
-    public class DBContextFactorty : IDesignTimeDbContextFactory<DBContext>
+    public class AuthDbContextFactorty : IDesignTimeDbContextFactory<AuthDbContext>
     {
-        public DBContext CreateDbContext(string[] args)
+        public AuthDbContext CreateDbContext(string[] args)
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -15,10 +15,10 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Data.DBContext
 
             var connectionString = configuration.GetConnectionString("AuthDbContext");
 
-            var optionBuilder = new DbContextOptionsBuilder<DBContext>();
+            var optionBuilder = new DbContextOptionsBuilder<AuthDbContext>();
             optionBuilder.UseMySQL(connectionString);
 
-            return new DBContext(optionBuilder.Options);
+            return new AuthDbContext(optionBuilder.Options);
         }
     }
 }

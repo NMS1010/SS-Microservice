@@ -20,12 +20,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.DBContext
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.ApplyConfiguration(new OrderConfiguration());
-            builder.ApplyConfiguration(new OrderItemConfiguration());
-            builder.ApplyConfiguration(new OrderStateConfiguration());
-            builder.ApplyConfiguration(new OrderCancellationReasonConfiguration());
-            builder.ApplyConfiguration(new DeliveryConfiguration());
-            builder.ApplyConfiguration(new TransactionConfiguration());
+            builder.ApplyConfigurationsFromAssembly(typeof(OrderConfiguration).Assembly);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

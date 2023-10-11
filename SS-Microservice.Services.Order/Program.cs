@@ -10,7 +10,7 @@ using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Middleware;
-using SS_Microservice.Common.Model.CustomResponse;
+using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
@@ -113,5 +113,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MigrateDatabase<OrderDbContext>();
 
 app.Run();

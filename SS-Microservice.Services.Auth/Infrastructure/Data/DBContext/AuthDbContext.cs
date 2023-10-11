@@ -6,9 +6,9 @@ using System.Reflection.Emit;
 
 namespace SS_Microservice.Services.Auth.Infrastructure.Data.DBContext
 {
-    public class DBContext : IdentityDbContext<AppUser>
+    public class AuthDbContext : IdentityDbContext<AppUser, AppRole, string>
     {
-        public DBContext(DbContextOptions options) : base(options)
+        public AuthDbContext(DbContextOptions options) : base(options)
         {
         }
 
@@ -22,8 +22,7 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Data.DBContext
                 {
                     type.SetTableName(tableName.Substring(6));
                 }
-                builder.ApplyConfiguration(new AppUserConfiguration());
-                builder.ApplyConfiguration(new AppUserTokenConfiguration());
+                builder.ApplyConfigurationsFromAssembly(typeof(AppUserConfiguration).Assembly);
             }
         }
 

@@ -21,6 +21,7 @@ using SS_Microservice.Common.Model.CustomResponse;
 using Hellang.Middleware.ProblemDetails;
 using FluentValidation;
 using SS_Microservice.Common.Validators;
+using SS_Microservice.Common.Migration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,5 +106,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MigrateDatabase<BasketDBContext>();
 
 app.Run();

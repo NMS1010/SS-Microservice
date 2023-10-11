@@ -19,10 +19,7 @@ namespace SS_Microservice.Services.Address.Infrastructure.Data.DBContext
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.ApplyConfiguration(new AddressConfiguration());
-            builder.ApplyConfiguration(new ProvinceConfiguration());
-            builder.ApplyConfiguration(new DistrictConfiguration());
-            builder.ApplyConfiguration(new WardConfiguration());
+            builder.ApplyConfigurationsFromAssembly(typeof(AddressConfiguration).Assembly);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

@@ -10,7 +10,7 @@ using SS_Microservice.Services.Auth.Infrastructure.Data.DBContext;
 
 namespace SS_Microservice.Services.Auth.Migrations
 {
-    [DbContext(typeof(DBContext))]
+    [DbContext(typeof(AuthDbContext))]
     [Migration("20231007173514_InitDB")]
     partial class InitDB
     {

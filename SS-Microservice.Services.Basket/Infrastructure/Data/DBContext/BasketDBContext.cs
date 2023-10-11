@@ -20,8 +20,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Data.DBContext
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.ApplyConfiguration(new BasketConfiguration());
-            builder.ApplyConfiguration(new BasketItemConfiguration());
+            builder.ApplyConfigurationsFromAssembly(typeof(BasketConfiguration).Assembly);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
