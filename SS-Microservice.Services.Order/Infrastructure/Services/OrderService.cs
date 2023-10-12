@@ -167,14 +167,14 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                 var orderState = await _unitOfWork.Repository<Domain.Entities.OrderState>().GetById(command.OrderStateId)
                     ?? throw new NotFoundException("Cannot update state for this order");
                 order.OrderStateId = orderState.Id;
-                if (orderState.OrderStateName == ORDER_STATE.ORDER_CANCLED)
+                if (orderState.Code == ORDER_STATE.ORDER_CANCLED)
                 {
                     if (!string.IsNullOrEmpty(command.OtherCancelReason))
                         order.OtherCancelReason = command.OtherCancelReason;
                     else
                         order.OrderCancellationReasonId = command.OrderCancellationReasonId;
                 }
-                else if (orderState.OrderStateName == ORDER_STATE.ORDER_COMPLETED)
+                else if (orderState.Code == ORDER_STATE.ORDER_COMPLETED)
                 {
                     order.PaymentStatus = true;
                     order.Transaction.CompletedAt = DateTime.Now;

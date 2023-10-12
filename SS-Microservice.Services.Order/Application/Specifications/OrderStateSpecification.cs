@@ -11,7 +11,7 @@ namespace SS_Microservice.Services.Order.Application.Specifications
             string key = query.Search;
             if (!string.IsNullOrEmpty(key))
             {
-                Criteria = x => x.OrderStateName.ToLower().Contains(key)
+                Criteria = x => x.Name.ToLower().Contains(key)
                  || x.Id.ToString().Contains(key)
                  || x.Order.ToString().Contains(key)
                  || x.HexColor.ToLower().Contains(key);

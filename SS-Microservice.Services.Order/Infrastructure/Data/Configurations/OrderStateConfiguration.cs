@@ -19,7 +19,11 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.Configurations
                 .Property(x => x.Order)
                 .IsRequired();
             builder
-                .Property(x => x.OrderStateName)
+                .Property(x => x.Name)
+                .HasMaxLength(100)
+                .IsRequired();
+            builder
+                .Property(x => x.Code)
                 .HasMaxLength(100)
                 .IsRequired();
 

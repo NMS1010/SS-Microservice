@@ -2,7 +2,8 @@
 {
     public class CreateOrderStateRequest
     {
-        public string OrderStateName { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
         public int Order { get; set; }
         public string HexColor { get; set; }
     }

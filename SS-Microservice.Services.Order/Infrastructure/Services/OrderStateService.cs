@@ -29,7 +29,8 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                 var orderState = new OrderState()
                 {
                     HexColor = command.HexColor,
-                    OrderStateName = command.OrderStateName,
+                    Name = command.Name,
+                    Code = command.Code,
                     Order = command.Order,
                 };
                 await _unitOfWork.Repository<OrderState>().Insert(orderState);
@@ -101,9 +102,10 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             try
             {
                 await _unitOfWork.CreateTransaction();
-                var orderState = await _unitOfWork.Repository<OrderState>().GetById(command.OrderStateId);
+                var orderState = await _unitOfWork.Repository<OrderState>().GetById(command.Id);
                 orderState.Order = command.Order;
-                orderState.OrderStateName = command.OrderStateName;
+                orderState.Name = command.Name;
+                orderState.Code = command.Code;
                 orderState.HexColor = command.HexColor;
                 orderState.Status = command.Status;
                 _unitOfWork.Repository<OrderState>().Update(orderState);
