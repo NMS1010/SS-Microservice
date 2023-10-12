@@ -6,50 +6,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 
 namespace SS_Microservice.Common.Services.Upload
 {
     public class UploadService : IUploadService
     {
-        private readonly string _userContent;
-        private const string USER_CONTENT_FOLDER = "user-content";
-        private static IHttpContextAccessor _httpContextAccessor;
+        private readonly Cloudinary _cloudinary;
 
-        public UploadService(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
+        public UploadService()
         {
-            _userContent = Path.Combine(webHostEnvironment.WebRootPath, USER_CONTENT_FOLDER);
-            _httpContextAccessor = httpContextAccessor;
-            if (!Directory.Exists(_userContent))
-            {
-                Directory.CreateDirectory(_userContent);
-            }
+            CloudinaryOptions cloudinaryOptions = new();
+            var account = new Account(cloudinaryOptions.CloudName, cloudinaryOptions.APIKey, cloudinaryOptions.APISecret);
+            _cloudinary = new Cloudinary(account);
+            _cloudinary.Api.Secure = true;
         }
 
-        public async Task DeleteFile(string filename)
+        private static string GetPublicId(string url)
         {
-            string path = Path.Combine(_userContent, Path.GetFileName(filename));
-            if (File.Exists(path))
-            {
-                await Task.Run(() => File.Delete(path));
-            }
+            return Path.GetFileNameWithoutExtension(url);
         }
 
-        private async Task<string> ConfirmSave(Stream stream, string fileName)
+        public async Task DeleteFile(string url)
         {
-            string filePath = Path.Combine(_userContent, fileName);
-            using (var fs = new FileStream(filePath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.ReadWrite))
-            {
-                await stream.CopyToAsync(fs);
-            }
-            return fileName;
+            var publicId = GetPublicId(url);
+            await _cloudinary.DestroyAsync(new(publicId));
         }
 
         public async Task<string> UploadFile(IFormFile file)
         {
-            string originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-            string fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            if (file == null) return "";
 
-            return await ConfirmSave(file.OpenReadStream(), fileName);
+            var uploadParams = new RawUploadParams()
+            {
+                File = new FileDescription(file.FileName, file.OpenReadStream())
+            };
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+            return uploadResult.Url.AbsoluteUri;
         }
     }
 }
