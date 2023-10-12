@@ -4,12 +4,11 @@ using SS_Microservice.Services.Address.Application.Models.Address;
 
 namespace SS_Microservice.Services.Address.Application.Features.Address.Commands
 {
-    public class CreateAddressCommand : CreateAddressRequest, IRequest<bool>
+    public class CreateAddressCommand : CreateAddressRequest, IRequest<long>
     {
-        public string UserId { get; set; }
     }
 
-    public class CreateAddressHandler : IRequestHandler<CreateAddressCommand, bool>
+    public class CreateAddressHandler : IRequestHandler<CreateAddressCommand, long>
     {
         private readonly IAddressService _addressService;
 
@@ -18,7 +17,7 @@ namespace SS_Microservice.Services.Address.Application.Features.Address.Commands
             _addressService = addressService;
         }
 
-        public async Task<bool> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
         {
             return await _addressService.CreateAddress(request);
         }

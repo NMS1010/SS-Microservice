@@ -11,7 +11,7 @@ namespace SS_Microservice.Services.Address.Domain.Entities
         public string Street { get; set; }
 
         public bool IsDefault { get; set; } = true;
-        public int Status { get; set; } = 1;
+        public bool Status { get; set; } = true;
 
         public long ProvinceId { get; set; }
         public long DistrictId { get; set; }

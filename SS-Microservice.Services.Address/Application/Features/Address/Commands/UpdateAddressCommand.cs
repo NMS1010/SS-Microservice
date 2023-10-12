@@ -6,7 +6,6 @@ namespace SS_Microservice.Services.Address.Application.Features.Address.Commands
 {
     public class UpdateAddressCommand : UpdateAddressRequest, IRequest<bool>
     {
-        public string UserId { get; set; }
     }
 
     public class UpdateAddressHandler : IRequestHandler<UpdateAddressCommand, bool>

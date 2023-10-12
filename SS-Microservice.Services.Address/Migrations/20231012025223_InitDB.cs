@@ -98,7 +98,7 @@ namespace SS_Microservice.Services.Address.Migrations
                     Email = table.Column<string>(type: "longtext", nullable: false),
                     Street = table.Column<string>(type: "longtext", nullable: false),
                     IsDefault = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ProvinceId = table.Column<long>(type: "bigint", nullable: false),
                     DistrictId = table.Column<long>(type: "bigint", nullable: false),
                     WardId = table.Column<long>(type: "bigint", nullable: false),

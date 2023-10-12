@@ -11,7 +11,7 @@ using SS_Microservice.Services.Address.Infrastructure.Data.DBContext;
 namespace SS_Microservice.Services.Address.Migrations
 {
     [DbContext(typeof(AddressDbContext))]
-    [Migration("20231011132436_InitDB")]
+    [Migration("20231012025223_InitDB")]
     partial class InitDB
     {
         /// <inheritdoc />
@@ -55,8 +55,8 @@ namespace SS_Microservice.Services.Address.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<bool>("Status")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Street")
                         .IsRequired()

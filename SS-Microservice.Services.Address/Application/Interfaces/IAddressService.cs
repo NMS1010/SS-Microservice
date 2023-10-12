@@ -5,25 +5,28 @@ using SS_Microservice.Services.Address.Application.Features.Address.Queries;
 using SS_Microservice.Services.Address.Application.Features.District.Queries;
 using SS_Microservice.Services.Address.Application.Features.Province.Queries;
 using SS_Microservice.Services.Address.Application.Features.Ward.Queries;
+using SS_Microservice.Services.Address.Application.Models.Address;
 
 namespace SS_Microservice.Services.Address.Application.Interfaces
 {
     public interface IAddressService
     {
-        Task<PaginatedResult<AddressDto>> GetAddressList(GetAllAddressQuery query);
+        public Task<long> CreateAddress(CreateAddressCommand command);
 
-        Task<AddressDto> GetAddress(GetAddressByIdQuery query);
+        public Task<bool> UpdateAddress(UpdateAddressCommand command);
 
-        Task<bool> CreateAddress(CreateAddressCommand command);
+        public Task<bool> DeleteAddress(DeleteAddressCommand command);
 
-        Task<bool> UpdateAddress(UpdateAddressCommand command);
+        public Task<AddressDto> GetAddress(GetAddressByIdQuery query);
 
-        Task<bool> DeleteAddress(DeleteAddressCommand command);
+        public Task<PaginatedResult<AddressDto>> GetListAddress(GetListAddressQuery query);
 
-        Task<PaginatedResult<ProvinceDto>> GetProvinceList(GetAllProvinceQuery query);
+        public Task<bool> SetAddressDefault(SetDefaultAddressCommand command);
 
-        Task<PaginatedResult<DistrictDto>> GetDistrictListByProvince(GetDistrictByProvinceIdQuery query);
+        Task<List<ProvinceDto>> GetListProvince();
 
-        Task<PaginatedResult<WardDto>> GetWardListByDistrict(GetWardByDistrictIdQuery query);
+        Task<List<DistrictDto>> GetListDistrictByProvince(GetListDistrictByProvinceIdQuery query);
+
+        Task<List<WardDto>> GetListWardByDistrict(GetListWardByDistrictIdQuery query);
     }
 }

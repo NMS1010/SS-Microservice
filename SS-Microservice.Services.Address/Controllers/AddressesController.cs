@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Services.CurrentUser;
@@ -12,10 +11,9 @@ using SS_Microservice.Services.Address.Application.Features.District.Queries;
 using SS_Microservice.Services.Address.Application.Features.Province.Queries;
 using SS_Microservice.Services.Address.Application.Features.Ward.Queries;
 using SS_Microservice.Services.Address.Application.Models.Address;
-using SS_Microservice.Services.Address.Application.Models.District;
-using SS_Microservice.Services.Address.Application.Models.Province;
-using SS_Microservice.Services.Address.Application.Models.Ward;
+using SS_Microservice.Services.Address.Domain.Entities;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
+using System.Net.WebSockets;
 
 namespace SS_Microservice.Services.Address.Controllers
 {
@@ -35,91 +33,94 @@ namespace SS_Microservice.Services.Address.Controllers
             _currentUserService = currentUserService;
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllAddresses([FromQuery] GetAddressPagingRequest request)
+        [HttpPost]
+        public async Task<IActionResult> CreateAddress([FromBody] CreateAddressRequest request)
         {
-            var query = _mapper.Map<GetAllAddressQuery>(request);
-            query.UserId = _currentUserService.UserId;
-            var res = await _sender.Send(query);
+            var command = _mapper.Map<CreateAddressCommand>(request);
+            command.UserId = _currentUserService.UserId;
 
-            return Ok(CustomAPIResponse<PaginatedResult<AddressDto>>.Success(res, StatusCodes.Status200OK));
+            long addressId = await _sender.Send(command);
+
+            return Ok(CustomAPIResponse<object>.Success(new { id = addressId }, StatusCodes.Status201Created));
         }
 
-        [HttpGet("detail/{addressId}")]
-        public async Task<IActionResult> GetAddressById([FromRoute] int addressId)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAddress([FromRoute] long id, [FromBody] UpdateAddressRequest request)
         {
-            var query = new GetAddressByIdQuery()
-            {
-                Id = addressId,
-                UserId = _currentUserService.UserId
-            };
+            var command = _mapper.Map<UpdateAddressCommand>(request);
+            command.UserId = _currentUserService.UserId;
+            command.Id = id;
+            var res = await _sender.Send(command);
+
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status200OK));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAddress([FromRoute] long id)
+        {
+            var query = new GetAddressByIdQuery() { Id = id, UserId = _currentUserService.UserId };
+
             var res = await _sender.Send(query);
 
             return Ok(CustomAPIResponse<AddressDto>.Success(res, StatusCodes.Status200OK));
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateAddress([FromForm] CreateAddressRequest request)
+        [HttpGet]
+        public async Task<IActionResult> GetListAddress([FromQuery] GetAddressPagingRequest request)
         {
-            var command = _mapper.Map<CreateAddressCommand>(request);
-            command.UserId = _currentUserService.UserId;
+            var query = _mapper.Map<GetListAddressQuery>(request);
+
+            var res = await _sender.Send(query);
+
+            return Ok(CustomAPIResponse<PaginatedResult<AddressDto>>.Success(res, StatusCodes.Status200OK));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAddress([FromRoute] long id)
+        {
+            var command = new DeleteAddressCommand() { Id = id, UserId = _currentUserService.UserId };
             var res = await _sender.Send(command);
 
-            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status201Created));
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status200OK));
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateAddress([FromForm] UpdateAddressRequest request)
+        [HttpPut("set-default/{id}")]
+        public async Task<IActionResult> SetDefaultAddress([FromRoute] long id)
         {
-            var command = _mapper.Map<UpdateAddressCommand>(request);
-            command.UserId = _currentUserService.UserId;
-            var isSuccess = await _sender.Send(command);
+            var command = new SetDefaultAddressCommand() { Id = id, UserId = _currentUserService.UserId };
+            var res = await _sender.Send(command);
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status200OK));
         }
 
-        [HttpDelete("delete/{addressId}")]
-        public async Task<IActionResult> DeleteAddress(long addressId)
-        {
-            var command = new DeleteAddressCommand() { Id = addressId, UserId = _currentUserService.UserId };
-            var isSuccess = await _sender.Send(command);
-
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
-        }
-
-        // province, district, ward
-
-        [HttpGet("p/all")]
+        [HttpGet("p")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAllProvince([FromQuery] GetProvincePagingRequest request)
+        public async Task<IActionResult> GetListProvince()
         {
-            var query = _mapper.Map<GetAllProvinceQuery>(request);
-
+            var query = new GetListProvinceQuery();
             var res = await _sender.Send(query);
 
-            return Ok(CustomAPIResponse<PaginatedResult<ProvinceDto>>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<List<ProvinceDto>>.Success(res, StatusCodes.Status200OK));
         }
 
-        [HttpGet("p/d/all")]
+        [HttpGet("p/{provinceId}/d")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetDistrictByProvinceId([FromQuery] GetDistrictPagingRequest request)
+        public async Task<IActionResult> GetListDistrictByProvince([FromRoute] long provinceId)
         {
-            var query = _mapper.Map<GetDistrictByProvinceIdQuery>(request);
-
+            var query = new GetListDistrictByProvinceIdQuery() { ProvinceId = provinceId };
             var res = await _sender.Send(query);
 
-            return Ok(CustomAPIResponse<PaginatedResult<DistrictDto>>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<List<DistrictDto>>.Success(res, StatusCodes.Status200OK));
         }
 
-        [HttpGet("p/d/w/all")]
+        [HttpGet("p/d/{districtId}/w")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetWardByDistrictId([FromQuery] GetWardPagingRequest request)
+        public async Task<IActionResult> GetListWardByDistrict([FromRoute] long districtId)
         {
-            var query = _mapper.Map<GetWardByDistrictIdQuery>(request);
-
+            var query = new GetListWardByDistrictIdQuery() { DistrictId = districtId };
             var res = await _sender.Send(query);
 
-            return Ok(CustomAPIResponse<PaginatedResult<WardDto>>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<List<WardDto>>.Success(res, StatusCodes.Status200OK));
         }
     }
 }
