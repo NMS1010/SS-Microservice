@@ -13,6 +13,7 @@ namespace SS_Microservice.Common.Constants
         public static string ORDER_HANDLING = "ORDER_HANDLING";
         public static string ORDER_ON_THE_WAY = "ORDER_ON_THE_WAY";
         public static string ORDER_COMPLETED = "ORDER_COMPLETED";
-        public static string ORDER_CANCLED = "ORDER_CANCLED";
+        public static string ORDER_CANCELED = "ORDER_CANCELED";
+        public static string ORDER_FAILED = "ORDER_FAILED";
     }
 }

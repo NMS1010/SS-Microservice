@@ -14,6 +14,7 @@ using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.Model.CustomResponse;
 using SS_Microservice.Common.RabbitMQ;
+using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Common.Validators;
@@ -22,6 +23,7 @@ using SS_Microservice.Services.Auth.Application.Common.Constants;
 using SS_Microservice.Services.Auth.Application.Interfaces;
 using SS_Microservice.Services.Auth.Domain.Entities;
 using SS_Microservice.Services.Auth.Infrastructure.Data.DBContext;
+using SS_Microservice.Services.Auth.Infrastructure.Repositotires;
 using SS_Microservice.Services.Auth.Infrastructure.Services;
 using System;
 using System.Reflection;
@@ -64,7 +66,9 @@ builder.Services
         .AddScoped<IAuthService, AuthService>()
         .AddScoped<IUserService, UserService>()
         .AddScoped<IUploadService, UploadService>()
-        .AddSingleton<ICurrentUserService, CurrentUserService>();
+        .AddSingleton<ICurrentUserService, CurrentUserService>()
+        .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
+        .AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 var app = builder.Build();
 

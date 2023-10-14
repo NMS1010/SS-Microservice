@@ -11,7 +11,7 @@ using SS_Microservice.Services.Basket.Infrastructure.Data.DBContext;
 namespace SS_Microservice.Services.Basket.Migrations
 {
     [DbContext(typeof(BasketDBContext))]
-    [Migration("20231008052441_InitDB")]
+    [Migration("20231014032814_InitDB")]
     partial class InitDB
     {
         /// <inheritdoc />

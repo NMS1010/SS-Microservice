@@ -11,7 +11,7 @@ using SS_Microservice.Services.Address.Infrastructure.Data.DBContext;
 namespace SS_Microservice.Services.Address.Migrations
 {
     [DbContext(typeof(AddressDbContext))]
-    [Migration("20231012025223_InitDB")]
+    [Migration("20231014032735_InitDB")]
     partial class InitDB
     {
         /// <inheritdoc />

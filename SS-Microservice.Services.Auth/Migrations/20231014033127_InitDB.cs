@@ -240,9 +240,9 @@ namespace SS_Microservice.Services.Auth.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "CreatedAt", "CreatedBy", "Name", "NormalizedName", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { "24b6aca6-5f46-4202-b4b5-48c5c970f65f", "2261037f-fd53-4c84-9c85-e9c439b0eebe", new DateTime(2023, 10, 12, 0, 27, 55, 12, DateTimeKind.Local).AddTicks(7036), "System", "STAFF", "STAFF", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { "76304bc7-b2b0-4feb-99aa-5e8cd6f54bde", "ce478605-e504-436a-af67-8728f2a3c3ab", new DateTime(2023, 10, 12, 0, 27, 55, 12, DateTimeKind.Local).AddTicks(7036), "System", "ADMIN", "ADMIN", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { "a9a6731c-3ccd-4f11-8da3-c5dc17caad8d", "088e9bd2-be69-479a-b348-b9508269b897", new DateTime(2023, 10, 12, 0, 27, 55, 12, DateTimeKind.Local).AddTicks(7036), "System", "USER", "USER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null }
+                    { "083e7188-182f-4884-9223-83b9e5134e97", "08af5795-761e-4757-9bc8-415d99516d22", new DateTime(2023, 10, 14, 10, 31, 27, 121, DateTimeKind.Local).AddTicks(9592), "System", "STAFF", "STAFF", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { "4a9ddd8d-c307-43f6-845b-e93edfc87c05", "8705d246-5471-4c2d-a723-4f40baabed14", new DateTime(2023, 10, 14, 10, 31, 27, 121, DateTimeKind.Local).AddTicks(9592), "System", "ADMIN", "ADMIN", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { "5c999c85-5c92-4309-b542-4a4b66c4ff97", "0a589419-2616-44b0-90c5-aa8e521f80f5", new DateTime(2023, 10, 14, 10, 31, 27, 121, DateTimeKind.Local).AddTicks(9592), "System", "USER", "USER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null }
                 });
 
             migrationBuilder.CreateIndex(

@@ -10,6 +10,7 @@
     <_ContentIncludedByDefault Remove="routes\ocelot.basket.api.json" />
     <_ContentIncludedByDefault Remove="routes\ocelot.category.api.json" />
     <_ContentIncludedByDefault Remove="routes\ocelot.order.api.json" />
+    <_ContentIncludedByDefault Remove="routes\ocelot.user.api.json" />
   </ItemGroup>
 
   <ItemGroup>

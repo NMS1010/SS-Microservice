@@ -11,7 +11,7 @@ using SS_Microservice.Services.Auth.Infrastructure.Data.DBContext;
 namespace SS_Microservice.Services.Auth.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20231011172755_InitDB")]
+    [Migration("20231014033127_InitDB")]
     partial class InitDB
     {
         /// <inheritdoc />
@@ -164,9 +164,9 @@ namespace SS_Microservice.Services.Auth.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "76304bc7-b2b0-4feb-99aa-5e8cd6f54bde",
-                            ConcurrencyStamp = "ce478605-e504-436a-af67-8728f2a3c3ab",
-                            CreatedAt = new DateTime(2023, 10, 12, 0, 27, 55, 12, DateTimeKind.Local).AddTicks(7036),
+                            Id = "4a9ddd8d-c307-43f6-845b-e93edfc87c05",
+                            ConcurrencyStamp = "8705d246-5471-4c2d-a723-4f40baabed14",
+                            CreatedAt = new DateTime(2023, 10, 14, 10, 31, 27, 121, DateTimeKind.Local).AddTicks(9592),
                             CreatedBy = "System",
                             Name = "ADMIN",
                             NormalizedName = "ADMIN",
@@ -174,9 +174,9 @@ namespace SS_Microservice.Services.Auth.Migrations
                         },
                         new
                         {
-                            Id = "a9a6731c-3ccd-4f11-8da3-c5dc17caad8d",
-                            ConcurrencyStamp = "088e9bd2-be69-479a-b348-b9508269b897",
-                            CreatedAt = new DateTime(2023, 10, 12, 0, 27, 55, 12, DateTimeKind.Local).AddTicks(7036),
+                            Id = "5c999c85-5c92-4309-b542-4a4b66c4ff97",
+                            ConcurrencyStamp = "0a589419-2616-44b0-90c5-aa8e521f80f5",
+                            CreatedAt = new DateTime(2023, 10, 14, 10, 31, 27, 121, DateTimeKind.Local).AddTicks(9592),
                             CreatedBy = "System",
                             Name = "USER",
                             NormalizedName = "USER",
@@ -184,9 +184,9 @@ namespace SS_Microservice.Services.Auth.Migrations
                         },
                         new
                         {
-                            Id = "24b6aca6-5f46-4202-b4b5-48c5c970f65f",
-                            ConcurrencyStamp = "2261037f-fd53-4c84-9c85-e9c439b0eebe",
-                            CreatedAt = new DateTime(2023, 10, 12, 0, 27, 55, 12, DateTimeKind.Local).AddTicks(7036),
+                            Id = "083e7188-182f-4884-9223-83b9e5134e97",
+                            ConcurrencyStamp = "08af5795-761e-4757-9bc8-415d99516d22",
+                            CreatedAt = new DateTime(2023, 10, 14, 10, 31, 27, 121, DateTimeKind.Local).AddTicks(9592),
                             CreatedBy = "System",
                             Name = "STAFF",
                             NormalizedName = "STAFF",

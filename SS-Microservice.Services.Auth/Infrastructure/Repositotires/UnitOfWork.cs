@@ -1,22 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using SS_Microservice.Services.Order.Infrastructure.Data.DBContext;
-using SS_Microservice.Services.Order.Infrastructure.Repositories;
-using System;
+using SS_Microservice.Common.Repository;
+using SS_Microservice.Services.Auth.Infrastructure.Data.DBContext;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SS_Microservice.Common.Repository
+namespace SS_Microservice.Services.Auth.Infrastructure.Repositotires
 {
     public class UnitOfWork : IUnitOfWork
     {
         private Hashtable _repositories;
 
-        public OrderDbContext Context { get; }
+        public AuthDbContext Context { get; }
 
-        public UnitOfWork(OrderDbContext context)
+        public UnitOfWork(AuthDbContext context)
         {
             Context = context;
         }

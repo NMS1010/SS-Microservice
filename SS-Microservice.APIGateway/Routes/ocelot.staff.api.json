@@ -1,0 +1,42 @@
+{
+  "Routes": [
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "AuthService",
+      "DownstreamPathTemplate": "/api/staffs/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "auth",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7026
+        }
+      ],
+      "UpstreamPathTemplate": "/staffs/{everything}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "AuthService",
+      "DownstreamPathTemplate": "/api/staffs",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "auth",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7026
+        }
+      ],
+      "UpstreamPathTemplate": "/staffs",
+      "UpstreamHttpMethod": [ "GET", "PUT", "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    }
+  ]
+}

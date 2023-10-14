@@ -16,8 +16,6 @@ namespace SS_Microservice.Services.Address.Infrastructure.Repositories
             Context = context;
         }
 
-        private bool _disposed;
-        private string _errorMessage = string.Empty;
         private IDbContextTransaction _objTran;
 
         public IGenericRepository<T> Repository<T>() where T : class
@@ -65,14 +63,6 @@ namespace SS_Microservice.Services.Address.Infrastructure.Repositories
             {
                 throw new Exception("Error while executing this operation");
             }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-                if (disposing)
-                    Context.Dispose();
-            _disposed = true;
         }
     }
 }

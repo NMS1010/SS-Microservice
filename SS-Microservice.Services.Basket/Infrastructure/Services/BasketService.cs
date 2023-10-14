@@ -66,10 +66,10 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
                 await _unitOfWork.Commit();
                 return isSuccess;
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.Rollback();
-                throw ex;
+                throw;
             }
         }
 
@@ -104,7 +104,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
         private async Task<BasketItem> FindBasketItem(string userId, long basketItemId)
         {
             var basketItem = await _unitOfWork.Repository<BasketItem>().GetById(basketItemId)
-                ?? throw new NotFoundException("Cannot found this basket item ");
+                ?? throw new NotFoundException("Cannot find this basket item ");
             var basket = await _unitOfWork.Repository<Domain.Entities.Basket>().GetById(basketItem.BasketId)
                 ?? throw new NotFoundException("Cannot regconize user's basket");
             if (basket.UserId != userId)
@@ -127,10 +127,10 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
                 await _unitOfWork.Commit();
                 return isSuccess;
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.Rollback();
-                throw ex;
+                throw;
             }
         }
 
@@ -151,10 +151,10 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
 
                 return isSuccess;
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.Rollback();
-                throw ex;
+                throw;
             }
         }
 
@@ -172,10 +172,10 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
                 await _unitOfWork.Commit();
                 return basket.Id;
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.Rollback();
-                throw ex;
+                throw;
             }
         }
 
@@ -205,10 +205,10 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
                 await _unitOfWork.Commit();
                 return isSuccess;
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.Rollback();
-                throw ex;
+                throw;
             }
         }
     }

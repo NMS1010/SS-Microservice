@@ -47,10 +47,10 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
 
                 return isSuccess;
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.Rollback();
-                throw ex;
+                throw;
             }
         }
 
@@ -71,10 +71,10 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
 
                 return isSuccess;
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.Rollback();
-                throw ex;
+                throw;
             }
         }
 
@@ -123,10 +123,10 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
 
                 return isSuccess;
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.Rollback();
-                throw ex;
+                throw;
             }
         }
     }

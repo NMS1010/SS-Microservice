@@ -9,7 +9,7 @@ namespace SS_Microservice.Services.Address.Application.Common.AutoMapper
 {
     public class AddressProfile : Profile
     {
-        protected AddressProfile()
+        public AddressProfile()
         {
             CreateMap<Domain.Entities.Address, AddressDto>();
             CreateMap<Ward, WardDto>();

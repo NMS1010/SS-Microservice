@@ -2,7 +2,7 @@
 {
     public static class PAYMENT_METHOD
     {
-        public static string COD = "cod";
-        public static string PAYPAL = "paypal";
+        public static string COD = "COD";
+        public static string PAYPAL = "PAYPAL";
     }
 }

@@ -3,6 +3,36 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "AddressService",
+      "DownstreamPathTemplate": "/api/addresses/p",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "address",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7075
+        }
+      ],
+      "UpstreamPathTemplate": "/addresses/p",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "AddressService",
+      "DownstreamPathTemplate": "/api/addresses/p/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "address",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7075
+        }
+      ],
+      "UpstreamPathTemplate": "/addresses/p/{everything}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "AddressService",
       "DownstreamPathTemplate": "/api/addresses/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "address",
@@ -22,7 +52,7 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "AddressService",
-      "DownstreamPathTemplate": "/api/addresses/p/{everything}",
+      "DownstreamPathTemplate": "/api/addresses",
       "DownstreamScheme": "https",
       "SwaggerKey": "address",
       "DownstreamHostAndPorts": [
@@ -31,8 +61,12 @@
           "Port": 7075
         }
       ],
-      "UpstreamPathTemplate": "/addresses/p/{everything}",
-      "UpstreamHttpMethod": [ "GET" ]
+      "UpstreamPathTemplate": "/addresses",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
     }
   ]
 }

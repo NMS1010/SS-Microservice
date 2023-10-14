@@ -21,5 +21,9 @@ namespace SS_Microservice.Services.Order.Application.Specifications
             int take = query.PageSize;
             ApplyPaging(take, skip);
         }
+
+        public OrderStateSpecification(string code) : base(x => x.Code == code)
+        {
+        }
     }
 }

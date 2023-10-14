@@ -34,6 +34,12 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             try
             {
                 await _unitOfWork.CreateTransaction();
+                var delivery = await _unitOfWork.Repository<Delivery>().GetById(command.DeliveryId)
+                    ?? throw new Exception("Cannot find delivery to create order");
+
+                var paymentMethod = await _unitOfWork.Repository<PaymentMethod>().GetById(command.PaymentMethodId)
+                    ?? throw new Exception("Cannot find payment method to create order");
+
                 var orderItems = new List<OrderItem>();
                 decimal totalItemPrice = 0;
                 command.Items.ForEach(item =>
@@ -49,8 +55,6 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                         TotalPrice = totalPrice
                     });
                 });
-                var delivery = await _unitOfWork.Repository<Delivery>().GetById(command.DeliveryId)
-                    ?? throw new Exception("Cannot found delivery to create order");
                 var order = new Domain.Entities.Order()
                 {
                     AddressId = command.AddressId,
@@ -69,7 +73,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                 order.Transaction = new Transaction()
                 {
                     TotalPay = order.TotalAmount + order.ShippingCost + order.Tax,
-                    PaymentMethodType = command.PaymentMethodType
+                    PaymentMethodType = paymentMethod.Code
                 };
 
                 if (command.PaymentMethodType.ToLower() != PAYMENT_METHOD.COD)
@@ -92,10 +96,10 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                 await _unitOfWork.Commit();
                 return (isSuccess, order.Id);
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.Rollback();
-                throw ex;
+                throw;
             }
         }
 
@@ -105,30 +109,32 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             {
                 await _unitOfWork.CreateTransaction();
                 var orderRepo = _unitOfWork.Repository<Domain.Entities.Order>();
-                var orderitemRepo = _unitOfWork.Repository<Domain.Entities.OrderItem>();
-                var transactionRepo = _unitOfWork.Repository<Transaction>();
+                var orderStateRepo = _unitOfWork.Repository<Domain.Entities.OrderState>();
 
-                var order = await orderRepo.GetEntityWithSpec(new OrderSpecification(command.OrderId, _currentUserService.UserId));
-                var transaction = await transactionRepo.GetEntityWithSpec(new TransactionSpecification(order.Id));
-                foreach (var oi in order.OrderItems)
-                {
-                    orderitemRepo.Delete(oi);
-                }
-                transactionRepo.Delete(transaction);
-                orderRepo.Delete(order);
-                var res = await _unitOfWork.Save();
-                var isSuccess = res > 0;
+                var order = await orderRepo.GetEntityWithSpec(new OrderSpecification(command.OrderId, _currentUserService.UserId))
+                    ?? throw new NotFoundException("Cannot handle action");
+
+                var orderState = await orderStateRepo.GetEntityWithSpec(new OrderStateSpecification(ORDER_STATE.ORDER_CANCELED))
+                    ?? throw new NotFoundException("Cannot handle action");
+                order.PaymentStatus = false;
+                order.OrderState = orderState;
+
+                orderRepo.Update(order);
+
+                var isSuccess = await _unitOfWork.Save() > 0;
                 if (!isSuccess)
                 {
                     throw new Exception("Cannot handle action");
                 }
+
                 await _unitOfWork.Commit();
+
                 return isSuccess;
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.Rollback();
-                throw ex;
+                throw;
             }
         }
 
@@ -151,7 +157,19 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             var orderDtos = new List<OrderDto>();
             orders.ForEach(item =>
             {
-                orderDtos.Add(_mapper.Map<OrderDto>(item));
+                var oDto = new OrderDto();
+
+                var oiDtos = new List<OrderItemDto>();
+
+                item.OrderItems.ToList().ForEach(oi =>
+                {
+                    oiDtos.Add(_mapper.Map<OrderItemDto>(oi));
+                });
+
+                _mapper.Map(item, oDto);
+                oDto.OrderItems = oiDtos;
+
+                orderDtos.Add(oDto);
             });
 
             return new PaginatedResult<OrderDto>(orderDtos, (int)query.PageIndex, count, (int)query.PageSize);
@@ -167,7 +185,7 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                 var orderState = await _unitOfWork.Repository<Domain.Entities.OrderState>().GetById(command.OrderStateId)
                     ?? throw new NotFoundException("Cannot update state for this order");
                 order.OrderStateId = orderState.Id;
-                if (orderState.Code == ORDER_STATE.ORDER_CANCLED)
+                if (orderState.Code == ORDER_STATE.ORDER_CANCELED)
                 {
                     if (!string.IsNullOrEmpty(command.OtherCancelReason))
                         order.OtherCancelReason = command.OtherCancelReason;
@@ -192,10 +210,10 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
                 await _unitOfWork.Commit();
                 return isSuccess;
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.Rollback();
-                throw ex;
+                throw;
             }
         }
     }
