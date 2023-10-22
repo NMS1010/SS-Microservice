@@ -7,9 +7,9 @@ using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
+using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
-using SS_Microservice.Common.Model.CustomResponse;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Validators;
@@ -23,16 +23,22 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
-builder.Host.UseLogging();
 
 var configuration = builder.Configuration;
+
+builder.Host
+    .UseLogging()
+    .UseAppMetrics(configuration);
+
+builder.Services.AddMetrics();
+
 builder.Services.AddProblemDetailsSetup();
 builder.Services.AddDbContext<AddressDbContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("AddressDbContext")));
 builder.Services
     .AddControllers()
     .ConfigureValidationErrorResponse();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(AddressProfile).Assembly);
 

@@ -1,16 +1,18 @@
 using AutoMapper;
-using Microsoft.Extensions.Configuration;
+using FluentValidation;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using SS_Microservice.Common.Consul;
-using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
+using SS_Microservice.Common.Logging;
+using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Services.Upload;
+using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Categorys.Infrastructure.Repositories;
 using SS_Microservice.Services.Products.Application.Common.AutoMapper;
 using SS_Microservice.Services.Products.Application.Features.Order.EventConsumer;
@@ -20,16 +22,18 @@ using SS_Microservice.Services.Products.Infrastructure.Data.Context;
 using SS_Microservice.Services.Products.Infrastructure.Repositories;
 using SS_Microservice.Services.Products.Infrastructure.Services;
 using System.Reflection;
-using FluentValidation;
-using SS_Microservice.Common.Model.CustomResponse;
-using SS_Microservice.Common.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configuration = builder.Configuration;
 // Add services to the container.
-//builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
-builder.Host.UseLogging();
+var configuration = builder.Configuration;
+
+builder.Host
+    .UseLogging()
+    .UseAppMetrics(configuration);
+
+builder.Services.AddMetrics();
+
 builder.Services.AddProblemDetailsSetup();
 builder.Services.Configure<MongoDBSettings>(
                configuration.GetSection("ProductDatabaseSetting"));

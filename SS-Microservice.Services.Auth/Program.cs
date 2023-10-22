@@ -10,6 +10,7 @@ using Serilog;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Logging;
+using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.Model.CustomResponse;
@@ -31,8 +32,13 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
-//builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
-builder.Host.UseLogging();
+
+builder.Host
+    .UseLogging()
+    .UseAppMetrics(configuration);
+
+builder.Services.AddMetrics();
+
 builder.Services.AddProblemDetailsSetup();
 // Add services to the container.
 builder.Services.AddDbContext<AuthDbContext>(options =>

@@ -7,6 +7,7 @@ using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
+using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Model.CustomResponse;
 using SS_Microservice.Common.Repository;
@@ -22,9 +23,14 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Host.UseLogging();
-
 var configuration = builder.Configuration;
+
+builder.Host
+    .UseLogging()
+    .UseAppMetrics(configuration);
+
+builder.Services.AddMetrics();
+
 builder.Services.AddProblemDetailsSetup();
 builder.Services.AddDbContext<InfrastructureDbContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("InfrastructureDbContext")));

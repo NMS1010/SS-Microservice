@@ -22,14 +22,20 @@ using Hellang.Middleware.ProblemDetails;
 using FluentValidation;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Common.Migration;
+using SS_Microservice.Common.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
-builder.Host.UseLogging();
-builder.Services.AddProblemDetailsSetup();
 var configuration = builder.Configuration;
+
+builder.Host
+    .UseLogging()
+    .UseAppMetrics(configuration);
+
+builder.Services.AddMetrics();
+
+builder.Services.AddProblemDetailsSetup();
 builder.Services.AddDbContext<BasketDBContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("BasketDbContext")));
 builder.Services.AddControllers()

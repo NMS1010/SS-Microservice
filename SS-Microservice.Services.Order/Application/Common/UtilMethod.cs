@@ -6,7 +6,9 @@ namespace SS_Microservice.Services.Order.Application.Common
     {
         public static string GenerateCode()
         {
-            return Guid.NewGuid().ToString();
+            var guid = Guid.NewGuid().ToString();
+
+            return guid.Replace("-", string.Empty).ToUpper();
         }
     }
 }

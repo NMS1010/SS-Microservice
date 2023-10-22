@@ -9,6 +9,7 @@ using SS_Microservice.Common.Grpc.Product.Protos;
 using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
+using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.RabbitMQ;
@@ -26,11 +27,15 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-//builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
-builder.Host.UseLogging();
-builder.Services.AddProblemDetailsSetup();
 var configuration = builder.Configuration;
+
+builder.Host
+    .UseLogging()
+    .UseAppMetrics(configuration);
+
+builder.Services.AddMetrics();
+
+builder.Services.AddProblemDetailsSetup();
 builder.Services.AddDbContext<OrderDbContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("OrderDbContext")));
 builder.Services.AddControllers()
