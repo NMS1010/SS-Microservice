@@ -12,8 +12,8 @@
           "Port": 7026
         }
       ],
-      "UpstreamPathTemplate": "/users/{everything}",
-      "UpstreamHttpMethod": [ "GET", "PUT" ],
+      "UpstreamPathTemplate": "/api/users/{everything}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []
@@ -31,8 +31,8 @@
           "Port": 7026
         }
       ],
-      "UpstreamPathTemplate": "/users",
-      "UpstreamHttpMethod": [ "GET", "PUT" ],
+      "UpstreamPathTemplate": "/api/users",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []

@@ -6,11 +6,11 @@ using SS_Microservice.Services.Auth.Application.Model.Auth;
 
 namespace SS_Microservice.Services.Auth.Application.Features.Auth.Commands
 {
-    public class RegisterUserCommand : RegisterRequest, IRequest<bool>
+    public class RegisterUserCommand : RegisterRequest, IRequest<string>
     {
     }
 
-    public class RegisterHandler : IRequestHandler<RegisterUserCommand, bool>
+    public class RegisterHandler : IRequestHandler<RegisterUserCommand, string>
     {
         private readonly IAuthService _authService;
         private readonly IBus _publisher;
@@ -23,20 +23,20 @@ namespace SS_Microservice.Services.Auth.Application.Features.Auth.Commands
             _logger = logger;
         }
 
-        public async Task<bool> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
             var userId = await _authService.Register(request);
             if (!string.IsNullOrEmpty(userId))
             {
-                _logger.LogInformation($"Start publishing message with userId = {userId}");
+                _logger.LogInformation($"[Auth Service] Start publishing UserRegisted event with userId = {userId}");
                 await _publisher.Publish(new UserRegistedEvent()
                 {
                     Email = request.Email,
                     UserId = userId,
                 });
-                _logger.LogInformation($"Message is published");
+                _logger.LogInformation($"[Auth Service] UserRegistedEvent is published");
             }
-            return !string.IsNullOrEmpty(userId);
+            return userId;
         }
     }
 }

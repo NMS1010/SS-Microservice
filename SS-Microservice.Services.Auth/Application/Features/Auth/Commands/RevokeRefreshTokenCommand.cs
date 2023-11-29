@@ -3,12 +3,12 @@ using SS_Microservice.Services.Auth.Application.Interfaces;
 
 namespace SS_Microservice.Services.Auth.Application.Features.Auth.Commands
 {
-    public class RevokeTokenCommand : IRequest<bool>
+    public class RevokeRefreshTokenCommand : IRequest
     {
         public string UserId { get; set; }
     }
 
-    public class RevokeTokenHandler : IRequestHandler<RevokeTokenCommand, bool>
+    public class RevokeTokenHandler : IRequestHandler<RevokeRefreshTokenCommand>
     {
         private readonly IAuthService _authService;
 
@@ -17,9 +17,9 @@ namespace SS_Microservice.Services.Auth.Application.Features.Auth.Commands
             _authService = authService;
         }
 
-        public async Task<bool> Handle(RevokeTokenCommand request, CancellationToken cancellationToken)
+        public async Task Handle(RevokeRefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            return await _authService.RevokeRefreshToken(request.UserId);
+            await _authService.RevokeRefreshToken(request);
         }
     }
 }

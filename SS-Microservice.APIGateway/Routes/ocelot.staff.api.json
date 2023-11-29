@@ -12,8 +12,8 @@
           "Port": 7026
         }
       ],
-      "UpstreamPathTemplate": "/staffs/{everything}",
-      "UpstreamHttpMethod": [ "GET", "PUT", "POST" ],
+      "UpstreamPathTemplate": "/api/staffs/{everything}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "POST", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []
@@ -31,8 +31,8 @@
           "Port": 7026
         }
       ],
-      "UpstreamPathTemplate": "/staffs",
-      "UpstreamHttpMethod": [ "GET", "PUT", "POST" ],
+      "UpstreamPathTemplate": "/api/staffs",
+      "UpstreamHttpMethod": [ "GET", "DELETE", "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []

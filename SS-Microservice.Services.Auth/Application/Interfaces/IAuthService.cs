@@ -6,14 +6,25 @@ namespace SS_Microservice.Services.Auth.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<AuthDto> Authenticate(LoginQuery request);
+        Task<AuthDto> Authenticate(LoginQuery query);
 
-        Task<AuthDto> RefreshToken(RefreshTokenCommand request);
+        Task<AuthDto> AuthenticateWithGoogle(GoogleAuthCommand command);
 
-        Task<bool> RevokeRefreshToken(string userId);
+        Task<string> Register(RegisterUserCommand command, bool isGoogleAuthen = false);
+
+        Task<AuthDto> RefreshToken(RefreshTokenCommand command);
+
+        Task<bool> VerifyOTP(VerifyOTPCommand command);
+
+        Task<bool> ResendOTP(ResendOTPCommand command);
+
+        Task<bool> ForgotPassword(ForgotPasswordCommand command);
+
+        Task<bool> ResetPassword(ResetPasswordCommand command);
+
+        Task RevokeRefreshToken(RevokeRefreshTokenCommand command);
 
         Task RevokeAllRefreshToken();
 
-        Task<string> Register(RegisterUserCommand request);
     }
 }

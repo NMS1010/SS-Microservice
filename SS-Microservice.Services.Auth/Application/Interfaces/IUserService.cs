@@ -1,8 +1,8 @@
 ﻿using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Dto;
+using SS_Microservice.Services.Auth.Application.Features.Staff.Commands;
 using SS_Microservice.Services.Auth.Application.Features.User.Commands;
 using SS_Microservice.Services.Auth.Application.Features.User.Queries;
-using SS_Microservice.Services.Auth.Application.Model.User;
 
 namespace SS_Microservice.Services.Auth.Application.Interfaces
 {
@@ -24,7 +24,11 @@ namespace SS_Microservice.Services.Auth.Application.Interfaces
 
         Task<bool> ToggleUserStatus(ToggleUserCommand command);
 
+        Task<bool> ToggleStaffStatus(ToggleStaffCommand command);
+
         Task<bool> DisableListUserStatus(DisableListUserCommand command);
+
+        Task<bool> DisableListStaffStatus(DisableListStaffCommand command);
 
         Task<bool> ChangePassword(ChangePasswordCommand command);
     }
