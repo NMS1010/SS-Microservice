@@ -15,6 +15,7 @@ namespace SS_Microservice.Services.Address.Application.Common.AutoMapper
             CreateMap<Ward, WardDto>();
             CreateMap<District, DistrictDto>();
             CreateMap<Province, ProvinceDto>();
+
             CreateMap<CreateAddressCommand, Domain.Entities.Address>();
             CreateMap<UpdateAddressCommand, Domain.Entities.Address>();
 

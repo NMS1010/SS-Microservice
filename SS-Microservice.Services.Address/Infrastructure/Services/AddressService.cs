@@ -14,248 +14,257 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SS_Microservice.Services.Address.Infrastructure.Services
 {
-	public class AddressService : IAddressService
-	{
-		private readonly IUnitOfWork _unitOfWork;
-		private readonly IMapper _mapper;
+    public class AddressService : IAddressService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-		public AddressService(IUnitOfWork unitOfWork, IMapper mapper)
-		{
-			_unitOfWork = unitOfWork;
-			_mapper = mapper;
-		}
+        public AddressService(IUnitOfWork unitOfWork, IMapper mapper)
+        {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
 
-		public async Task<long> CreateAddress(CreateAddressCommand command)
-		{
-			try
-			{
-				await _unitOfWork.CreateTransaction();
+        public async Task<long> CreateAddress(CreateAddressCommand command)
+        {
+            try
+            {
+                await _unitOfWork.CreateTransaction();
 
-				var province = await _unitOfWork.Repository<Province>().GetById(command.ProvinceId)
-					?? throw new NotFoundException("Cannot find province");
+                var province = await _unitOfWork.Repository<Province>().GetById(command.ProvinceId)
+                    ?? throw new NotFoundException("Cannot find province");
 
-				var district = await _unitOfWork.Repository<District>().GetEntityWithSpec(new DistrictSpecification(command.DistrictId))
-					?? throw new NotFoundException("Cannot find district");
+                var district = await _unitOfWork.Repository<District>().GetEntityWithSpec(new DistrictSpecification(command.DistrictId))
+                    ?? throw new NotFoundException("Cannot find district");
 
-				var ward = await _unitOfWork.Repository<Ward>().GetEntityWithSpec(new WardSpecification(command.WardId))
-					?? throw new NotFoundException("Cannot find ward");
+                var ward = await _unitOfWork.Repository<Ward>().GetEntityWithSpec(new WardSpecification(command.WardId))
+                    ?? throw new NotFoundException("Cannot find ward");
 
-				if (ward.District.Id != district.Id || district.Province.Id != province.Id)
-					throw new ValidationException("Cannot identify this address");
+                if (ward.District.Id != district.Id || district.Province.Id != province.Id)
+                    throw new ValidationException("Cannot identify this address");
 
-				var address = _mapper.Map<Domain.Entities.Address>(command);
-				address.Province = province;
-				address.District = district;
-				address.Ward = ward;
-				address.IsDefault = true;
+                var address = _mapper.Map<Domain.Entities.Address>(command);
+                address.Province = province;
+                address.District = district;
+                address.Ward = ward;
+                address.IsDefault = true;
 
-				var addresses = await _unitOfWork.Repository<Domain.Entities.Address>().ListAsync(new AddressSpecification(command.UserId, isDefault: true));
+                var addresses = await _unitOfWork.Repository<Domain.Entities.Address>().ListAsync(new AddressSpecification(command.UserId, isDefault: true));
 
-				foreach (var a in addresses)
-				{
-					a.IsDefault = false;
-					_unitOfWork.Repository<Domain.Entities.Address>().Update(a);
-				}
+                foreach (var a in addresses)
+                {
+                    a.IsDefault = false;
+                    _unitOfWork.Repository<Domain.Entities.Address>().Update(a);
+                }
 
-				await _unitOfWork.Repository<Domain.Entities.Address>().Insert(address);
+                await _unitOfWork.Repository<Domain.Entities.Address>().Insert(address);
 
-				var isSuccess = await _unitOfWork.Save() > 0;
-				await _unitOfWork.Commit();
+                var isSuccess = await _unitOfWork.Save() > 0;
+                await _unitOfWork.Commit();
 
-				if (!isSuccess)
-				{
-					throw new Exception("Cannot insert address for user");
-				}
+                if (!isSuccess)
+                {
+                    throw new Exception("Cannot insert address for user");
+                }
 
-				return address.Id;
-			}
-			catch
-			{
-				await _unitOfWork.Rollback();
-				throw;
-			}
-		}
+                return address.Id;
+            }
+            catch
+            {
+                await _unitOfWork.Rollback();
+                throw;
+            }
+        }
 
-		public async Task<bool> DeleteAddress(DeleteAddressCommand command)
-		{
-			var address = await _unitOfWork.Repository<Domain.Entities.Address>()
-				.GetEntityWithSpec(new AddressSpecification(command.UserId, command.Id))
-				?? throw new NotFoundException("Cannot find this address");
-			if (address.IsDefault)
-				throw new ValidationException("Cannot delete default address, please set another address to default and try again");
+        public async Task<bool> DeleteAddress(DeleteAddressCommand command)
+        {
+            var address = await _unitOfWork.Repository<Domain.Entities.Address>()
+                .GetEntityWithSpec(new AddressSpecification(command.UserId, command.Id))
+                ?? throw new NotFoundException("Cannot find this address");
+            if (address.IsDefault)
+                throw new ValidationException("Cannot delete default address, please set another address to default and try again");
 
-			address.Status = false;
+            address.Status = false;
 
-			_unitOfWork.Repository<Domain.Entities.Address>().Update(address);
+            _unitOfWork.Repository<Domain.Entities.Address>().Update(address);
 
-			var isSuccess = await _unitOfWork.Save() > 0;
+            var isSuccess = await _unitOfWork.Save() > 0;
 
-			if (!isSuccess)
-			{
-				throw new Exception("Cannot delete address");
-			}
+            if (!isSuccess)
+            {
+                throw new Exception("Cannot delete address");
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		public async Task<AddressDto> GetAddress(GetAddressByIdQuery query)
-		{
-			var address = await _unitOfWork.Repository<Domain.Entities.Address>()
-				.GetEntityWithSpec(new AddressSpecification(query.UserId, query.Id))
-				?? throw new NotFoundException("Cannot find this address");
+        public async Task<AddressDto> GetAddress(GetAddressQuery query)
+        {
+            var address = await _unitOfWork.Repository<Domain.Entities.Address>()
+                .GetEntityWithSpec(new AddressSpecification(query.UserId, query.Id))
+                ?? throw new NotFoundException("Cannot find this address");
 
-			return _mapper.Map<AddressDto>(address);
-		}
+            return _mapper.Map<AddressDto>(address);
+        }
 
-		public async Task<PaginatedResult<AddressDto>> GetListAddress(GetListAddressQuery query)
-		{
-			var spec = new AddressSpecification(query, isPaging: true);
-			var countSpec = new AddressSpecification(query);
+        public async Task<AddressDto> GetDefaultAddress(GetDefaultAddressQuery query)
+        {
+            var address = await _unitOfWork.Repository<Domain.Entities.Address>().GetEntityWithSpec(new AddressSpecification(query.UserId, true));
+            if (address == null)
+                return null;
 
-			var addresses = await _unitOfWork.Repository<Domain.Entities.Address>().ListAsync(spec);
-			var count = await _unitOfWork.Repository<Domain.Entities.Address>().CountAsync(countSpec);
+            return _mapper.Map<AddressDto>(address);
+        }
 
-			var addressDtos = new List<AddressDto>();
-			addresses.ForEach(x => addressDtos.Add(_mapper.Map<AddressDto>(x)));
+        public async Task<PaginatedResult<AddressDto>> GetListAddress(GetListAddressQuery query)
+        {
+            var spec = new AddressSpecification(query, isPaging: true);
+            var countSpec = new AddressSpecification(query);
 
-			return new PaginatedResult<AddressDto>(addressDtos, query.PageIndex, count, query.PageSize);
-		}
+            var addresses = await _unitOfWork.Repository<Domain.Entities.Address>().ListAsync(spec);
+            var count = await _unitOfWork.Repository<Domain.Entities.Address>().CountAsync(countSpec);
 
-		public async Task<List<DistrictDto>> GetListDistrictByProvince(GetListDistrictByProvinceIdQuery query)
-		{
-			var province = await _unitOfWork.Repository<Province>().GetEntityWithSpec(new ProvinceSpecification(query.ProvinceId))
-				?? throw new NotFoundException("Cannot find province");
+            var addressDtos = new List<AddressDto>();
+            addresses.ForEach(x => addressDtos.Add(_mapper.Map<AddressDto>(x)));
 
-			var districtDtos = new List<DistrictDto>();
+            return new PaginatedResult<AddressDto>(addressDtos, query.PageIndex, count, query.PageSize);
+        }
 
-			province.Districts.ToList().ForEach(x => districtDtos.Add(_mapper.Map<DistrictDto>(x)));
+        public async Task<List<DistrictDto>> GetListDistrictByProvince(GetListDistrictByProvinceQuery query)
+        {
+            var province = await _unitOfWork.Repository<Province>().GetEntityWithSpec(new ProvinceSpecification(query.ProvinceId))
+                ?? throw new NotFoundException("Cannot find province");
 
-			return districtDtos;
-		}
+            var districtDtos = new List<DistrictDto>();
 
-		public async Task<List<ProvinceDto>> GetListProvince()
-		{
-			var provinces = (await _unitOfWork.Repository<Province>().GetAll()).ToList();
+            province.Districts.ToList().ForEach(x => districtDtos.Add(_mapper.Map<DistrictDto>(x)));
 
-			var provinceDtos = new List<ProvinceDto>();
+            return districtDtos;
+        }
 
-			provinces.ForEach(x => provinceDtos.Add(_mapper.Map<ProvinceDto>(x)));
+        public async Task<List<ProvinceDto>> GetListProvince()
+        {
+            var provinces = (await _unitOfWork.Repository<Province>().GetAll()).ToList();
 
-			return provinceDtos;
-		}
+            var provinceDtos = new List<ProvinceDto>();
 
-		public async Task<List<WardDto>> GetListWardByDistrict(GetListWardByDistrictIdQuery query)
-		{
-			var district = await _unitOfWork.Repository<District>()
-				.GetEntityWithSpec(new DistrictSpecification(query.DistrictId))
-				?? throw new NotFoundException("Cannot find district");
+            provinces.ForEach(x => provinceDtos.Add(_mapper.Map<ProvinceDto>(x)));
 
-			var wardDtos = new List<WardDto>();
+            return provinceDtos;
+        }
 
-			district.Wards.ToList().ForEach(x => wardDtos.Add(_mapper.Map<WardDto>(x)));
+        public async Task<List<WardDto>> GetListWardByDistrict(GetListWardByDistrictQuery query)
+        {
+            var district = await _unitOfWork.Repository<District>()
+                .GetEntityWithSpec(new DistrictSpecification(query.DistrictId))
+                ?? throw new NotFoundException("Cannot find district");
 
-			return wardDtos;
-		}
+            var wardDtos = new List<WardDto>();
 
-		public async Task<bool> SetAddressDefault(SetDefaultAddressCommand command)
-		{
-			try
-			{
-				await _unitOfWork.CreateTransaction();
-				var address = await _unitOfWork.Repository<Domain.Entities.Address>()
-					.GetEntityWithSpec(new AddressSpecification(command.UserId, command.Id))
-					?? throw new NotFoundException("Cannot find this address");
+            district.Wards.ToList().ForEach(x => wardDtos.Add(_mapper.Map<WardDto>(x)));
 
-				address.IsDefault = true;
+            return wardDtos;
+        }
 
-				var addresses = await _unitOfWork.Repository<Domain.Entities.Address>().ListAsync(new AddressSpecification(command.UserId, isDefault: true));
-				foreach (var a in addresses)
-				{
-					a.IsDefault = false;
-					_unitOfWork.Repository<Domain.Entities.Address>().Update(a);
-				}
+        public async Task<bool> SetAddressDefault(SetDefaultAddressCommand command)
+        {
+            try
+            {
+                await _unitOfWork.CreateTransaction();
+                var address = await _unitOfWork.Repository<Domain.Entities.Address>()
+                    .GetEntityWithSpec(new AddressSpecification(command.UserId, command.Id))
+                    ?? throw new NotFoundException("Cannot find this address");
 
-				_unitOfWork.Repository<Domain.Entities.Address>().Update(address);
+                address.IsDefault = true;
 
-				var isSuccess = await _unitOfWork.Save() > 0;
+                var addresses = await _unitOfWork.Repository<Domain.Entities.Address>().ListAsync(new AddressSpecification(command.UserId, isDefault: true));
+                foreach (var a in addresses)
+                {
+                    a.IsDefault = false;
+                    _unitOfWork.Repository<Domain.Entities.Address>().Update(a);
+                }
 
-				await _unitOfWork.Commit();
+                _unitOfWork.Repository<Domain.Entities.Address>().Update(address);
 
-				if (!isSuccess)
-				{
-					throw new Exception("Cannot set default address");
-				}
+                var isSuccess = await _unitOfWork.Save() > 0;
 
-				return true;
-			}
-			catch
-			{
-				await _unitOfWork.Rollback();
-				throw;
-			}
-		}
+                await _unitOfWork.Commit();
 
-		public async Task<bool> UpdateAddress(UpdateAddressCommand command)
-		{
-			try
-			{
-				await _unitOfWork.CreateTransaction();
+                if (!isSuccess)
+                {
+                    throw new Exception("Cannot set default address");
+                }
 
-				var address = await _unitOfWork.Repository<Domain.Entities.Address>()
-					.GetEntityWithSpec(new AddressSpecification(command.UserId, command.Id))
-					?? throw new NotFoundException("Cannot find address of this user");
+                return true;
+            }
+            catch
+            {
+                await _unitOfWork.Rollback();
+                throw;
+            }
+        }
 
-				var province = await _unitOfWork.Repository<Province>().GetById(command.ProvinceId)
-					?? throw new NotFoundException("Cannot find province");
+        public async Task<bool> UpdateAddress(UpdateAddressCommand command)
+        {
+            try
+            {
+                await _unitOfWork.CreateTransaction();
 
-				var district = await _unitOfWork.Repository<District>().GetEntityWithSpec(new DistrictSpecification(command.DistrictId))
-					?? throw new NotFoundException("Cannot find district");
+                var address = await _unitOfWork.Repository<Domain.Entities.Address>()
+                    .GetEntityWithSpec(new AddressSpecification(command.UserId, command.Id))
+                    ?? throw new NotFoundException("Cannot find address of this user");
 
-				var ward = await _unitOfWork.Repository<Ward>().GetEntityWithSpec(new WardSpecification(command.WardId))
-					?? throw new NotFoundException("Cannot find ward");
+                var province = await _unitOfWork.Repository<Province>().GetById(command.ProvinceId)
+                    ?? throw new NotFoundException("Cannot find province");
 
-				if (ward.District.Id != district.Id || district.Province.Id != province.Id)
-					throw new ValidationException("Cannot identify this address");
+                var district = await _unitOfWork.Repository<District>().GetEntityWithSpec(new DistrictSpecification(command.DistrictId))
+                    ?? throw new NotFoundException("Cannot find district");
 
-				_mapper.Map(command, address);
+                var ward = await _unitOfWork.Repository<Ward>().GetEntityWithSpec(new WardSpecification(command.WardId))
+                    ?? throw new NotFoundException("Cannot find ward");
 
-				address.Province = province;
-				address.District = district;
-				address.Ward = ward;
-				if (!address.IsDefault)
-				{
-					address.IsDefault = command.IsDefault;
+                if (ward.District.Id != district.Id || district.Province.Id != province.Id)
+                    throw new ValidationException("Cannot identify this address");
 
-					if (command.IsDefault)
-					{
-						var addresses = await _unitOfWork.Repository<Domain.Entities.Address>()
-							.ListAsync(new AddressSpecification(address.UserId, isDefault: true));
+                _mapper.Map(command, address);
 
-						foreach (var a in addresses)
-						{
-							a.IsDefault = false;
-							_unitOfWork.Repository<Domain.Entities.Address>().Update(a);
-						}
-					}
-				}
+                address.Province = province;
+                address.District = district;
+                address.Ward = ward;
+                if (!address.IsDefault)
+                {
+                    address.IsDefault = command.IsDefault;
 
-				_unitOfWork.Repository<Domain.Entities.Address>().Update(address);
+                    if (command.IsDefault)
+                    {
+                        var addresses = await _unitOfWork.Repository<Domain.Entities.Address>()
+                            .ListAsync(new AddressSpecification(address.UserId, isDefault: true));
 
-				var isSuccess = await _unitOfWork.Save() > 0;
-				await _unitOfWork.Commit();
+                        foreach (var a in addresses)
+                        {
+                            a.IsDefault = false;
+                            _unitOfWork.Repository<Domain.Entities.Address>().Update(a);
+                        }
+                    }
+                }
 
-				if (!isSuccess)
-				{
-					throw new Exception("Cannot update address for user");
-				}
+                _unitOfWork.Repository<Domain.Entities.Address>().Update(address);
 
-				return true;
-			}
-			catch
-			{
-				await _unitOfWork.Rollback();
-				throw;
-			}
-		}
-	}
+                var isSuccess = await _unitOfWork.Save() > 0;
+                await _unitOfWork.Commit();
+
+                if (!isSuccess)
+                {
+                    throw new Exception("Cannot update address for user");
+                }
+
+                return true;
+            }
+            catch
+            {
+                await _unitOfWork.Rollback();
+                throw;
+            }
+        }
+    }
 }

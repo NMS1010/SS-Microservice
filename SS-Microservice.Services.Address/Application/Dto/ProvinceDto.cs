@@ -2,7 +2,7 @@
 
 namespace SS_Microservice.Services.Address.Application.Dto
 {
-    public class ProvinceDto
+    public class ProvinceDto : BaseAuditableEntity<long>
     {
         public long Id { get; set; }
         public string Name { get; set; }

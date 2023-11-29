@@ -4,21 +4,21 @@ using SS_Microservice.Services.Address.Application.Interfaces;
 
 namespace SS_Microservice.Services.Address.Application.Features.District.Queries
 {
-    public class GetListDistrictByProvinceIdQuery : IRequest<List<DistrictDto>>
+    public class GetListDistrictByProvinceQuery : IRequest<List<DistrictDto>>
     {
         public long ProvinceId { get; set; }
     }
 
-    public class GetListDistrictByProvinceIdHandler : IRequestHandler<GetListDistrictByProvinceIdQuery, List<DistrictDto>>
+    public class GetListDistrictByProvinceHandler : IRequestHandler<GetListDistrictByProvinceQuery, List<DistrictDto>>
     {
         private readonly IAddressService _addressService;
 
-        public GetListDistrictByProvinceIdHandler(IAddressService addressService)
+        public GetListDistrictByProvinceHandler(IAddressService addressService)
         {
             _addressService = addressService;
         }
 
-        public async Task<List<DistrictDto>> Handle(GetListDistrictByProvinceIdQuery request, CancellationToken cancellationToken)
+        public async Task<List<DistrictDto>> Handle(GetListDistrictByProvinceQuery request, CancellationToken cancellationToken)
         {
             return await _addressService.GetListDistrictByProvince(request);
         }

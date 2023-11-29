@@ -1,7 +1,6 @@
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jaeger;
@@ -12,6 +11,7 @@ using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Swagger;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Address.Application.Common.AutoMapper;
 using SS_Microservice.Services.Address.Application.Interfaces;
@@ -35,11 +35,13 @@ builder.Services.AddMetrics();
 builder.Services.AddProblemDetailsSetup();
 builder.Services.AddDbContext<AddressDbContext>(options =>
                 options.UseMySQL(configuration.GetConnectionString("AddressDbContext")));
+
 builder.Services
     .AddControllers()
     .ConfigureValidationErrorResponse();
 
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddAutoMapper(typeof(AddressProfile).Assembly);
 
 builder.Services
@@ -51,42 +53,20 @@ builder.Services
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
 builder.Services.AddOpenTracing();
+
 builder.Services.AddJaeger(configuration.GetJaegerOptions());
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(s =>
-{
-    s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    {
-        Description = @"JWT authorization header using the Bearer sheme. \r\n\r\n
-                        Enter 'Bearer' [space] and then your token in the text input below.
-                        \r\n\r\nExample: 'Bearer 12345abcdef'",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-    s.AddSecurityRequirement(new OpenApiSecurityRequirement()
-    {
-        {
-            new OpenApiSecurityScheme()
-            {
-                Reference = new OpenApiReference()
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header
-            },
-            new List<string>()
-        }
-    });
-});
+
+builder.Services.AddSwaggerGenWithJWTAuth();
+
 builder.Services.AddJwtAuthentication(configuration);
+
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

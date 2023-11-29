@@ -12,7 +12,7 @@
           "Port": 7075
         }
       ],
-      "UpstreamPathTemplate": "/addresses/p",
+      "UpstreamPathTemplate": "/api/addresses/p",
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
@@ -27,7 +27,7 @@
           "Port": 7075
         }
       ],
-      "UpstreamPathTemplate": "/addresses/p/{everything}",
+      "UpstreamPathTemplate": "/api/addresses/p/{everything}",
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
@@ -42,7 +42,7 @@
           "Port": 7075
         }
       ],
-      "UpstreamPathTemplate": "/addresses/{everything}",
+      "UpstreamPathTemplate": "/api/addresses/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -61,8 +61,8 @@
           "Port": 7075
         }
       ],
-      "UpstreamPathTemplate": "/addresses",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamPathTemplate": "/api/addresses",
+      "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []

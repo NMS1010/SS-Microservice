@@ -11,9 +11,7 @@ using SS_Microservice.Services.Address.Application.Features.District.Queries;
 using SS_Microservice.Services.Address.Application.Features.Province.Queries;
 using SS_Microservice.Services.Address.Application.Features.Ward.Queries;
 using SS_Microservice.Services.Address.Application.Models.Address;
-using SS_Microservice.Services.Address.Domain.Entities;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
-using System.Net.WebSockets;
 
 namespace SS_Microservice.Services.Address.Controllers
 {
@@ -58,8 +56,17 @@ namespace SS_Microservice.Services.Address.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAddress([FromRoute] long id)
         {
-            var query = new GetAddressByIdQuery() { Id = id, UserId = _currentUserService.UserId };
+            var query = new GetAddressQuery() { Id = id, UserId = _currentUserService.UserId };
 
+            var res = await _sender.Send(query);
+
+            return Ok(CustomAPIResponse<AddressDto>.Success(res, StatusCodes.Status200OK));
+        }
+
+        [HttpGet("default")]
+        public async Task<IActionResult> GetDefaultAddress()
+        {
+            var query = new GetDefaultAddressQuery() { UserId = _currentUserService.UserId };
             var res = await _sender.Send(query);
 
             return Ok(CustomAPIResponse<AddressDto>.Success(res, StatusCodes.Status200OK));
@@ -107,7 +114,7 @@ namespace SS_Microservice.Services.Address.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetListDistrictByProvince([FromRoute] long provinceId)
         {
-            var query = new GetListDistrictByProvinceIdQuery() { ProvinceId = provinceId };
+            var query = new GetListDistrictByProvinceQuery() { ProvinceId = provinceId };
             var res = await _sender.Send(query);
 
             return Ok(CustomAPIResponse<List<DistrictDto>>.Success(res, StatusCodes.Status200OK));
@@ -117,7 +124,7 @@ namespace SS_Microservice.Services.Address.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetListWardByDistrict([FromRoute] long districtId)
         {
-            var query = new GetListWardByDistrictIdQuery() { DistrictId = districtId };
+            var query = new GetListWardByDistrictQuery() { DistrictId = districtId };
             var res = await _sender.Send(query);
 
             return Ok(CustomAPIResponse<List<WardDto>>.Success(res, StatusCodes.Status200OK));

@@ -3,30 +3,30 @@ using SS_Microservice.Services.Address.Application.Dto;
 using SS_Microservice.Services.Address.Application.Features.Address.Commands;
 using SS_Microservice.Services.Address.Application.Features.Address.Queries;
 using SS_Microservice.Services.Address.Application.Features.District.Queries;
-using SS_Microservice.Services.Address.Application.Features.Province.Queries;
 using SS_Microservice.Services.Address.Application.Features.Ward.Queries;
-using SS_Microservice.Services.Address.Application.Models.Address;
 
 namespace SS_Microservice.Services.Address.Application.Interfaces
 {
     public interface IAddressService
     {
-        public Task<long> CreateAddress(CreateAddressCommand command);
+        Task<long> CreateAddress(CreateAddressCommand command);
 
-        public Task<bool> UpdateAddress(UpdateAddressCommand command);
+        Task<bool> UpdateAddress(UpdateAddressCommand command);
 
-        public Task<bool> DeleteAddress(DeleteAddressCommand command);
+        Task<bool> DeleteAddress(DeleteAddressCommand command);
 
-        public Task<AddressDto> GetAddress(GetAddressByIdQuery query);
+        Task<AddressDto> GetAddress(GetAddressQuery query);
 
-        public Task<PaginatedResult<AddressDto>> GetListAddress(GetListAddressQuery query);
+        Task<AddressDto> GetDefaultAddress(GetDefaultAddressQuery query);
 
-        public Task<bool> SetAddressDefault(SetDefaultAddressCommand command);
+        Task<PaginatedResult<AddressDto>> GetListAddress(GetListAddressQuery query);
+
+        Task<bool> SetAddressDefault(SetDefaultAddressCommand command);
 
         Task<List<ProvinceDto>> GetListProvince();
 
-        Task<List<DistrictDto>> GetListDistrictByProvince(GetListDistrictByProvinceIdQuery query);
+        Task<List<DistrictDto>> GetListDistrictByProvince(GetListDistrictByProvinceQuery query);
 
-        Task<List<WardDto>> GetListWardByDistrict(GetListWardByDistrictIdQuery query);
+        Task<List<WardDto>> GetListWardByDistrict(GetListWardByDistrictQuery query);
     }
 }
