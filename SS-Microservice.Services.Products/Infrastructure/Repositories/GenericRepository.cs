@@ -1,89 +1,102 @@
-﻿using MongoDB.Driver;
-using SharpCompress.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using SS_Microservice.Common.Exceptions;
 using SS_Microservice.Common.Repository;
-using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Specifications;
-using SS_Microservice.Services.Products.Application.Interfaces;
-using SS_Microservice.Services.Products.Domain.Entities;
-using System.Collections.Generic;
+using SS_Microservice.Services.Products.Infrastructure.Data.Context;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseMongoEntity
-    {
-        private readonly IMongoDatabase _database;
-        private readonly IMongoCollection<T> _dbSet;
-        private readonly ICurrentUserService _currentUserService;
+	public class GenericRepository<T> : IGenericRepository<T> where T : class
+	{
+		private readonly ProductDbContext _dbContext;
+		private readonly DbSet<T> _entities;
 
-        public GenericRepository(IProductContext context, ICurrentUserService currentUserService)
-        {
-            _database = context.Database;
-            _dbSet = _database.GetCollection<T>(typeof(T).Name);
-            _currentUserService = currentUserService;
-        }
+		public GenericRepository(ProductDbContext dbContext)
+		{
+			_dbContext = dbContext;
+			_entities = dbContext.Set<T>();
+		}
 
-        public Task<int> CountAsync(ISpecifications<T> specifications)
-        {
-            throw new NotImplementedException();
-        }
+		public bool Delete(T entity)
+		{
+			if (entity == null)
+			{
+				throw new NotFoundException("Cannot find this entity");
+			}
+			try
+			{
+				var x = _entities.Remove(entity);
+				return x.State == EntityState.Deleted;
+			}
+			catch
+			{
+				throw new Exception("Cannot delete this entity");
+			}
+		}
 
-        public bool Delete(T entity)
-        {
-            DeleteResult deleteResult = _dbSet.DeleteOne(filter: g => g.Id == entity.Id);
+		public async Task<IEnumerable<T>> GetAll()
+		{
+			return await _entities.ToListAsync();
+		}
 
-            return deleteResult.IsAcknowledged
-                && deleteResult.DeletedCount > 0;
-        }
+		public async Task<T> GetById(object id)
+		{
+			return await _entities.FindAsync(id) ?? throw new NotFoundException("Cannot find this entity");
+		}
 
-        public async Task<IEnumerable<T>> GetAll()
-        {
-            var all = await _dbSet.FindAsync(x => true);
-            return all.ToEnumerable();
-        }
+		public async Task<bool> Insert(T entity)
+		{
+			if (entity == null)
+			{
+				throw new NotFoundException("Cannot find this entity");
+			}
+			try
+			{
+				var x = await _entities.AddAsync(entity);
+				return x.State == EntityState.Added;
+			}
+			catch
+			{
+				throw new Exception("Cannot insert this entity");
+			}
+		}
 
-        public async Task<T> GetById(object id)
-        {
-            var data = await _dbSet.Find(filter: g => g.Id == id.ToString()).SingleOrDefaultAsync();
-            return data;
-        }
+		public bool Update(T entity)
+		{
+			if (entity == null)
+			{
+				throw new NotFoundException("Cannot find this entity");
+			}
+			try
+			{
+				_dbContext.Entry(entity).State = EntityState.Modified;
+				return true;
+			}
+			catch
+			{
+				throw new Exception("Cannot update this entity");
+			}
+		}
 
-        public Task<T> GetEntityWithSpec(ISpecifications<T> specification)
-        {
-            throw new NotImplementedException();
-        }
+		// Specification Pattern
+		public async Task<List<T>> ListAsync(ISpecifications<T> specification)
+		{
+			return await ApplySpecification(specification).ToListAsync();
+		}
 
-        public async Task<bool> Insert(T entity)
-        {
-            try
-            {
-                var now = DateTime.Now;
-                entity.CreatedAt = now;
-                entity.UpdatedAt = now;
-                entity.CreatedBy = _currentUserService?.UserId ?? "system";
-                entity.UpdatedBy = _currentUserService?.UserId ?? "system";
-                await _dbSet.InsertOneAsync(entity);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+		public async Task<T> GetEntityWithSpec(ISpecifications<T> specification)
+		{
+			return await ApplySpecification(specification).FirstOrDefaultAsync();
+		}
 
-        public Task<List<T>> ListAsync(ISpecifications<T> specification)
-        {
-            throw new NotImplementedException();
-        }
+		public async Task<int> CountAsync(ISpecifications<T> specifications)
+		{
+			return await ApplySpecification(specifications).CountAsync();
+		}
 
-        public bool Update(T entity)
-        {
-            var now = DateTime.Now;
-            entity.UpdatedAt = now;
-            entity.UpdatedBy = _currentUserService?.UserId ?? "system";
-            var updateResult = _dbSet.ReplaceOne(filter: g => g.Id == entity.Id, replacement: entity);
-
-            return updateResult.IsAcknowledged
-                    && updateResult.ModifiedCount > 0;
-        }
-    }
+		private IQueryable<T> ApplySpecification(ISpecifications<T> specifications)
+		{
+			return SpecificationEvaluator<T>.GetQuery(_entities.AsQueryable(), specifications);
+		}
+	}
 }

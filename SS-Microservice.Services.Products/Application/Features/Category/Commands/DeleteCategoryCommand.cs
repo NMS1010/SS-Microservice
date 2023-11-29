@@ -5,7 +5,7 @@ namespace SS_Microservice.Services.Products.Application.Features.Category.Comman
 {
     public class DeleteCategoryCommand : IRequest<bool>
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
     }
 
     public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand, bool>

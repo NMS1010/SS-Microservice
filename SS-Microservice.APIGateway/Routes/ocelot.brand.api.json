@@ -3,7 +3,7 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "ProductService",
-      "DownstreamPathTemplate": "/api/brands/all",
+      "DownstreamPathTemplate": "/api/brands",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
       "DownstreamHostAndPorts": [
@@ -12,8 +12,27 @@
           "Port": 7096
         }
       ],
-      "UpstreamPathTemplate": "/brands/all",
+      "UpstreamPathTemplate": "/api/brands",
       "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "ProductService",
+      "DownstreamPathTemplate": "/api/brands",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "products",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7096
+        }
+      ],
+      "UpstreamPathTemplate": "/api/brands",
+      "UpstreamHttpMethod": [ "DELETE", "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
     },
     {
       "UseServiceDiscovery": true,
@@ -27,7 +46,7 @@
           "Port": 7096
         }
       ],
-      "UpstreamPathTemplate": "/brands/{everything}",
+      "UpstreamPathTemplate": "/api/brands/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",

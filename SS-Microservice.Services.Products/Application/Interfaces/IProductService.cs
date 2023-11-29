@@ -7,24 +7,24 @@ namespace SS_Microservice.Services.Products.Application.Interfaces
 {
     public interface IProductService
     {
-        Task<bool> AddProduct(CreateProductCommand command);
+        Task<PaginatedResult<ProductDto>> GetListProduct(GetListProductQuery query);
+
+        Task<PaginatedResult<ProductDto>> GetListFilteringProduct(GetListFilteringProductQuery query);
+
+        Task<PaginatedResult<ProductDto>> GetListSearchingProduct(GetListSearchingProductQuery query);
+
+        Task<ProductDto> GetProduct(GetProductQuery query);
+
+        Task<ProductDto> GetProductBySlug(GetProductBySlugQuery query);
+
+        Task<long> CreateProduct(CreateProductCommand command);
 
         Task<bool> UpdateProduct(UpdateProductCommand command);
 
-        Task<bool> UpdateProductQuantity(UpdateProductQuantityCommand command);
-
         Task<bool> DeleteProduct(DeleteProductCommand command);
 
-        Task<PaginatedResult<ProductDto>> GetAllProduct(GetAllProductQuery query);
+        Task<bool> DeleteListProduct(DeleteListProductCommand command);
 
-        Task<PaginatedResult<ProductImageDto>> GetAllProductImage(GetAllProductImageQuery query);
-
-        Task<ProductDto> GetProductById(GetProductByIdQuery query);
-
-        Task<bool> AddProductImage(CreateProductImageCommand command);
-
-        Task<bool> UpdateProductImage(UpdateProductImageCommand command);
-
-        Task<bool> DeleteProductImage(DeleteProductImageCommand command);
+        Task<bool> UpdateProductQuantity(UpdateProductQuantityCommand command);
     }
 }

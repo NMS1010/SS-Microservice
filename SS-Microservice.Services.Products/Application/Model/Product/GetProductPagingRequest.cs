@@ -2,7 +2,8 @@
 
 namespace SS_Microservice.Services.Products.Application.Model.Product
 {
-    public class GetProductPagingRequest : PagingRequest
-    {
-    }
+	public class GetProductPagingRequest : PagingRequest
+	{
+		public string CategorySlug { get; set; }
+	}
 }

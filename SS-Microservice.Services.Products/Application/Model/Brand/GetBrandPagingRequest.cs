@@ -2,7 +2,6 @@
 
 namespace SS_Microservice.Services.Products.Application.Model.Brand
 {
-    public class GetBrandPagingRequest : PagingRequest
-    {
-    }
+	public class GetBrandPagingRequest : PagingRequest
+	{ }
 }

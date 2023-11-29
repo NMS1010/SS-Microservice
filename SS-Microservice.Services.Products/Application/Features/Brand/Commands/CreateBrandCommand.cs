@@ -4,11 +4,11 @@ using SS_Microservice.Services.Products.Application.Model.Brand;
 
 namespace SS_Microservice.Services.Products.Application.Features.Brand.Commands
 {
-    public class CreateBrandCommand : CreateBrandRequest, IRequest<bool>
+    public class CreateBrandCommand : CreateBrandRequest, IRequest<long>
     {
     }
 
-    public class CreateBrandHandler : IRequestHandler<CreateBrandCommand, bool>
+    public class CreateBrandHandler : IRequestHandler<CreateBrandCommand, long>
     {
         private readonly IBrandService _brandService;
 
@@ -17,9 +17,9 @@ namespace SS_Microservice.Services.Products.Application.Features.Brand.Commands
             _brandService = brandService;
         }
 
-        public async Task<bool> Handle(CreateBrandCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(CreateBrandCommand request, CancellationToken cancellationToken)
         {
-            return await _brandService.AddBrand(request);
+            return await _brandService.CreateBrand(request);
         }
     }
 }

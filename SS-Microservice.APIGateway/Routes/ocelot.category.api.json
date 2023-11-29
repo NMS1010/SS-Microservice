@@ -3,7 +3,7 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "ProductService",
-      "DownstreamPathTemplate": "/api/categories/all",
+      "DownstreamPathTemplate": "/api/product-categories",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
       "DownstreamHostAndPorts": [
@@ -12,13 +12,13 @@
           "Port": 7096
         }
       ],
-      "UpstreamPathTemplate": "/categories/all",
+      "UpstreamPathTemplate": "/api/product-categories",
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
       "UseServiceDiscovery": true,
       "Servicename": "ProductService",
-      "DownstreamPathTemplate": "/api/categories/{everything}",
+      "DownstreamPathTemplate": "/api/product-categories/slug/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
       "DownstreamHostAndPorts": [
@@ -27,7 +27,41 @@
           "Port": 7096
         }
       ],
-      "UpstreamPathTemplate": "/categories/{everything}",
+      "UpstreamPathTemplate": "/api/product-categories/slug/{everything}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "ProductService",
+      "DownstreamPathTemplate": "/api/product-categories",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "products",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7096
+        }
+      ],
+      "UpstreamPathTemplate": "/api/product-categories",
+      "UpstreamHttpMethod": [ "DELETE", "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "ProductService",
+      "DownstreamPathTemplate": "/api/product-categories/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "products",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7096
+        }
+      ],
+      "UpstreamPathTemplate": "/api/product-categories/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",

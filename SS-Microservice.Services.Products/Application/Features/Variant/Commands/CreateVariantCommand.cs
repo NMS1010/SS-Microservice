@@ -4,22 +4,22 @@ using SS_Microservice.Services.Products.Application.Model.Variant;
 
 namespace SS_Microservice.Services.Products.Application.Features.Variant.Commands
 {
-    public class CreateVariantCommand : CreateVariantRequest, IRequest<bool>
+    public class CreateVariantCommand : CreateVariantRequest, IRequest<long>
     {
     }
 
-    public class CreateVariantHandler : IRequestHandler<CreateVariantCommand, bool>
+    public class CreateVariantHandler : IRequestHandler<CreateVariantCommand, long>
     {
-        private readonly IProductVariantService _service;
+        private readonly IVariantService _variantService;
 
-        public CreateVariantHandler(IProductVariantService service)
+        public CreateVariantHandler(IVariantService variantService)
         {
-            _service = service;
+            _variantService = variantService;
         }
 
-        public async Task<bool> Handle(CreateVariantCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(CreateVariantCommand request, CancellationToken cancellationToken)
         {
-            return await _service.AddVariant(request);
+            return await _variantService.CreateVariant(request);
         }
     }
 }

@@ -1,12 +1,15 @@
-﻿namespace SS_Microservice.Services.Products.Application.Model.Category
+﻿using System.Text.Json.Serialization;
+
+namespace SS_Microservice.Services.Products.Application.Model.Category
 {
     public class UpdateCategoryRequest
     {
-        public string Id { get; set; }
+        [JsonIgnore]
+        public long Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public long? ParentId { get; set; }
         public IFormFile Image { get; set; }
-        public string ParentId { get; set; }
+        public string Slug { get; set; }
         public bool Status { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace SS_Microservice.Services.Products.Application.Features.Product.Command
 
     public class UpdateProductHandler : IRequestHandler<UpdateProductCommand, bool>
     {
-        private IProductService _productService;
+        private readonly IProductService _productService;
 
         public UpdateProductHandler(IProductService productService)
         {

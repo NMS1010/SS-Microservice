@@ -1,12 +1,14 @@
-﻿namespace SS_Microservice.Services.Products.Domain.Entities
+﻿using SS_Microservice.Common.Entities;
+
+namespace SS_Microservice.Services.Products.Domain.Entities
 {
-    public class Category : BaseMongoEntity
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Image { get; set; }
-        public string ParentId { get; set; }
-        public string Slug { get; set; }
-        public bool Status { get; set; } = true;
-    }
+	public class Category : BaseAuditableEntity<long>
+	{
+		public string Name { get; set; }
+		public string Image { get; set; }
+		public long? ParentId { get; set; }
+		public string Slug { get; set; }
+		public bool Status { get; set; } = true;
+		public ICollection<Product> Products { get; set; }
+	}
 }

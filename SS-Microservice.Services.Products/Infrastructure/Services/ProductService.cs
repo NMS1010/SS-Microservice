@@ -1,357 +1,289 @@
 ﻿using AutoMapper;
-using Grpc.Core;
-using SS_Microservice.Common.Services.Upload;
-using SS_Microservice.Services.Auth.Application.Common.Exceptions;
+using Newtonsoft.Json.Linq;
+using SS_Microservice.Common.Exceptions;
 using SS_Microservice.Common.Model.Paging;
+using SS_Microservice.Common.Repository;
+using SS_Microservice.Common.Services.Upload;
+using SS_Microservice.Services.Products.Application.Common.Enums;
 using SS_Microservice.Services.Products.Application.Dto;
-using SS_Microservice.Services.Products.Domain.Entities;
-using SS_Microservice.Common.Grpc.Product.Protos;
-using SS_Microservice.Services.Products.Application.Interfaces;
 using SS_Microservice.Services.Products.Application.Features.Product.Commands;
 using SS_Microservice.Services.Products.Application.Features.Product.Queries;
-using SS_Microservice.Common.StringUtil;
-using SS_Microservice.Services.Products.Application.Interfaces.Repositories;
-using SS_Microservice.Services.Products.Application.Common.Constants;
-using Microsoft.AspNetCore.Server.IISIntegration;
-using DnsClient;
-using MediatR;
-using System.Xml.Linq;
-using SS_Microservice.Services.Products.Application.Common;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using SS_Microservice.Services.Products.Application.Interfaces;
+using SS_Microservice.Services.Products.Application.Model.Variant;
+using SS_Microservice.Services.Products.Application.Specification.Product;
+using SS_Microservice.Services.Products.Domain.Entities;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Services
 {
-    public class ProductService : ProductProtoService.ProductProtoServiceBase, IProductService
+    public class ProductService : /*ProductProtoService.ProductProtoServiceBase,*/ IProductService
     {
-        private readonly IProductRepository _repository;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly IBrandRepository _brandRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IUploadService _uploadService;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository repository, IMapper mapper, IUploadService uploadService, ICategoryRepository categoryRepository, IBrandRepository brandRepository)
+        public ProductService(IMapper mapper, IUploadService uploadService, IUnitOfWork unitOfWork)
         {
-            _repository = repository;
             _mapper = mapper;
             _uploadService = uploadService;
-            _categoryRepository = categoryRepository;
-            _brandRepository = brandRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> AddProduct(CreateProductCommand command)
-        {
-            var product = new Product
-            {
-                Name = command.Name,
-                Description = command.Description,
-                Status = PRODUCT_STATUS.ACTIVE_PRODUCT,
-                BrandId = command.BrandId,
-                Code = command.Code,
-                Unit = command.Unit,
-                ShortDescription = command.ShortDescription,
-                Sold = 0,
-                Rating = 0,
-                Quantity = command.Quantity,
-                Id = Guid.NewGuid().ToString(),
-                Slug = command.Name.Slugify(),
-                CategoryId = command.CategoryId,
-                SaleId = command.SaleId,
-                Cost = command.Cost,
-            };
+        //public override async Task<ProductResponse> GetProductInformation(GetProductDetailByVariant request, ServerCallContext context)
+        //{
+        //	long variantId = long.Parse(request.VariantId);
+        //	var variant = await _unitOfWork.Repository<Variant>().GetEntityWithSpec(new VariantSpecification(variantId))
+        //		?? throw new InvalidRequestException("Unexpected variantId");
+        //	var product = variant.Product;
+        //	if (product == null)
+        //		return null;
+        //	var category = product.Category;
+        //	var brand = product.Brand;
 
-            if (command.Image != null)
-            {
-                var prdImg = new ProductImage()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Image = await _uploadService.UploadFile(command.Image),
-                    ContentType = command.Image.ContentType,
-                    Size = command.Image.Length,
-                    IsDefault = true
-                };
-                UtilMethod.SetAuditable(DateTime.Now, prdImg);
-                product.Images.Add(prdImg);
-            }
-            if (command.SubImages != null)
-            {
-                foreach (var file in command.SubImages)
-                {
-                    if (file != null)
-                    {
-                        var prdImg = new ProductImage()
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            Image = await _uploadService.UploadFile(file),
-                            ContentType = file.ContentType,
-                            Size = file.Length,
-                            IsDefault = false
-                        };
-                        UtilMethod.SetAuditable(DateTime.Now, prdImg);
-                        product.Images.Add(prdImg);
-                    }
-                }
-            }
-            //if (command.Variants != null)
-            //{
-            //    for (int i = 0; i < command.Variants.Count; i++)
-            //    {
-            //        var variantCreateRequest = command.Variants[i];
-            //        if (variantCreateRequest != null)
-            //        {
-            //            var variant = new Variant()
-            //            {
-            //                Id = Guid.NewGuid().ToString(),
-            //                Sku = $"{product.Code}-{i}",
-            //                ItemCost = variantCreateRequest.ItemCost,
-            //                ItemPrice = variantCreateRequest.ItemPrice,
-            //                Quantity = variantCreateRequest.Quantity,
-            //                Name = variantCreateRequest.Name,
-            //                TotalPrice = variantCreateRequest.Quantity * variantCreateRequest.ItemPrice,
-            //                PromotionalItemPrice = variantCreateRequest.ItemPrice,
-            //                Status = PRODUCT_STATUS.ACTIVE_PRODUCT
-            //            };
-            //            UtilMethod.SetAuditable(DateTime.UtcNow, variant);
-            //            product.Variants.Add(variant);
-            //        }
-            //    }
-            //}
-            return await _repository.Insert(product);
+        //	var productDto = _mapper.Map<ProductDto>(product);
+
+        //	return new ProductResponse()
+        //	{
+        //		Description = productDto.Description,
+        //		Image = productDto.Images.Where(x => x.IsDefault = true)?.FirstOrDefault()?.Image,
+        //		Name = productDto.Name,
+        //		CategoryId = category.Id,
+        //		CategoryName = category.Name,
+        //		CategorySlug = category.Slug,
+        //		BrandName = brand.Name,
+        //		BrandId = brand.Id,
+        //		ProductId = product.Id,
+        //		PromotionalPrice = (double)productDto.PromotionalPrice,
+        //		Rating = productDto.Rating,
+        //		SaleId = productDto.SaleId,
+        //		Slug = productDto.Slug,
+        //		Sold = productDto.Sold,
+        //		Status = productDto.Status,
+        //		Price = (double)productDto.Price,
+        //		Quantity = productDto.Quantity,
+        //		VariantName = variant.Name,
+        //		VariantQuantity = variant.Quantity,
+        //		VariantTotalPrice = (double)(variant.TotalPrice),
+        //		Unit = product.Unit,
+        //		Cost = (double)product.Cost
+        //	};
+        //}
+
+        public async Task<bool> UpdateProductQuantity(UpdateProductQuantityCommand command)
+        {
+            return true;
+            //return await _repository.UpdateProductQuantity(command);
         }
 
-        public async Task<bool> DeleteProduct(DeleteProductCommand command)
+        public async Task<PaginatedResult<ProductDto>> GetListProduct(GetListProductQuery query)
         {
-            var product = await _repository.GetById(command.ProductId)
-                ?? throw new NotFoundException("Cannot update product status");
-            product.Status = PRODUCT_STATUS.INACTIVE_PRODUCT;
-            var isDeleteSuccess = _repository.Update(product);
-            return isDeleteSuccess;
-        }
-
-        public async Task<PaginatedResult<ProductDto>> GetAllProduct(GetAllProductQuery query)
-        {
-            var result = await _repository.FilterProduct(query);
+            var spec = new ProductSpecification(query, isPaging: true);
+            var countSpec = new ProductSpecification(query);
+            var products = await _unitOfWork.Repository<Product>().ListAsync(spec);
+            var count = await _unitOfWork.Repository<Product>().CountAsync(countSpec);
             var productDtos = new List<ProductDto>();
-            foreach (var item in result.Items)
+            products.ForEach(product =>
             {
-                var productDto = _mapper.Map<ProductDto>(item);
-                var category = await _categoryRepository.GetById(item.CategoryId)
-                    ?? throw new NotFoundException("Cannot find product category");
-
-                var brand = await _brandRepository.GetById(item.BrandId)
-                    ?? throw new NotFoundException("Cannot find product brand");
-                productDto.Category = _mapper.Map<CategoryDto>(category);
-                productDto.Brand = _mapper.Map<BrandDto>(brand);
+                var productDto = _mapper.Map<ProductDto>(product);
                 productDtos.Add(productDto);
-            }
-            return new PaginatedResult<ProductDto>(productDtos, (int)query.PageIndex, result.TotalPages, (int)query.PageSize);
+            });
+
+            return new PaginatedResult<ProductDto>(productDtos, query.PageIndex, count, query.PageSize);
         }
 
-        public async Task<ProductDto> GetProductById(GetProductByIdQuery query)
+        public async Task<ProductDto> GetProduct(GetProductQuery query)
         {
-            var product = await _repository.GetById(query.ProductId)
-                ?? throw new NotFoundException("Cannot find product");
-            var category = await _categoryRepository.GetById(product.CategoryId)
-                ?? throw new NotFoundException("Cannot find product category");
-            var brand = await _brandRepository.GetById(product.BrandId)
-                ?? throw new NotFoundException("Cannot find product brand");
-            var res = _mapper.Map<ProductDto>(product);
-            res.Category = _mapper.Map<CategoryDto>(category);
-            res.Brand = _mapper.Map<BrandDto>(brand);
-            return res;
+            var spec = new ProductSpecification(query.Id);
+            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec)
+                ?? throw new NotFoundException("Cannot find current product");
+
+            var productDto = _mapper.Map<ProductDto>(product);
+
+            return productDto;
+        }
+
+        public async Task<long> CreateProduct(CreateProductCommand command)
+        {
+            var product = _mapper.Map<Product>(command);
+            product.Category = await _unitOfWork.Repository<Category>().GetById(command.CategoryId)
+                ?? throw new NotFoundException("Cannot find current product category");
+
+            product.Brand = await _unitOfWork.Repository<Brand>().GetById(command.BrandId)
+                ?? throw new NotFoundException("Cannot find current brand");
+
+            product.Unit = await _unitOfWork.Repository<Unit>().GetById(command.UnitId)
+                ?? throw new NotFoundException("Cannot find current unit");
+
+            product.Quantity = 0;
+            product.ActualInventory = 0;
+            product.Sold = 0;
+            product.Rating = 5;
+
+            if (command.SaleId != null)
+            {
+                product.Sale = await _unitOfWork.Repository<Sale>().GetById(command.SaleId)
+                    ?? throw new NotFoundException("Cannot find current sale");
+            }
+            product.Status = PRODUCT_STATUS.INACTIVE;
+
+            List<ProductImage> productImages = new();
+            foreach (IFormFile image in command.ProductImages)
+            {
+                ProductImage productImage = new()
+                {
+                    Image = _uploadService.UploadFile(image).Result,
+                    Size = image.Length,
+                    ContentType = image.ContentType
+                };
+                productImages.Add(productImage);
+            }
+            productImages[0].IsDefault = true;
+            product.Images = productImages;
+
+            List<Variant> variants = new();
+            foreach (string v in command.Variants)
+            {
+                var variant = _mapper.Map<Variant>(JObject.Parse(v).ToObject<CreateVariantRequest>());
+                variant.Status = VARIANT_STATUS.ACTIVE;
+                variants.Add(variant);
+            }
+            product.Variants = variants;
+
+            await _unitOfWork.Repository<Product>().Insert(product);
+
+            var isSuccess = await _unitOfWork.Save() > 0;
+            if (!isSuccess)
+            {
+                throw new Exception("Cannot create entity");
+            }
+
+            return product.Id;
         }
 
         public async Task<bool> UpdateProduct(UpdateProductCommand command)
         {
-            var product = await _repository.GetById(command.Id)
-                ?? throw new NotFoundException("Cannot find this product");
+            var product = await _unitOfWork.Repository<Product>().GetById(command.Id)
+                ?? throw new NotFoundException("Cannot find current product");
 
-            product.Status = command.Status;
-            product.Name = command.Name;
-            product.Description = command.Description;
-            product.ShortDescription = command.ShortDescription;
-            product.Unit = command.Unit;
-            product.Code = command.Code;
-            product.CategoryId = command.CategoryId;
-            product.BrandId = command.BrandId;
-            product.Quantity = command.Quantity;
-            product.Slug = command.Name.Slugify();
-            product.SaleId = command.SaleId;
-            product.Cost = command.Cost;
-            var image = "";
-            //if (command.Image != null)
-            //{
-            //    var defaultImage = product.Images.Where(x => x.IsDefault == true).FirstOrDefault();
-            //    if (defaultImage != null)
-            //    {
-            //        image = defaultImage?.Image;
-            //        defaultImage.Image = await _uploadService.UploadFile(command.Image);
-            //        UtilMethod.SetAuditable(DateTime.Now, defaultImage, isUpdate: true);
-            //    }
-            //}
-            //if (command.Variants != null)
-            //{
-            //    command.Variants.ForEach(v =>
-            //    {
-            //        if (string.IsNullOrEmpty(v.Id))
-            //        {
-            //            var totalPrice = v.Quantity * v.ItemPrice;
-            //            var i = product.Variants.Count();
-            //            var variant = new Variant()
-            //            {
-            //                Id = Guid.NewGuid().ToString(),
-            //                Name = v.Name,
-            //                ItemCost = v.ItemCost,
-            //                ItemPrice = v.ItemPrice,
-            //                PromotionalItemPrice = v.ItemPrice,
-            //                Quantity = v.Quantity,
-            //                TotalPrice = totalPrice,
-            //                Status = PRODUCT_STATUS.ACTIVE_PRODUCT,
-            //                Sku = $"{product.Code}-{i}"
-            //            };
-            //            UtilMethod.SetAuditable(DateTime.UtcNow, variant);
-            //            product.Variants.Add(variant);
-            //        }
-            //        else
-            //        {
-            //            var variant = product.Variants.Where(x => x.Id == v.Id).FirstOrDefault();
-            //            if (variant != null)
-            //            {
-            //                variant.Name = v.Name;
-            //                variant.ItemCost = v.ItemCost;
-            //                variant.ItemPrice = v.ItemPrice;
-            //                variant.Quantity = v.Quantity;
-            //                variant.TotalPrice = v.Quantity * v.ItemPrice;
-            //                variant.Status = v.Status;
-            //            }
-            //            UtilMethod.SetAuditable(DateTime.UtcNow, variant, isUpdate: true);
-            //        }
-            //    });
-            //}
-            var res = _repository.Update(product);
+            product = _mapper.Map(command, product);
+            product.Id = command.Id;
 
-            if (res && !string.IsNullOrEmpty(image))
+            product.Category = await _unitOfWork.Repository<Category>().GetById(command.CategoryId)
+                ?? throw new NotFoundException("Cannot find current product category");
+
+            product.Brand = await _unitOfWork.Repository<Brand>().GetById(command.BrandId)
+                ?? throw new NotFoundException("Cannot find current product brand");
+
+            product.Unit = await _unitOfWork.Repository<Unit>().GetById(command.UnitId)
+                ?? throw new NotFoundException("Cannot find current unit");
+
+            if (command.SaleId != null)
             {
-                await _uploadService.DeleteFile(image);
+                product.Sale = await _unitOfWork.Repository<Sale>().GetById(command.SaleId)
+                    ?? throw new NotFoundException("Cannot find current sale");
             }
 
-            return res;
-        }
-
-        public override async Task<ProductResponse> GetProductInformation(GetProductDetailByVariant request, ServerCallContext context)
-        {
-            var product = await _repository.GetProductByVariant(request.VariantId);
-            if (product == null)
-                return null;
-            var variant = product.Variants.Where(x => x.Id == request.VariantId).FirstOrDefault();
-            var category = await _categoryRepository.GetById(product.CategoryId)
-                ?? throw new NotFoundException("Cannot find product category");
-            var brand = await _brandRepository.GetById(product.BrandId)
-                ?? throw new NotFoundException("Cannot find product brand");
-            var productDto = _mapper.Map<ProductDto>(product);
-            return new ProductResponse()
+            product.Status = product.Status switch
             {
-                Description = productDto.Description,
-                Image = productDto.Images.Where(x => x.IsDefault = true)?.FirstOrDefault()?.Image,
-                Name = productDto.Name,
-                CategoryId = productDto.CategoryId,
-                CategoryName = category.Name,
-                CategorySlug = category.Slug,
-                BrandName = brand.Name,
-                BrandId = brand.Id,
-                ProductId = product.Id,
-                PromotionalPrice = (double)productDto.PromotionalPrice,
-                Rating = productDto.Rating,
-                SaleId = productDto.SaleId,
-                Slug = productDto.Slug,
-                Sold = productDto.Sold,
-                Status = productDto.Status,
-                Price = (double)productDto.Price,
-                Quantity = productDto.Quantity,
-                VariantName = variant.Name,
-                VariantQuantity = variant.Quantity,
-                VariantTotalPrice = (double)(variant.TotalPrice),
-                Unit = product.Unit,
-                Cost = (double)product.Cost
+                PRODUCT_STATUS.ACTIVE => PRODUCT_STATUS.ACTIVE,
+                PRODUCT_STATUS.INACTIVE => PRODUCT_STATUS.INACTIVE,
+                PRODUCT_STATUS.SOLD_OUT => PRODUCT_STATUS.SOLD_OUT,
+                _ => throw new InvalidRequestException("Unexpected product status: " + command.Status),
             };
-        }
+            _unitOfWork.Repository<Product>().Update(product);
 
-        public async Task<bool> UpdateProductQuantity(UpdateProductQuantityCommand command)
-        {
-            return await _repository.UpdateProductQuantity(command);
-        }
-
-        public async Task<bool> UpdateProductImage(UpdateProductImageCommand command)
-        {
-            var product = await _repository.GetById(command.ProductId)
-                ?? throw new NotFoundException("Cannot find this product");
-            var image = "";
-            if (command.Image != null)
+            var isSuccess = await _unitOfWork.Save() > 0;
+            if (!isSuccess)
             {
-                var prdImg = product.Images.Where(x => x.Id == command.ProductImageId).FirstOrDefault();
-                if (prdImg != null)
+                throw new Exception("Cannot update entity");
+            }
+
+            return isSuccess;
+        }
+
+        public async Task<bool> DeleteProduct(DeleteProductCommand command)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetById(command.Id)
+                ?? throw new NotFoundException("Cannot find current product");
+
+            product.Status = PRODUCT_STATUS.INACTIVE;
+            _unitOfWork.Repository<Product>().Update(product);
+
+            var isSuccess = await _unitOfWork.Save() > 0;
+            if (!isSuccess)
+            {
+                throw new Exception("Cannot update status of entity");
+            }
+
+            return isSuccess;
+        }
+
+        public async Task<bool> DeleteListProduct(DeleteListProductCommand command)
+        {
+            try
+            {
+                await _unitOfWork.CreateTransaction();
+
+                foreach (var id in command.Ids)
                 {
-                    image = prdImg.Image;
-                    prdImg.Image = await _uploadService.UploadFile(command.Image);
-                    prdImg.Size = command.Image.Length;
-                    prdImg.ContentType = command.Image.ContentType;
-                    prdImg.IsDefault = command.IsDefault;
+                    var product = await _unitOfWork.Repository<Product>().GetById(id)
+                        ?? throw new NotFoundException("Cannot find current product");
+
+                    product.Status = PRODUCT_STATUS.INACTIVE;
+                    _unitOfWork.Repository<Product>().Update(product);
                 }
-                UtilMethod.SetAuditable(DateTime.Now, prdImg, isUpdate: true);
-            }
-            var isSuccess = _repository.Update(product);
+                var isSuccess = await _unitOfWork.Save() > 0;
+                if (!isSuccess)
+                {
+                    throw new Exception("Cannot update status of entities");
+                }
 
-            if (!string.IsNullOrEmpty(image) && isSuccess)
-                await _uploadService.DeleteFile(image);
-            return isSuccess;
+                await _unitOfWork.Commit();
+
+                return isSuccess;
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.Rollback();
+                throw;
+            }
         }
 
-        public async Task<bool> DeleteProductImage(DeleteProductImageCommand command)
+        public async Task<ProductDto> GetProductBySlug(GetProductBySlugQuery query)
         {
-            var product = await _repository.GetById(command.ProductId)
-                ?? throw new NotFoundException("Cannot find this product");
-            var productImg = product.Images
-                .Where(x => x.Id == command.ProductImageId)
-                .FirstOrDefault()
-                ?? throw new NotFoundException("Cannot find this product image");
-            var isRemoveSuccess = product.Images.Remove(productImg);
-            var isSuccess = _repository.Update(product) && isRemoveSuccess;
-            if (isSuccess)
-            {
-                await _uploadService.DeleteFile(productImg.Image);
-            }
+            var spec = new ProductSpecification(query.Slug);
+            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec)
+                ?? throw new NotFoundException("Cannot find current product");
 
-            return isSuccess;
+            var productDto = _mapper.Map<ProductDto>(product);
+
+            return productDto;
         }
 
-        public async Task<PaginatedResult<ProductImageDto>> GetAllProductImage(GetAllProductImageQuery query)
+
+        public async Task<PaginatedResult<ProductDto>> GetListFilteringProduct(GetListFilteringProductQuery query)
         {
-            var product = await _repository.GetById(query.ProductId)
-                ?? throw new NotFoundException("Cannot find this product");
-            var productImageDtos = new List<ProductImageDto>();
-            foreach (var image in product.Images)
-            {
-                productImageDtos.Add(_mapper.Map<ProductImageDto>(image));
-            }
-            return new PaginatedResult<ProductImageDto>(productImageDtos, (int)query.PageIndex, product.Images.Count, (int)query.PageSize);
+            var spec = new ProductFilterSpecification(query, isPaging: true);
+            var countSpec = new ProductFilterSpecification(query);
+
+            var products = await _unitOfWork.Repository<Product>().ListAsync(spec);
+            var count = await _unitOfWork.Repository<Product>().CountAsync(countSpec);
+
+            var productDtos = products.Select(x => _mapper.Map<ProductDto>(x)).ToList();
+
+            return new PaginatedResult<ProductDto>(productDtos, query.PageIndex, count, query.PageSize);
         }
 
-        public async Task<bool> AddProductImage(CreateProductImageCommand command)
+        public async Task<PaginatedResult<ProductDto>> GetListSearchingProduct(GetListSearchingProductQuery query)
         {
-            var product = await _repository.GetById(command.ProductId)
-                ?? throw new NotFoundException("Cannot find this product");
+            var spec = new ProductSearchSpecification(query, isPaging: true);
+            var countSpec = new ProductSearchSpecification(query);
 
-            var prdImg = new ProductImage()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Image = await _uploadService.UploadFile(command.Image),
-                ContentType = command.Image.ContentType,
-                Size = command.Image.Length,
-                IsDefault = command.IsDefault
-            };
-            UtilMethod.SetAuditable(DateTime.Now, prdImg);
-            product.Images.Add(prdImg);
+            var products = await _unitOfWork.Repository<Product>().ListAsync(spec);
+            var count = await _unitOfWork.Repository<Product>().CountAsync(countSpec);
 
-            return _repository.Update(product);
+            var productDtos = products.Select(x => _mapper.Map<ProductDto>(x)).ToList();
+
+            return new PaginatedResult<ProductDto>(productDtos, query.PageIndex, count, query.PageSize);
         }
     }
 }

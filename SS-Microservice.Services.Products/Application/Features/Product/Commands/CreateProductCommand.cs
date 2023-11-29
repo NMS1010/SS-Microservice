@@ -4,22 +4,22 @@ using SS_Microservice.Services.Products.Application.Model.Product;
 
 namespace SS_Microservice.Services.Products.Application.Features.Product.Commands
 {
-    public class CreateProductCommand : CreateProductRequest, IRequest<bool>
+    public class CreateProductCommand : CreateProductRequest, IRequest<long>
     {
     }
 
-    public class CreateProductHandler : IRequestHandler<CreateProductCommand, bool>
+    public class CreateProductHandler : IRequestHandler<CreateProductCommand, long>
     {
-        private IProductService _productService;
+        private readonly IProductService _productService;
 
         public CreateProductHandler(IProductService productService)
         {
             _productService = productService;
         }
 
-        public async Task<bool> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            return await _productService.AddProduct(request);
+            return await _productService.CreateProduct(request);
         }
     }
 }

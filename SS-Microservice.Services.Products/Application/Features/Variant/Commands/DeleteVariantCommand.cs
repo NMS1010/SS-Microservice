@@ -5,22 +5,21 @@ namespace SS_Microservice.Services.Products.Application.Features.Variant.Command
 {
     public class DeleteVariantCommand : IRequest<bool>
     {
-        public string ProductId { get; set; }
-        public string VariantId { get; set; }
+        public long Id { get; set; }
     }
 
     public class DeleteVariantHandler : IRequestHandler<DeleteVariantCommand, bool>
     {
-        private readonly IProductVariantService _service;
+        private readonly IVariantService _variantService;
 
-        public DeleteVariantHandler(IProductVariantService service)
+        public DeleteVariantHandler(IVariantService variantService)
         {
-            _service = service;
+            _variantService = variantService;
         }
 
         public async Task<bool> Handle(DeleteVariantCommand request, CancellationToken cancellationToken)
         {
-            return await _service.DeleteVariant(request);
+            return await _variantService.DeleteVariant(request);
         }
     }
 }

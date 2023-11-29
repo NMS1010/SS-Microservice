@@ -5,12 +5,12 @@ namespace SS_Microservice.Services.Products.Application.Features.Product.Command
 {
     public class DeleteProductCommand : IRequest<bool>
     {
-        public string ProductId { get; set; }
+        public long Id { get; set; }
     }
 
     public class DeleteProductHandler : IRequestHandler<DeleteProductCommand, bool>
     {
-        private IProductService _productService;
+        private readonly IProductService _productService;
 
         public DeleteProductHandler(IProductService productService)
         {

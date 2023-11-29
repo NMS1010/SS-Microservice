@@ -7,14 +7,16 @@ namespace SS_Microservice.Services.Products.Application.Interfaces
 {
     public interface IBrandService
     {
-        Task<bool> AddBrand(CreateBrandCommand command);
+        Task<PaginatedResult<BrandDto>> GetListBrand(GetListBrandQuery query);
+
+        Task<BrandDto> GetBrand(GetBrandQuery query);
+
+        Task<long> CreateBrand(CreateBrandCommand command);
 
         Task<bool> UpdateBrand(UpdateBrandCommand command);
 
         Task<bool> DeleteBrand(DeleteBrandCommand command);
 
-        Task<PaginatedResult<BrandDto>> GetAllBrand(GetAllBrandQuery query);
-
-        Task<BrandDto> GetBrandById(GetBrandByIdQuery query);
+        Task<bool> DeleteListBrand(DeleteListBrandCommand command);
     }
 }

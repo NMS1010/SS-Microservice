@@ -1,103 +1,161 @@
 ﻿using AutoMapper;
+using SS_Microservice.Common.Exceptions;
 using SS_Microservice.Common.Model.Paging;
+using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.Upload;
-using SS_Microservice.Common.StringUtil;
-using SS_Microservice.Services.Auth.Application.Common.Exceptions;
 using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Features.Category.Commands;
 using SS_Microservice.Services.Products.Application.Features.Category.Queries;
+using SS_Microservice.Services.Products.Application.Features.ListCategory.Commands;
 using SS_Microservice.Services.Products.Application.Interfaces;
-using SS_Microservice.Services.Products.Application.Interfaces.Repositories;
+using SS_Microservice.Services.Products.Application.Specification.Category;
 using SS_Microservice.Services.Products.Domain.Entities;
 
 namespace SS_Microservice.Services.Products.Infrastructure.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly IUploadService _uploadService;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IUploadService _uploadService;
 
-        public CategoryService(ICategoryRepository categoryRepository, IUploadService uploadService, IMapper mapper)
+        public CategoryService(IUnitOfWork unitOfWork, IMapper mapper, IUploadService uploadService)
         {
-            _categoryRepository = categoryRepository;
-            _uploadService = uploadService;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _uploadService = uploadService;
         }
 
-        public async Task<bool> AddCategory(CreateCategoryCommand command)
+        public async Task<PaginatedResult<CategoryDto>> GetListCategory(GetListCategoryQuery query)
         {
-            var category = new Category
-            {
-                Name = command.Name,
-                Description = command.Description,
-                Id = Guid.NewGuid().ToString(),
-                ParentId = command.ParentId,
-                Slug = command.Name.Slugify(),
-                Status = true
-            };
-            if (command.Image != null)
-            {
-                category.Image = await _uploadService.UploadFile(command.Image);
-            }
-            return await _categoryRepository.Insert(category);
-        }
+            var spec = new CategorySpecification(query, isPaging: true);
+            var countSpec = new CategorySpecification(query);
 
-        public async Task<bool> DeleteCategory(DeleteCategoryCommand command)
-        {
-            var category = await _categoryRepository.GetById(command.Id);
-            category.Status = false;
-            var isDeleteSuccess = _categoryRepository.Update(category); ;
-            //var isDeleteSuccess = _categoryRepository.Delete(category);
-            //if (isDeleteSuccess)
-            //{
-            //    await _uploadService.DeleteFile(category.Image);
-            //}
-            return isDeleteSuccess;
-        }
-
-        public async Task<PaginatedResult<CategoryDto>> GetAllCategory(GetAllCategoryQuery query)
-        {
-            var result = await _categoryRepository.FilterCategory(query);
+            var categories = await _unitOfWork.Repository<Category>().ListAsync(spec);
+            var count = await _unitOfWork.Repository<Category>().CountAsync(countSpec);
             var categoryDtos = new List<CategoryDto>();
-            foreach (var item in result.Items)
+            foreach (var cate in categories)
             {
-                categoryDtos.Add(_mapper.Map<CategoryDto>(item));
+                var categoryDto = _mapper.Map<CategoryDto>(cate);
+                if (cate.ParentId != null)
+                {
+                    var parentCategory = await _unitOfWork.Repository<Category>().GetById(cate.ParentId);
+                    categoryDto.ParentName = parentCategory.Name;
+                }
+                categoryDtos.Add(categoryDto);
             }
-            return new PaginatedResult<CategoryDto>(categoryDtos, (int)query.PageIndex, result.TotalPages, (int)query.PageSize);
+
+            return new PaginatedResult<CategoryDto>(categoryDtos, query.PageIndex, count, query.PageSize);
         }
 
-        public async Task<CategoryDto> GetCategoryById(GetCategoryByIdQuery query)
+        public async Task<CategoryDto> GetCategory(GetCategoryQuery query)
         {
-            var category = await _categoryRepository.GetById(query.Id)
-                ?? throw new NotFoundException("Cannot find this category");
+            var category = await _unitOfWork.Repository<Category>().GetById(query.Id)
+                ?? throw new NotFoundException("Cannot find current product category");
+
+            var categoryDto = _mapper.Map<CategoryDto>(category);
+            if (category.ParentId != null)
+            {
+                var parentCategory = await _unitOfWork.Repository<Category>().GetById(category.ParentId)
+                    ?? throw new NotFoundException("Cannot find current product category");
+
+                categoryDto.ParentName = parentCategory.Name;
+            }
+            return categoryDto;
+        }
+
+        public async Task<CategoryDto> GetCategoryBySlug(GetCategoryBySlugQuery query)
+        {
+            var category = await _unitOfWork.Repository<Category>()
+                .GetEntityWithSpec(new CategorySpecification(query.Slug))
+                ?? throw new NotFoundException("Cannot find current product category");
 
             return _mapper.Map<CategoryDto>(category);
         }
 
+        public async Task<long> CreateCategory(CreateCategoryCommand command)
+        {
+            var category = _mapper.Map<Category>(command);
+            category.Image = _uploadService.UploadFile(command.Image).Result;
+            await _unitOfWork.Repository<Category>().Insert(category);
+
+            var isSuccess = await _unitOfWork.Save() > 0;
+            if (!isSuccess)
+            {
+                throw new Exception("Cannot create entity");
+            }
+
+            return category.Id;
+        }
+
         public async Task<bool> UpdateCategory(UpdateCategoryCommand command)
         {
-            var category = await _categoryRepository.GetById(command.Id)
-                ?? throw new NotFoundException("Cannot find this category");
+            var category = await _unitOfWork.Repository<Category>().GetById(command.Id)
+                ?? throw new NotFoundException("Cannot find current product category");
 
-            category.Name = command.Name;
-            category.Description = command.Description;
-            category.ParentId = command.ParentId;
-            category.Slug = command.Name.Slugify();
-            category.Status = command.Status;
-            var image = "";
+            category = _mapper.Map(command, category);
+            category.Id = command.Id;
+
             if (command.Image != null)
             {
-                image = category.Image;
-                category.Image = await _uploadService.UploadFile(command.Image);
+                category.Image = _uploadService.UploadFile(command.Image).Result;
             }
-            var res = _categoryRepository.Update(category);
 
-            if (res && !string.IsNullOrEmpty(image))
+            _unitOfWork.Repository<Category>().Update(category);
+            var isSuccess = await _unitOfWork.Save() > 0;
+            if (!isSuccess)
             {
-                await _uploadService.DeleteFile(image);
+                throw new Exception("Cannot update entity");
             }
-            return res;
+
+            return isSuccess;
+        }
+
+        public async Task<bool> DeleteCategory(DeleteCategoryCommand command)
+        {
+            var category = await _unitOfWork.Repository<Category>().GetById(command.Id)
+                ?? throw new NotFoundException("Cannot find current product category");
+
+            category.Status = false;
+            _unitOfWork.Repository<Category>().Update(category);
+            var isSuccess = await _unitOfWork.Save() > 0;
+            if (!isSuccess)
+            {
+                throw new Exception("Cannot update status of entity");
+            }
+
+            return isSuccess;
+        }
+
+        public async Task<bool> DeleteListCategory(DeleteListCategoryCommand command)
+        {
+            try
+            {
+                await _unitOfWork.CreateTransaction();
+
+                foreach (var id in command.Ids)
+                {
+                    var category = await _unitOfWork.Repository<Category>().GetById(id)
+                        ?? throw new NotFoundException("Cannot find current product category");
+
+                    category.Status = false;
+                    _unitOfWork.Repository<Category>().Update(category);
+                }
+                var isSuccess = await _unitOfWork.Save() > 0;
+                if (!isSuccess)
+                {
+                    throw new Exception("Cannot update status of entities");
+                }
+
+                await _unitOfWork.Commit();
+
+                return isSuccess;
+            }
+            catch
+            {
+                await _unitOfWork.Rollback();
+                throw;
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ namespace SS_Microservice.Services.Products.Application.Features.Brand.Commands
 {
     public class DeleteBrandCommand : IRequest<bool>
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
     }
 
     public class DeleteBrandHandler : IRequestHandler<DeleteBrandCommand, bool>

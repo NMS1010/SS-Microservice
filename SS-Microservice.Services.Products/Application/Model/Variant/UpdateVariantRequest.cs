@@ -1,13 +1,16 @@
-﻿namespace SS_Microservice.Services.Products.Application.Model.Variant
+﻿using System.Text.Json.Serialization;
+
+namespace SS_Microservice.Services.Products.Application.Model.Variant
 {
     public class UpdateVariantRequest
     {
-        public string ProductId { get; set; }
-        public string VariantId { get; set; }
+        [JsonIgnore]
+        public long Id { get; set; }
         public string Name { get; set; }
+        public string Sku { get; set; }
+        public int Quantity { get; set; }
         public decimal ItemPrice { get; set; }
-        public decimal ItemCost { get; set; }
-        public long Quantity { get; set; }
+        public decimal TotalPrice { get; set; }
         public string Status { get; set; }
     }
 }

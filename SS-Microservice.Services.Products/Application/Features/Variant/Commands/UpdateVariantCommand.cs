@@ -10,16 +10,16 @@ namespace SS_Microservice.Services.Products.Application.Features.Variant.Command
 
     public class UpdateVariantHandler : IRequestHandler<UpdateVariantCommand, bool>
     {
-        private readonly IProductVariantService _service;
+        private readonly IVariantService _variantService;
 
-        public UpdateVariantHandler(IProductVariantService service)
+        public UpdateVariantHandler(IVariantService variantService)
         {
-            _service = service;
+            _variantService = variantService;
         }
 
         public async Task<bool> Handle(UpdateVariantCommand request, CancellationToken cancellationToken)
         {
-            return await _service.UpdateVariant(request);
+            return await _variantService.UpdateVariant(request);
         }
     }
 }

@@ -22,13 +22,13 @@ message ProductResponse{
 	string DefaultImage = 7;
 	string Status = 8;
 	string Slug = 9;
-	string CategoryId = 10;
+	int64 CategoryId = 10;
 	string CategorySlug = 11;
-	int64 Rating = 12;
+	double Rating = 12;
 	int64 Sold = 13;
 	int64 SaleId = 14;
 	string ProductId = 15;
-	string BrandId = 16;
+	int64 BrandId = 16;
 	string BrandName = 17;
 	string Image = 18;
 	string VariantName = 19;

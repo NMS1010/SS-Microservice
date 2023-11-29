@@ -1,16 +1,16 @@
-﻿using Amazon.Runtime.Internal;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Features.Product.Commands;
 using SS_Microservice.Services.Products.Application.Features.Product.Queries;
+using SS_Microservice.Services.Products.Application.Features.ProductImage.Commands;
+using SS_Microservice.Services.Products.Application.Features.ProductImage.Queries;
 using SS_Microservice.Services.Products.Application.Model.Product;
-using SS_Microservice.Services.Products.Application.Model.Variant;
+using SS_Microservice.Services.Products.Application.Model.ProductImage;
 
 namespace SS_Microservice.Services.Products.Controllers
 {
@@ -19,8 +19,8 @@ namespace SS_Microservice.Services.Products.Controllers
     [Authorize(Roles = "ADMIN")]
     public class ProductsController : ControllerBase
     {
-        private ISender _sender;
-        private IMapper _mapper;
+        private readonly ISender _sender;
+        private readonly IMapper _mapper;
 
         public ProductsController(ISender sender, IMapper mapper)
         {
@@ -28,73 +28,143 @@ namespace SS_Microservice.Services.Products.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("all")]
+        [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetProducts([FromQuery] GetProductPagingRequest request)
+        public async Task<IActionResult> GetListProduct([FromQuery] GetProductPagingRequest request)
         {
-            var query = _mapper.Map<GetAllProductQuery>(request);
-            var res = await _sender.Send(query);
-            return Ok(CustomAPIResponse<PaginatedResult<ProductDto>>.Success(res, StatusCodes.Status200OK));
+            var res = await _sender.Send(_mapper.Map<GetListProductQuery>(request));
+
+            return Ok(new CustomAPIResponse<PaginatedResult<ProductDto>>(res, StatusCodes.Status200OK));
         }
 
-        [HttpGet("{productId}")]
+        [HttpGet("filter")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetProductById(string productId)
+        public async Task<IActionResult> GetListFilteringProduct([FromQuery] FilterProductPagingRequest request)
         {
-            var res = await _sender.Send(new GetProductByIdQuery() { ProductId = productId });
-            return Ok(CustomAPIResponse<ProductDto>.Success(res, StatusCodes.Status200OK));
+            var res = await _sender.Send(_mapper.Map<GetListFilteringProductQuery>(request));
+
+            return Ok(new CustomAPIResponse<PaginatedResult<ProductDto>>(res, StatusCodes.Status200OK));
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> AddProduct([FromForm] CreateProductRequest request)
+        [HttpGet("search")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetListSearchingProduct([FromQuery] SearchProductPagingRequest request)
         {
-            var command = _mapper.Map<CreateProductCommand>(request);
-            var isSuccess = await _sender.Send(command);
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status201Created));
+            var res = await _sender.Send(_mapper.Map<GetListSearchingProductQuery>(request));
+
+            return Ok(new CustomAPIResponse<PaginatedResult<ProductDto>>(res, StatusCodes.Status200OK));
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductRequest request)
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetProduct([FromRoute] long id)
         {
-            var command = _mapper.Map<UpdateProductCommand>(request);
-            var isSuccess = await _sender.Send(command);
+            var res = await _sender.Send(new GetProductQuery() { Id = id });
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(new CustomAPIResponse<ProductDto>(res, StatusCodes.Status200OK));
         }
 
-        [HttpDelete("delete/{productId}")]
-        public async Task<IActionResult> DeleteProduct(string productId)
+        [HttpGet("detail/{slug}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetProductBySlug([FromRoute] string slug)
         {
-            var isSuccess = await _sender.Send(new DeleteProductCommand() { ProductId = productId });
+            var res = await _sender.Send(new GetProductBySlugQuery() { Slug = slug });
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(new CustomAPIResponse<ProductDto>(res, StatusCodes.Status200OK));
         }
 
-        // product image
-        [HttpPost("images/add")]
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct([FromForm] CreateProductRequest request)
+        {
+            var productId = await _sender.Send(_mapper.Map<CreateProductImageCommand>(request));
+            var url = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/products/{productId}";
+
+            return Created(url, new CustomAPIResponse<object>(new { id = productId }, StatusCodes.Status201Created));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct([FromRoute] long id, [FromForm] UpdateProductRequest request)
+        {
+            request.Id = id;
+            var res = await _sender.Send(_mapper.Map<UpdateProductImageCommand>(request));
+
+            return Ok(new CustomAPIResponse<bool>(res, StatusCodes.Status204NoContent));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct([FromRoute] long id)
+        {
+            var res = await _sender.Send(new DeleteProductCommand() { Id = id });
+
+            return Ok(new CustomAPIResponse<bool>(res, StatusCodes.Status204NoContent));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteListProduct([FromQuery] List<long> ids)
+        {
+            var res = await _sender.Send(new DeleteListProductCommand() { Ids = ids });
+
+            return Ok(new CustomAPIResponse<bool>(res, StatusCodes.Status204NoContent));
+        }
+
+        // product images api
+
+        [HttpGet("images")]
+        public async Task<IActionResult> GetListProductImage([FromQuery] long productId)
+        {
+            var res = await _sender.Send(new GetListProductImageQuery() { ProductId = productId });
+
+            return Ok(new CustomAPIResponse<List<ProductImageDto>>(res, StatusCodes.Status200OK));
+        }
+
+        [HttpGet("images/{id}")]
+        public async Task<IActionResult> GetProductImage([FromRoute] long id)
+        {
+            var res = await _sender.Send(new GetProductImageQuery() { Id = id });
+
+            return Ok(new CustomAPIResponse<ProductImageDto>(res, StatusCodes.Status200OK));
+        }
+
+        [HttpPost("images")]
         public async Task<IActionResult> CreateProductImage([FromForm] CreateProductImageRequest request)
         {
-            var command = _mapper.Map<CreateProductImageCommand>(request);
-            var isSuccess = await _sender.Send(command);
+            var resp = await _sender.Send(_mapper.Map<CreateProductImageCommand>(request));
+            var url = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/products/images";
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Created(url, new CustomAPIResponse<object>(new { id = resp }, StatusCodes.Status201Created));
         }
 
-        [HttpPut("images/update")]
-        public async Task<IActionResult> UpdateProductImage([FromForm] UpdateProductImageRequest request)
+        [HttpPut("images/{id}")]
+        public async Task<IActionResult> UpdateProductImage([FromRoute] long id, [FromForm] UpdateProductImageRequest request)
         {
-            var command = _mapper.Map<UpdateProductImageCommand>(request);
-            var isSuccess = await _sender.Send(command);
+            request.Id = id;
+            var res = await _sender.Send(_mapper.Map<UpdateProductImageCommand>(request));
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(new CustomAPIResponse<bool>(res, StatusCodes.Status204NoContent));
         }
 
-        [HttpDelete("images/delete/{productId}/{productImageId}")]
-        public async Task<IActionResult> DeleteProductImage(string productId, string productImageId)
+        [HttpPatch("images/{id}")]
+        public async Task<IActionResult> SetDefaultProductImage([FromRoute] long id, [FromForm] long productId)
         {
-            var isSuccess = await _sender.Send(new DeleteProductImageCommand() { ProductId = productId, ProductImageId = productImageId });
+            var res = await _sender.Send(new SetDefaultProductImageCommand() { Id = id, ProductId = productId });
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(new CustomAPIResponse<bool>(res, StatusCodes.Status204NoContent));
+        }
+
+        [HttpDelete("images/{id}")]
+        public async Task<IActionResult> DeleteProductImage([FromRoute] long id)
+        {
+            var res = await _sender.Send(new DeleteProductImageCommand() { Id = id });
+
+            return Ok(new CustomAPIResponse<bool>(res, StatusCodes.Status204NoContent));
+        }
+
+        [HttpDelete("images")]
+        public async Task<IActionResult> DeleteListProductImage([FromQuery] List<long> ids)
+        {
+            var res = await _sender.Send(new DeleteListProductCommand() { Ids = ids });
+
+            return Ok(new CustomAPIResponse<bool>(res, StatusCodes.Status204NoContent));
         }
     }
 }
