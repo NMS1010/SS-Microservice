@@ -23,6 +23,17 @@
       ]
     },
     {
+      "Key": "inventory",
+      "TransformByOcelotConfig": true,
+      "Config": [
+        {
+          "Name": "SS-Microservice.Services.Inventory",
+          "Version": "1.0",
+          "Url": "https://localhost:7261/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
       "Key": "order",
       "TransformByOcelotConfig": true,
       "Config": [

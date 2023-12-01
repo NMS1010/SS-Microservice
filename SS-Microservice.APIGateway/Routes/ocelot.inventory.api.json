@@ -1,0 +1,42 @@
+{
+  "Routes": [
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "InventoryService",
+      "DownstreamPathTemplate": "/api/inventories/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "inventory",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7261
+        }
+      ],
+      "UpstreamPathTemplate": "/api/inventories/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "InventoryService",
+      "DownstreamPathTemplate": "/api/inventories",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "inventory",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7261
+        }
+      ],
+      "UpstreamPathTemplate": "/api/inventories",
+      "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    }
+  ]
+}

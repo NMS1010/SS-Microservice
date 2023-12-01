@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace SS_Microservice.Common.StringUtil
 {
@@ -34,6 +30,13 @@ namespace SS_Microservice.Common.StringUtil
             output = Regex.Replace(output, @"\s", "-");
 
             return output;
+        }
+
+        public static string GenerateUniqueCode(this string str)
+        {
+            var guid = Guid.NewGuid().ToString();
+
+            return guid.Replace("-", string.Empty).ToUpper();
         }
     }
 }
