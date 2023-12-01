@@ -42,7 +42,7 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
 builder.Services.AddIdentity<AppUser, AppRole>(opts =>
 {
     opts.Password.RequireNonAlphanumeric = false;
-    opts.Password.RequiredLength = 5;
+    opts.Password.RequiredLength = 1;
     opts.Password.RequireDigit = false;
     opts.Password.RequireLowercase = false;
     opts.Password.RequireUppercase = false;
@@ -81,6 +81,7 @@ builder.Services
         .AddScoped<IJwtService, JwtService>()
         .AddScoped<IAuthService, AuthService>()
         .AddScoped<IUserService, UserService>()
+        .AddScoped<IRoleService, RoleService>()
         .AddScoped<IUploadService, UploadService>()
         .AddSingleton<ICurrentUserService, CurrentUserService>()
         .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
