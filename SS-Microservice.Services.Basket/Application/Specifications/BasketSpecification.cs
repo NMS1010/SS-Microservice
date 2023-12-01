@@ -7,6 +7,7 @@ namespace SS_Microservice.Services.Basket.Application.Specifications
         public BasketSpecification(string userId)
             : base(x => x.UserId == userId)
         {
+            AddInclude(x => x.BasketItems);
         }
     }
 }

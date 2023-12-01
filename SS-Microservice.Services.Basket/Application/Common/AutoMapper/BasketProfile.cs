@@ -12,10 +12,14 @@ namespace SS_Microservice.Services.Basket.Application.Common.AutoMapper
     {
         public BasketProfile()
         {
-            CreateMap<Domain.Entities.Basket, BasketDto>();
             CreateMap<BasketItem, BasketItemDto>();
-            CreateMap<BasketPagingRequest, GetBasketQuery>();
 
+            // mappping request - command
+            CreateMap<CreateBasketItemRequest, CreateBasketItemCommand>();
+            CreateMap<UpdateBasketItemRequest, UpdateBasketItemCommand>();
+            CreateMap<GetBasketPagingRequest, GetListBasketByUserQuery>();
+
+            // mapping event - command
             CreateMap<UserRegistedEvent, CreateBasketCommand>();
         }
     }

@@ -22,7 +22,7 @@ namespace SS_Microservice.Services.Basket.Application.Features.User.EventConsume
         public async Task Consume(ConsumeContext<UserRegistedEvent> context)
         {
             var command = _mapper.Map<CreateBasketCommand>(context.Message);
-            _logger.LogInformation($"Message with userId = {command.UserId} is received");
+            _logger.LogInformation($"[Basket Service] Message from User Service with userId = {command.UserId} is received");
 
             await _sender.Send(command);
         }

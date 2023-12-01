@@ -8,20 +8,8 @@ namespace SS_Microservice.Services.Address.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<District> builder)
         {
-            builder.HasKey(p => p.Id);
-
-            builder.Property(p => p.Name).IsRequired();
-            builder.Property(p => p.Code).IsRequired();
-
-            builder
-                .HasMany(x => x.Addresses)
-                .WithOne(x => x.District)
-                .HasForeignKey(x => x.DistrictId);
-
-            builder
-                .HasMany(x => x.Wards)
-                .WithOne(x => x.District)
-                .HasForeignKey(x => x.DistrictId);
+            builder.Property(x => x.Name).IsRequired();
+            builder.Property(x => x.Code).IsRequired();
         }
     }
 }

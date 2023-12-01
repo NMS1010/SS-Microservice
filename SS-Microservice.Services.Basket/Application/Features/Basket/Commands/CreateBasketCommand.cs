@@ -8,11 +8,11 @@ namespace SS_Microservice.Services.Basket.Application.Features.Basket.Commands
         public string UserId { get; set; }
     }
 
-    public class CreateBasketHandler : IRequestHandler<CreateBasketCommand>
+    public class AddBasketHandler : IRequestHandler<CreateBasketCommand>
     {
         private readonly IBasketService _basketService;
 
-        public CreateBasketHandler(IBasketService basketService)
+        public AddBasketHandler(IBasketService basketService)
         {
             _basketService = basketService;
         }

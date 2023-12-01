@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 using SS_Microservice.Services.Basket.Application.Dto;
-using SS_Microservice.Services.Basket.Application.Features.Basket.Queries;
 using SS_Microservice.Services.Basket.Application.Features.Basket.Commands;
+using SS_Microservice.Services.Basket.Application.Features.Basket.Queries;
 using SS_Microservice.Services.Basket.Application.Model;
 
 namespace SS_Microservice.Services.Basket.Controllers
@@ -28,55 +28,69 @@ namespace SS_Microservice.Services.Basket.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetBasket([FromQuery] BasketPagingRequest request)
+        [HttpPost]
+        public async Task<IActionResult> AddVariantItemToBasket([FromBody] CreateBasketItemRequest request)
         {
-            var query = _mapper.Map<GetBasketQuery>(request);
-            query.UserId = _currentUserService.UserId;
-            var basket = await _sender.Send(query);
+            request.UserId = _currentUserService.UserId;
+            var res = await _sender.Send(_mapper.Map<CreateBasketItemCommand>(request));
 
-            return Ok(CustomAPIResponse<BasketDto>.Success(basket, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status204NoContent));
         }
 
-        [HttpPost("add")]
-        public async Task<IActionResult> AddProductToBasket([FromBody] BasketAddRequest request)
+        [HttpPut("{cartItemId}")]
+        public async Task<IActionResult> UpdateBasketItemQuantity([FromRoute] long cartItemId, [FromBody] UpdateBasketItemRequest request)
         {
-            var command = new AddBasketCommand()
-            {
-                UserId = _currentUserService.UserId,
-                VariantId = request.VariantId,
-                Quantity = request.Quantity,
-            };
-            await _sender.Send(command);
+            request.CartItemId = cartItemId;
+            request.UserId = _currentUserService.UserId;
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
+            var res = await _sender.Send(_mapper.Map<UpdateBasketItemCommand>(request));
+
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status204NoContent));
         }
 
-        [HttpDelete("delete/{basketItemId}")]
-        public async Task<IActionResult> RemoveProductFromBasket(int basketItemId)
+        [HttpDelete("{cartItemId}")]
+        public async Task<IActionResult> DeleteBasketItem([FromRoute] long cartItemId)
         {
-            var command = new DeleteBasketCommand()
+            var res = await _sender.Send(new DeleteBasketItemCommand()
             {
-                UserId = _currentUserService.UserId,
-                BasketItemId = basketItemId
-            };
-            var isSuccess = await _sender.Send(command);
+                CartItemId = cartItemId,
+                UserId = _currentUserService.UserId
+            });
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status204NoContent));
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateProductQuantity([FromBody] BasketUpdateRequest request)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteListBasketItem([FromQuery] List<long> ids)
         {
-            var command = new UpdateBasketCommand()
+            var res = await _sender.Send(new DeleteListBasketItemCommand()
             {
-                UserId = _currentUserService.UserId,
-                BasketItemId = request.BasketItemId,
-                Quantity = request.Quantity,
-            };
-            var isSuccess = await _sender.Send(command);
+                Ids = ids,
+                UserId = _currentUserService.UserId
+            });
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status204NoContent));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBasketByUser([FromQuery] GetBasketPagingRequest request)
+        {
+            request.UserId = _currentUserService.UserId;
+            var res = await _sender.Send(_mapper.Map<GetListBasketByUserQuery>(request));
+
+            return Ok(CustomAPIResponse<PaginatedResult<BasketItemDto>>.Success(res, StatusCodes.Status200OK));
+        }
+
+        [HttpGet("list-ids")]
+        public async Task<IActionResult> GetBasketItemByIds([FromQuery] List<long> ids)
+        {
+            var res = await _sender.Send(new GetListBasketItemQuery()
+            {
+                Ids = ids,
+                UserId = _currentUserService.UserId
+            });
+
+            return Ok(CustomAPIResponse<List<BasketItemDto>>.Success(res, StatusCodes.Status200OK));
         }
     }
 }

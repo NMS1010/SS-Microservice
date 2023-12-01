@@ -1,8 +1,8 @@
 ﻿using MassTransit;
 using SS_Microservice.Common.Messages.Events.Basket;
 using SS_Microservice.Common.Messages.Events.Product;
-using SS_Microservice.Services.Basket.Application.Interfaces;
 using SS_Microservice.Services.Basket.Application.Features.Basket.Commands;
+using SS_Microservice.Services.Basket.Application.Interfaces;
 
 namespace SS_Microservice.Services.Basket.Application.Features.Product.EventConsumer
 {

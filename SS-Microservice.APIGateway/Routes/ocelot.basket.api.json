@@ -12,8 +12,27 @@
           "Port": 7168
         }
       ],
-      "UpstreamPathTemplate": "/baskets/{everything}",
+      "UpstreamPathTemplate": "/api/carts/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "BasketService",
+      "DownstreamPathTemplate": "/api/baskets",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "basket",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7168
+        }
+      ],
+      "UpstreamPathTemplate": "/api/carts",
+      "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []
