@@ -9,20 +9,30 @@ using SS_Microservice.Services.UserOperation.Application.Features.Review.Queries
 using SS_Microservice.Services.UserOperation.Application.Interfaces;
 using SS_Microservice.Services.UserOperation.Application.Specifications.Review;
 using SS_Microservice.Services.UserOperation.Domain.Entities;
+using SS_Microservice.Services.UserOperation.Infrastructure.Services.Order;
+using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product;
+using SS_Microservice.Services.UserOperation.Infrastructure.Services.User;
 
-namespace SS_Microservice.Services.UserOperation.Infrastructure.Services
+namespace SS_Microservice.Services.UserOperation.Application.Services
 {
     public class ReviewService : IReviewService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IUploadService _uploadService;
+        private readonly IProductClientAPI _productClientAPI;
+        private readonly IUserClientAPI _userClientAPI;
+        private readonly IOrderClientAPI _orderClientAPI;
 
-        public ReviewService(IUnitOfWork unitOfWork, IMapper mapper, IUploadService uploadService)
+        public ReviewService(IUnitOfWork unitOfWork, IMapper mapper,
+            IUploadService uploadService, IProductClientAPI productClientAPI, IUserClientAPI userClientAPI, IOrderClientAPI orderClientAPI)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _uploadService = uploadService;
+            _productClientAPI = productClientAPI;
+            _userClientAPI = userClientAPI;
+            _orderClientAPI = orderClientAPI;
         }
 
         public async Task<PaginatedResult<ReviewDto>> GetListReview(GetListReviewQuery query)
@@ -34,21 +44,53 @@ namespace SS_Microservice.Services.UserOperation.Infrastructure.Services
             var count = await _unitOfWork.Repository<Review>().CountAsync(countSpec);
 
             var reviewDtos = new List<ReviewDto>();
-            reviews.ForEach(x =>
+            foreach (var review in reviews)
             {
-                var dto = _mapper.Map<ReviewDto>(x);
-                //dto.VariantName = x?.OrderItem?.Variant?.Name;
+                var dto = _mapper.Map<ReviewDto>(review);
+
+                var product = await _productClientAPI.GetProduct(review.ProductId)
+                    ?? throw new NotFoundException("Cannot find product");
+
+                var user = await _userClientAPI.GetUser(review.UserId)
+                    ?? throw new NotFoundException("Cannot find user");
+
+                var orderItem = await _orderClientAPI.GetOrderItem(review.OrderItemId)
+                    ?? throw new NotFoundException("Cannot find order item");
+
+                dto.Product = product;
+                dto.User = user;
+                dto.VariantName = orderItem.VariantName;
+
                 reviewDtos.Add(dto);
-            });
+            }
 
             return new PaginatedResult<ReviewDto>(reviewDtos, query.PageIndex, count, query.PageSize);
         }
 
         public async Task<List<ReviewDto>> GetTopReviewLatest(GetTopReviewLatestQuery query)
         {
-            var reviewDtos = new List<ReviewDto>();
             var reviews = await _unitOfWork.Repository<Review>().ListAsync(new ReviewSpecification(query.Top));
-            reviews.ForEach(x => reviewDtos.Add(_mapper.Map<ReviewDto>(x)));
+
+            var reviewDtos = new List<ReviewDto>();
+            foreach (var review in reviews)
+            {
+                var dto = _mapper.Map<ReviewDto>(review);
+
+                var product = await _productClientAPI.GetProduct(review.ProductId)
+                    ?? throw new NotFoundException("Cannot find product");
+
+                var user = await _userClientAPI.GetUser(review.UserId)
+                    ?? throw new NotFoundException("Cannot find user");
+
+                var orderItem = await _orderClientAPI.GetOrderItem(review.OrderItemId)
+                    ?? throw new NotFoundException("Cannot find order item");
+
+                dto.Product = product;
+                dto.User = user;
+                dto.VariantName = orderItem.VariantName;
+
+                reviewDtos.Add(dto);
+            }
 
             return reviewDtos;
         }
@@ -59,7 +101,19 @@ namespace SS_Microservice.Services.UserOperation.Infrastructure.Services
             throw new InvalidRequestException("Unexpected reviewId");
 
             var dto = _mapper.Map<ReviewDto>(review);
-            //dto.VariantName = review?.OrderItem?.Variant?.Name;
+
+            var product = await _productClientAPI.GetProduct(review.ProductId)
+                ?? throw new NotFoundException("Cannot find product");
+
+            var user = await _userClientAPI.GetUser(review.UserId)
+                ?? throw new NotFoundException("Cannot find user");
+
+            var orderItem = await _orderClientAPI.GetOrderItem(review.OrderItemId)
+                ?? throw new NotFoundException("Cannot find order item");
+
+            dto.Product = product;
+            dto.User = user;
+            dto.VariantName = orderItem.VariantName;
 
             return dto;
         }
@@ -69,9 +123,11 @@ namespace SS_Microservice.Services.UserOperation.Infrastructure.Services
             try
             {
                 await _unitOfWork.CreateTransaction();
-                var x = await _unitOfWork.Repository<Review>().GetEntityWithSpec(new ReviewSpecification(command.OrderItemId, command.UserId));
 
-                if (x != null)
+                var reviewTemp = await _unitOfWork.Repository<Review>()
+                    .GetEntityWithSpec(new ReviewSpecification(command.OrderItemId, command.UserId));
+
+                if (reviewTemp != null)
                     throw new InvalidRequestException("Unexpected orderItemId, this order item has been reviewed");
 
                 var review = _mapper.Map<Review>(command);
@@ -85,14 +141,14 @@ namespace SS_Microservice.Services.UserOperation.Infrastructure.Services
                 //var orderItem = await _unitOfWork.Repository<OrderItem>().GetEntityWithSpec(new OrderItemSpecification(command.OrderItemId, ORDER_STATUS.DELIVERED)) ??
                 //    throw new InvalidRequestException("Unexpected orderItemId, order has not been deliveried");
 
-                //review.Product = product;
-                //review.User = user;
-                //review.OrderItem = orderItem;
+                review.ProductId = command.ProductId;
+                review.UserId = command.UserId;
+                review.OrderItemId = command.OrderItemId;
 
                 await _unitOfWork.Repository<Review>().Insert(review);
                 await _unitOfWork.Save();
 
-                //await CalculateProductReview(review.Product);
+                await CalculateProductReview(review.ProductId);
 
                 var isSuccess = await _unitOfWork.Save() > 0;
                 if (!isSuccess)
@@ -137,7 +193,7 @@ namespace SS_Microservice.Services.UserOperation.Infrastructure.Services
                 _unitOfWork.Repository<Review>().Update(review);
                 await _unitOfWork.Save();
 
-                //await CalculateProductReview(review.Product);
+                await CalculateProductReview(review.ProductId);
 
                 var isSuccess = await _unitOfWork.Save() > 0;
                 if (!isSuccess)
@@ -169,7 +225,7 @@ namespace SS_Microservice.Services.UserOperation.Infrastructure.Services
                     _unitOfWork.Repository<Review>().Update(review);
                     await _unitOfWork.Save();
 
-                    //await CalculateProductReview(review.Product);
+                    await CalculateProductReview(review.ProductId);
                 }
 
                 var isSuccess = await _unitOfWork.Save() > 0;
@@ -188,13 +244,14 @@ namespace SS_Microservice.Services.UserOperation.Infrastructure.Services
             }
         }
 
-        //private async Task CalculateProductReview(Product product)
-        //{
-        //    var reviews = await _unitOfWork.Repository<Review>().ListAsync(new ReviewSpecification(product.Id, true));
-        //    product.Rating = reviews.Count == 0 ? 0 : reviews.Average(x => x.Rating);
-        //    product.Rating = Math.Round(product.Rating.Value, 1);
-        //    _unitOfWork.Repository<Product>().Update(product);
-        //}
+        private async Task CalculateProductReview(long productId)
+        {
+            await Task.CompletedTask;
+            //var reviews = await _unitOfWork.Repository<Review>().ListAsync(new ReviewSpecification(product.Id, true));
+            //product.Rating = reviews.Count == 0 ? 0 : reviews.Average(x => x.Rating);
+            //product.Rating = Math.Round(product.Rating.Value, 1);
+            //_unitOfWork.Repository<Product>().Update(product);
+        }
 
         public async Task<bool> UpdateReview(UpdateReviewCommand command)
         {
@@ -215,7 +272,7 @@ namespace SS_Microservice.Services.UserOperation.Infrastructure.Services
                 _unitOfWork.Repository<Review>().Update(review);
                 await _unitOfWork.Save();
 
-                //await CalculateProductReview(review.Product);
+                await CalculateProductReview(review.ProductId);
 
                 var isSuccess = await _unitOfWork.Save() > 0;
                 if (!isSuccess)

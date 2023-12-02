@@ -5,14 +5,14 @@ option csharp_namespace = "SS_Microservice.Common.Grpc.Product.Protos";
 package product;
 
 service ProductProtoService {
-	rpc GetProductInformation (GetProductDetailByVariant) returns (ProductResponse);
+	rpc GetProductInformation (GetProductByVariant) returns (ProductCustomGrpcResponse);
 }
 
-message GetProductDetailByVariant{
-	string variantId = 1;
+message GetProductByVariant{
+	int64 variantId = 1;
 }
 
-message ProductResponse{
+message ProductCustomGrpcResponse{
 	string Name = 1;
 	string Description = 2;
 	int64 Quantity = 3;

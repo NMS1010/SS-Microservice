@@ -4,7 +4,7 @@ namespace SS_Microservice.Services.Order.Application.Dtos
 {
     public class OrderItemDto : BaseAuditableEntity<long>
     {
-        public string VariantId { get; set; }
+        public long VariantId { get; set; }
         public string ProductName { get; set; }
         public string ProductImage { get; set; }
         public int Quantity { get; set; }

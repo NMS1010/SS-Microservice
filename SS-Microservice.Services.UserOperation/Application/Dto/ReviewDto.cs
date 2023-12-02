@@ -1,4 +1,6 @@
 ﻿using SS_Microservice.Common.Entities;
+using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product.Model.Response;
+using SS_Microservice.Services.UserOperation.Infrastructure.Services.User.Model.Response;
 
 namespace SS_Microservice.Services.UserOperation.Application.Dto
 {
@@ -14,7 +16,7 @@ namespace SS_Microservice.Services.UserOperation.Application.Dto
         public string Reply { get; set; }
         public bool Status { get; set; }
         public string VariantName { get; set; }
-        //public ProductDto Product { get; set; }
-        //public UserDto User { get; set; }
+        public ProductDto Product { get; set; }
+        public UserDto User { get; set; }
     }
 }

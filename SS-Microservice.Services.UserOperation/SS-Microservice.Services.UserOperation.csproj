@@ -46,6 +46,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Application\Features\UserFollowProduct\Queries\" />
+	  <Folder Include="Infrastructure\Services\User\Model\Request\" />
 	</ItemGroup>
 
 
