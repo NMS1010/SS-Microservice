@@ -5,6 +5,9 @@
       "DurationOfBreak": 3000,
       "TimeoutValue": 5000
     },
+    "LoadBalancerOptions": {
+      "Type": "LeastConnection"
+    },
     "BaseUrl": "https://localhost:7182",
     "ServiceDiscoveryProvider": {
       "Scheme": "http",

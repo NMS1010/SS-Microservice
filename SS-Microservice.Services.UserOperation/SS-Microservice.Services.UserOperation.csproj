@@ -45,7 +45,6 @@
 		<ProjectReference Include="..\SS-Microservice.Common\SS-Microservice.Common.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Application\Features\UserFollowProduct\Queries\" />
 	  <Folder Include="Infrastructure\Services\User\Model\Request\" />
 	</ItemGroup>
 

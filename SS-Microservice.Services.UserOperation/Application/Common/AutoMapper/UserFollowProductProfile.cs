@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SS_Microservice.Services.UserOperation.Application.Features.UserFollowProduct.Commands;
+using SS_Microservice.Services.UserOperation.Application.Features.UserFollowProduct.Queries;
 using SS_Microservice.Services.UserOperation.Application.Models.UserFollowProduct;
 
 namespace SS_Microservice.Services.UserOperation.Application.Common.AutoMapper
@@ -11,6 +12,7 @@ namespace SS_Microservice.Services.UserOperation.Application.Common.AutoMapper
             // mapping request - command
             CreateMap<FollowProductRequest, FollowProductCommand>();
             CreateMap<UnFollowProductRequest, UnFollowProductCommand>();
+            CreateMap<GetFollowProductPagingRequest, GetListFollowProductQuery>();
         }
     }
 }

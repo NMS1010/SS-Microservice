@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace SS_Microservice.Common.Swagger
 {
-    public static class SwaggerExtension
+    public static class Extension
     {
         private static readonly string AUTH_TYPE = "Bearer";
 

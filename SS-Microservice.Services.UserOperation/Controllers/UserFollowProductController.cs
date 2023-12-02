@@ -2,10 +2,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 using SS_Microservice.Services.UserOperation.Application.Features.UserFollowProduct.Commands;
+using SS_Microservice.Services.UserOperation.Application.Features.UserFollowProduct.Queries;
 using SS_Microservice.Services.UserOperation.Application.Models.UserFollowProduct;
+using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product.Model.Response;
 
 namespace SS_Microservice.Services.UserOperation.Controllers
 {
@@ -43,13 +46,13 @@ namespace SS_Microservice.Services.UserOperation.Controllers
             return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status204NoContent));
         }
 
-        //[HttpGet]
-        //public async Task<ActionResult> GetListFollowProduct([FromQuery] GetFollowProductPagingRequest request)
-        //{
-        //    request.UserId = _currentUserService.UserId;
-        //    var resp = await _userFollowProductService.GetListFollowProduct(request);
+        [HttpGet]
+        public async Task<ActionResult> GetListFollowProduct([FromQuery] GetFollowProductPagingRequest request)
+        {
+            request.UserId = _currentUserService.UserId;
+            var resp = await _sender.Send(_mapper.Map<GetListFollowProductQuery>(request));
 
-        //    return Ok(new APIResponse<PaginatedResult<ProductDto>>(resp, StatusCodes.Status200OK));
-        //}
+            return Ok(CustomAPIResponse<PaginatedResult<ProductDto>>.Success(resp, StatusCodes.Status200OK));
+        }
     }
 }

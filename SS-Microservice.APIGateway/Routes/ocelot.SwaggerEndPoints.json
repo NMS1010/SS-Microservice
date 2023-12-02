@@ -76,6 +76,17 @@
           "Url": "https://localhost:7075/swagger/v1/swagger.json"
         }
       ]
+    },
+    {
+      "Key": "user-operation",
+      "TransformByOcelotConfig": true,
+      "Config": [
+        {
+          "Name": "SS-Microservice.Services.UserOperation",
+          "Version": "1.0",
+          "Url": "https://localhost:7120/swagger/v1/swagger.json"
+        }
+      ]
     }
   ]
 }
