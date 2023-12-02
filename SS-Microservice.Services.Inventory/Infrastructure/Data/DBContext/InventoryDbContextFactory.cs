@@ -24,7 +24,7 @@ namespace SS_Microservice.Services.Inventory.Infrastructure.Data.DBContext
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var connectionString = configuration.GetConnectionString("DocketDbContext");
+            var connectionString = configuration.GetConnectionString("InventoryDbContext");
 
             var optionBuilder = new DbContextOptionsBuilder<InventoryDbContext>();
             optionBuilder.UseMySQL(connectionString);

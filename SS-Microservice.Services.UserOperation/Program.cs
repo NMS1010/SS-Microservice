@@ -13,10 +13,11 @@ using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Swagger;
 using SS_Microservice.Common.Validators;
-using SS_Microservice.Services.Inventory.Application.Common.AutoMapper;
-using SS_Microservice.Services.Inventory.Application.Interfaces;
-using SS_Microservice.Services.Inventory.Infrastructure.Data.DBContext;
-using SS_Microservice.Services.Inventory.Infrastructure.Services;
+using SS_Microservice.Services.UserOperation.Application.Common.AutoMapper;
+using SS_Microservice.Services.UserOperation.Application.Interfaces;
+using SS_Microservice.Services.UserOperation.Infrastructure.Data.DBContext;
+using SS_Microservice.Services.UserOperation.Infrastructure.Repositories;
+using SS_Microservice.Services.UserOperation.Infrastructure.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,8 +33,8 @@ builder.Host
 builder.Services.AddMetrics();
 
 builder.Services.AddProblemDetailsSetup();
-builder.Services.AddDbContext<InventoryDbContext>(options =>
-                options.UseMySQL(configuration.GetConnectionString("InventoryDbContext")));
+builder.Services.AddDbContext<UserOperationDbContext>(options =>
+                options.UseMySQL(configuration.GetConnectionString("UserOperationDbContext")));
 
 builder.Services
     .AddControllers()
@@ -41,13 +42,14 @@ builder.Services
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(ReviewProfile).Assembly);
 
 builder.Services
             .AddSingleton<ICurrentUserService, CurrentUserService>()
-            .AddScoped<IInventoryService, InventoryService>()
-            .AddScoped(typeof(IUnitOfWork), typeof(SS_Microservice.Services.Inventory.Infrastructure.Repositories.UnitOfWork))
-            .AddScoped(typeof(IGenericRepository<>), typeof(SS_Microservice.Services.Inventory.Infrastructure.Repositories.GenericRepository<>));
+            .AddScoped<IReviewService, ReviewService>()
+            .AddScoped<IUserFollowProductService, UserFollowProductService>()
+            .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
+            .AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
@@ -84,5 +86,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MigrateDatabase<InventoryDbContext>();
+app.MigrateDatabase<UserOperationDbContext>();
 app.Run();
