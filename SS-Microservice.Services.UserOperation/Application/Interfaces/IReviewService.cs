@@ -17,6 +17,8 @@ namespace SS_Microservice.Services.UserOperation.Application.Interfaces
 
         Task<ReviewDto> GetReviewByOrderItem(GetReviewByOrderItemQuery query);
 
+        Task<ProductReviewDto> GetProductReview(long reviewId);
+
         Task<long> CreateReview(CreateReviewCommand command);
 
         Task<bool> UpdateReview(UpdateReviewCommand command);

@@ -9,7 +9,7 @@ using SS_Microservice.Services.Inventory.Application.Interfaces;
 using SS_Microservice.Services.Inventory.Application.Specifications.Docket;
 using SS_Microservice.Services.Inventory.Domain.Entities;
 
-namespace SS_Microservice.Services.Inventory.Infrastructure.Services
+namespace SS_Microservice.Services.Inventory.Application.Services
 {
     public class InventoryService : IInventoryService
     {
@@ -31,7 +31,7 @@ namespace SS_Microservice.Services.Inventory.Infrastructure.Services
             return docketDtos;
         }
 
-        public async Task<bool> ImportProduct(ImportProductCommand command)
+        public async Task<long> ImportProduct(ImportProductCommand command)
         {
             try
             {
@@ -48,11 +48,11 @@ namespace SS_Microservice.Services.Inventory.Infrastructure.Services
 
                 await _unitOfWork.Repository<Docket>().Insert(docket);
 
-                var isSuccess = await _unitOfWork.Save() > 0;
+                await _unitOfWork.Save();
 
                 await _unitOfWork.Commit();
 
-                return isSuccess;
+                return docket.Id;
             }
             catch
             {

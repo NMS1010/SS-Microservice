@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SS_Microservice.Common.Grpc.Product.Protos;
 using SS_Microservice.Common.Messages.Events.User;
 using SS_Microservice.Services.Basket.Application.Dto;
 using SS_Microservice.Services.Basket.Application.Features.Basket.Commands;
@@ -13,6 +14,7 @@ namespace SS_Microservice.Services.Basket.Application.Common.AutoMapper
         public BasketProfile()
         {
             CreateMap<BasketItem, BasketItemDto>();
+            CreateMap<ProductCustomGrpcResponse, BasketItemDto>();
 
             // mappping request - command
             CreateMap<CreateBasketItemRequest, CreateBasketItemCommand>();

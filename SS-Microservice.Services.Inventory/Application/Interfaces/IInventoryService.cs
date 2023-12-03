@@ -6,7 +6,7 @@ namespace SS_Microservice.Services.Inventory.Application.Interfaces
 {
     public interface IInventoryService
     {
-        Task<bool> ImportProduct(ImportProductCommand command);
+        Task<long> ImportProduct(ImportProductCommand command);
 
         Task<List<DocketDto>> GetListDocketByProduct(GetListDocketQuery query);
     }

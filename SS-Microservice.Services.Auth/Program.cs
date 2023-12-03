@@ -17,10 +17,10 @@ using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Common.Swagger;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Auth.Application.Interfaces;
+using SS_Microservice.Services.Auth.Application.Services;
 using SS_Microservice.Services.Auth.Domain.Entities;
 using SS_Microservice.Services.Auth.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Auth.Infrastructure.Repositotires;
-using SS_Microservice.Services.Auth.Infrastructure.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

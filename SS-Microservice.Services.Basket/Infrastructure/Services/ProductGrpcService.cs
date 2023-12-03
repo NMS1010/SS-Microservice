@@ -16,16 +16,17 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
 
         public async Task<ProductCustomGrpcResponse> GetProductByVariantId(GetProductByVariant request)
         {
-            _logger.LogInformation("Starting gRPC connection from Basket to Product Service");
+            _logger.LogInformation("[Basket Service] Starting gRPC connection to Product Service");
             var product = await _productProtoServiceClient.GetProductInformationAsync(request);
             if (product == null)
             {
-                _logger.LogError("Failed to get result from gRPC service");
+                _logger.LogError("[Basket Service] Failed to get product from gRPC service");
             }
             else
             {
-                _logger.LogInformation("Get result successfully from gRPC service");
+                _logger.LogInformation("[Basket Service] Get product successfully from gRPC service");
             }
+
             return product;
         }
     }

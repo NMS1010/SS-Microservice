@@ -19,7 +19,11 @@ namespace SS_Microservice.Services.Inventory.Application.Features.Docket.Command
 
         public async Task<bool> Handle(ImportProductCommand request, CancellationToken cancellationToken)
         {
-            return await _inventoryService.ImportProduct(request);
+            long docketId = await _inventoryService.ImportProduct(request);
+
+            //pub event to product service
+
+            return docketId > 0;
         }
     }
 }

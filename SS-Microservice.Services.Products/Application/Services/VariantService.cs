@@ -10,7 +10,7 @@ using SS_Microservice.Services.Products.Application.Interfaces;
 using SS_Microservice.Services.Products.Application.Specification.Variant;
 using SS_Microservice.Services.Products.Domain.Entities;
 
-namespace SS_Microservice.Services.Products.Infrastructure.Services
+namespace SS_Microservice.Services.Products.Application.Services
 {
     public class VariantService : IVariantService
     {

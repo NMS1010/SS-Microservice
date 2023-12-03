@@ -1,6 +1,6 @@
 ﻿using SS_Microservice.Services.Auth.Application.Interfaces;
 
-namespace SS_Microservice.Services.Auth.Infrastructure.Services
+namespace SS_Microservice.Services.Auth.Application.Services
 {
     public class TokenService : ITokenService
     {

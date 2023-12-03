@@ -4,7 +4,7 @@ using MediatR;
 using SS_Microservice.Common.Messages.Events.User;
 using SS_Microservice.Services.Basket.Application.Features.Basket.Commands;
 
-namespace SS_Microservice.Services.Basket.Application.Features.User.EventConsumer
+namespace SS_Microservice.Services.Basket.Application.Messaging.Events.User
 {
     public class UserRegistedConsumer : IConsumer<UserRegistedEvent>
     {

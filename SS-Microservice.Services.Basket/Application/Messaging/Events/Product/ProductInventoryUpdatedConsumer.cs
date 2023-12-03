@@ -4,7 +4,7 @@ using SS_Microservice.Common.Messages.Events.Product;
 using SS_Microservice.Services.Basket.Application.Features.Basket.Commands;
 using SS_Microservice.Services.Basket.Application.Interfaces;
 
-namespace SS_Microservice.Services.Basket.Application.Features.Product.EventConsumer
+namespace SS_Microservice.Services.Basket.Application.Messaging.Events.Product
 {
     public class ProductInventoryUpdatedConsumer : IConsumer<ProductInventoryUpdatedEvent>
     {

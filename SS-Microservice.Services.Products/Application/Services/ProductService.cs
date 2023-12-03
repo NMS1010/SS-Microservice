@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Grpc.Core;
 using Newtonsoft.Json.Linq;
 using SS_Microservice.Common.Exceptions;
+using SS_Microservice.Common.Grpc.Product.Protos;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.Upload;
@@ -11,11 +13,12 @@ using SS_Microservice.Services.Products.Application.Features.Product.Queries;
 using SS_Microservice.Services.Products.Application.Interfaces;
 using SS_Microservice.Services.Products.Application.Model.Variant;
 using SS_Microservice.Services.Products.Application.Specification.Product;
+using SS_Microservice.Services.Products.Application.Specification.Variant;
 using SS_Microservice.Services.Products.Domain.Entities;
 
-namespace SS_Microservice.Services.Products.Infrastructure.Services
+namespace SS_Microservice.Services.Products.Application.Services
 {
-    public class ProductService : /*ProductProtoService.ProductProtoServiceBase,*/ IProductService
+    public class ProductService : ProductProtoService.ProductProtoServiceBase, IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUploadService _uploadService;
@@ -28,45 +31,40 @@ namespace SS_Microservice.Services.Products.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
-        //public override async Task<ProductResponse> GetProductInformation(GetProductDetailByVariant request, ServerCallContext context)
-        //{
-        //	long variantId = long.Parse(request.VariantId);
-        //	var variant = await _unitOfWork.Repository<Variant>().GetEntityWithSpec(new VariantSpecification(variantId))
-        //		?? throw new InvalidRequestException("Unexpected variantId");
-        //	var product = variant.Product;
-        //	if (product == null)
-        //		return null;
-        //	var category = product.Category;
-        //	var brand = product.Brand;
+        public override async Task<ProductCustomGrpcResponse> GetProductInformation(GetProductByVariant request, ServerCallContext context)
+        {
+            var variant = await _unitOfWork.Repository<Variant>().GetEntityWithSpec(new VariantSpecification(request.VariantId))
+                ?? throw new InvalidRequestException("Unexpected variantId");
 
-        //	var productDto = _mapper.Map<ProductDto>(product);
+            var product = variant.Product;
+            if (product == null)
+                return null;
 
-        //	return new ProductResponse()
-        //	{
-        //		Description = productDto.Description,
-        //		Image = productDto.Images.Where(x => x.IsDefault = true)?.FirstOrDefault()?.Image,
-        //		Name = productDto.Name,
-        //		CategoryId = category.Id,
-        //		CategoryName = category.Name,
-        //		CategorySlug = category.Slug,
-        //		BrandName = brand.Name,
-        //		BrandId = brand.Id,
-        //		ProductId = product.Id,
-        //		PromotionalPrice = (double)productDto.PromotionalPrice,
-        //		Rating = productDto.Rating,
-        //		SaleId = productDto.SaleId,
-        //		Slug = productDto.Slug,
-        //		Sold = productDto.Sold,
-        //		Status = productDto.Status,
-        //		Price = (double)productDto.Price,
-        //		Quantity = productDto.Quantity,
-        //		VariantName = variant.Name,
-        //		VariantQuantity = variant.Quantity,
-        //		VariantTotalPrice = (double)(variant.TotalPrice),
-        //		Unit = product.Unit,
-        //		Cost = (double)product.Cost
-        //	};
-        //}
+            var isPromotion = variant.PromotionalItemPrice.HasValue;
+
+            var productDto = _mapper.Map<ProductDto>(product);
+
+            return new ProductCustomGrpcResponse()
+            {
+                VariantQuantity = variant.Quantity,
+                ProductId = productDto.Id,
+                ProductName = productDto.Name,
+                ProductImage = productDto?.Images.FirstOrDefault(x => x.IsDefault)?.Image ?? product.Images.FirstOrDefault()?.Image,
+                ProductSlug = productDto.Slug,
+                ProductUnit = productDto.Unit.Name,
+                ProductQuantity = productDto.Quantity,
+                Sku = variant.Sku,
+                TotalPrice = (double)(variant.Quantity * variant.ItemPrice),
+                TotalPromotionalPrice = isPromotion ? variant.Quantity * (double)variant.PromotionalItemPrice.Value : null,
+                VariantName = variant.Name,
+                VariantId = variant.Id,
+                VariantPrice = (double)variant.ItemPrice,
+                VariantPromotionalPrice = isPromotion ? (double)variant.PromotionalItemPrice.Value : null,
+                IsPromotion = isPromotion,
+                ProductActualQuantity = productDto.ActualInventory,
+                Status = productDto.Status
+            };
+        }
 
         public async Task<bool> UpdateProductQuantity(UpdateProductQuantityCommand command)
         {

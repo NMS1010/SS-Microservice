@@ -15,7 +15,7 @@ using SS_Microservice.Services.Auth.Domain.Entities;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 
-namespace SS_Microservice.Services.Auth.Infrastructure.Services
+namespace SS_Microservice.Services.Auth.Application.Services
 {
     public class AuthService : IAuthService
     {

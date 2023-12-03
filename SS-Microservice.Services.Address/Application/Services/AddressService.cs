@@ -12,7 +12,7 @@ using SS_Microservice.Services.Address.Application.Specifications;
 using SS_Microservice.Services.Address.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace SS_Microservice.Services.Address.Infrastructure.Services
+namespace SS_Microservice.Services.Address.Application.Services
 {
     public class AddressService : IAddressService
     {

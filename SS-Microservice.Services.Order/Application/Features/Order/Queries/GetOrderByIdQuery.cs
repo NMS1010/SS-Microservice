@@ -27,7 +27,7 @@ namespace SS_Microservice.Services.Order.Application.Features.Order.Queries
             order.OrderItems.ForEach(async oi =>
             {
                 var product = await _productGrpcService.GetProductByVariantId(oi.VariantId);
-                oi.ProductImage = product.DefaultImage;
+                oi.ProductImage = product.ProductImage;
             });
 
             return order;

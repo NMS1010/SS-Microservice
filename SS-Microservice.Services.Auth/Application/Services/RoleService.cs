@@ -7,7 +7,7 @@ using SS_Microservice.Services.Auth.Application.Interfaces;
 using SS_Microservice.Services.Auth.Application.Specifications.Role;
 using SS_Microservice.Services.Auth.Domain.Entities;
 
-namespace SS_Microservice.Services.Auth.Infrastructure.Services
+namespace SS_Microservice.Services.Auth.Application.Services
 {
     public class RoleService : IRoleService
     {

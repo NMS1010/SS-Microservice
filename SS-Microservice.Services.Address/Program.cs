@@ -15,9 +15,9 @@ using SS_Microservice.Common.Swagger;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Address.Application.Common.AutoMapper;
 using SS_Microservice.Services.Address.Application.Interfaces;
+using SS_Microservice.Services.Address.Application.Services;
 using SS_Microservice.Services.Address.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Address.Infrastructure.Repositories;
-using SS_Microservice.Services.Address.Infrastructure.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

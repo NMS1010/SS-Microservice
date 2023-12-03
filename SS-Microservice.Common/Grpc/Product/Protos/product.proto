@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 option csharp_namespace = "SS_Microservice.Common.Grpc.Product.Protos";
-
+import "google/protobuf/wrappers.proto";
 package product;
 
 service ProductProtoService {
@@ -12,28 +12,23 @@ message GetProductByVariant{
 	int64 variantId = 1;
 }
 
+
 message ProductCustomGrpcResponse{
-	string Name = 1;
-	string Description = 2;
-	int64 Quantity = 3;
-	double Price = 4;
-	double PromotionalPrice = 5;
-	string CategoryName = 6;
-	string DefaultImage = 7;
-	string Status = 8;
-	string Slug = 9;
-	int64 CategoryId = 10;
-	string CategorySlug = 11;
-	double Rating = 12;
-	int64 Sold = 13;
-	int64 SaleId = 14;
-	string ProductId = 15;
-	int64 BrandId = 16;
-	string BrandName = 17;
-	string Image = 18;
-	string VariantName = 19;
-	int64 VariantQuantity = 20;
-	double VariantTotalPrice = 21;
-	string Unit = 22;
-	double Cost = 23;
+	int64 ProductQuantity = 1;
+    int64 VariantId = 2;
+    string VariantName = 3;
+    int64 VariantQuantity = 4;
+    string Sku = 5;
+    double VariantPrice = 6;
+    google.protobuf.DoubleValue VariantPromotionalPrice = 7;
+    double TotalPrice = 8;
+    google.protobuf.DoubleValue TotalPromotionalPrice = 9;
+    string ProductSlug = 10;
+    string ProductUnit = 11;
+    string ProductName = 12;
+    string ProductImage = 13;
+    bool IsPromotion = 14;
+    int64 ProductId = 15;
+	int64 ProductActualQuantity = 16;
+    string Status = 17;
 }

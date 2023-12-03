@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SS_Microservice.Services.Auth.Infrastructure.Services
+namespace SS_Microservice.Services.Auth.Application.Services
 {
     public class JwtService : IJwtService
     {

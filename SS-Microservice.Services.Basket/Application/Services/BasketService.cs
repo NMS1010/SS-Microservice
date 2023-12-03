@@ -9,7 +9,7 @@ using SS_Microservice.Services.Basket.Application.Interfaces;
 using SS_Microservice.Services.Basket.Application.Specifications;
 using SS_Microservice.Services.Basket.Domain.Entities;
 
-namespace SS_Microservice.Services.Basket.Infrastructure.Services
+namespace SS_Microservice.Services.Basket.Application.Services
 {
     public class BasketService : IBasketService
     {
@@ -46,6 +46,9 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
 
         public async Task<bool> CreateBasketItem(CreateBasketItemCommand command)
         {
+            if (command.Quantity <= 0)
+                throw new InvalidRequestException("Unexpected quantity, it must be a positive number");
+
             var basket = await _unitOfWork.Repository<Domain.Entities.Basket>().GetEntityWithSpec(new BasketSpecification(command.UserId))
                 ?? throw new NotFoundException("Cannot find basket of current user");
 
@@ -53,15 +56,6 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
 
             var ci = new BasketItem();
 
-            //var variant = await _unitOfWork.Repository<Variant>().GetEntityWithSpec(new VariantSpecification(command.VariantId))
-            //    ?? throw new InvalidRequestException("Unexpected variantId");
-
-            //if (variant.Product.Status != PRODUCT_STATUS.ACTIVE)
-            //    throw new InvalidRequestException("Unexpected variantId, product is not active");
-
-            //var quantity = variant?.Product?.Quantity;
-            //if (quantity < command.Quantity)
-            //    throw new InvalidRequestException("Unexpected quantity, it must be less than or equal to product in inventory");
 
             if (basketItem == null)
             {
@@ -143,15 +137,12 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
         {
             if (command.Quantity <= 0)
                 throw new InvalidRequestException("Unexpected quantity, it must be a positive number");
+
             var basket = await _unitOfWork.Repository<Domain.Entities.Basket>().GetEntityWithSpec(new BasketSpecification(command.UserId))
                 ?? throw new NotFoundException("Cannot find basket of current user");
 
             var basketItem = await _unitOfWork.Repository<BasketItem>().GetEntityWithSpec(new BasketItemSpecification(command.CartItemId, command.UserId))
                 ?? throw new InvalidRequestException("Unexpected basketItemId");
-
-            //var quantity = basketItem?.Variant?.Product?.Quantity;
-            //if (quantity < command.Quantity)
-            //    throw new InvalidRequestException("Unexpected quantity, it must be less than or equal to product in inventory");
 
             basketItem.Quantity = command.Quantity;
 
@@ -192,43 +183,11 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
             var basketDtos = new List<BasketItemDto>();
             foreach (var basketItem in basketItems)
             {
-                basketDtos.Add(await GetBasketItemDto(basketItem));
+                basketDtos.Add(_mapper.Map<BasketItemDto>(basketItem));
             }
 
             return new PaginatedResult<BasketItemDto>(basketDtos, query.PageIndex, count, query.PageSize);
         }
-
-        private async Task<BasketItemDto> GetBasketItemDto(BasketItem basketItem)
-        {
-            //var isPromotion = basketItem.Variant.PromotionalItemPrice.HasValue;
-            //var variant = await _unitOfWork.Repository<Variant>().GetEntityWithSpec(new VariantSpecification(basketItem.Variant.Id))
-            //    ?? throw new NotFoundException("Cannot find varaint item");
-
-            //var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(new ProductSpecification(variant.Product.Id))
-            //    ?? throw new NotFoundException("Cannot find product of variant item");
-
-            //var basketItemDto = _mapper.Map<BasketItemDto>(basketItem);
-
-            //basketItemDto.VariantId = variant.Id;
-            //basketItemDto.Quantity = basketItem.Quantity;
-            //basketItemDto.TotalPrice = variant.Quantity * variant.ItemPrice;
-            //basketItemDto.TotalPromotionalPrice = isPromotion ? variant.Quantity * variant.PromotionalItemPrice.Value : null;
-            //basketItemDto.Sku = variant.Sku;
-            //basketItemDto.VariantName = variant.Name;
-            //basketItemDto.VariantPrice = variant.ItemPrice;
-            //basketItemDto.VariantPromotionalPrice = isPromotion ? variant.PromotionalItemPrice.Value : null;
-            //basketItemDto.IsPromotion = isPromotion;
-            //basketItemDto.VariantQuantity = variant.Quantity;
-            //basketItemDto.ProductName = product.Name;
-            //basketItemDto.ProductSlug = product.Slug;
-            //basketItemDto.ProductUnit = product.Unit.Name;
-            //basketItemDto.ProductImage = product.Images.FirstOrDefault(x => x.IsDefault)?.Image ?? product.Images.FirstOrDefault()?.Image;
-
-            //return basketItemDto;
-
-            return new BasketItemDto();
-        }
-
 
         public async Task<List<BasketItemDto>> GetBasketItemByIds(GetListBasketItemQuery query)
         {
@@ -238,7 +197,7 @@ namespace SS_Microservice.Services.Basket.Infrastructure.Services
                 var basketItem = await _unitOfWork.Repository<BasketItem>().GetEntityWithSpec(new BasketItemSpecification(id, query.UserId))
                     ?? throw new NotFoundException("Cannot find basket item");
 
-                res.Add(await GetBasketItemDto(basketItem));
+                res.Add(_mapper.Map<BasketItemDto>(basketItem));
             }
 
             return res;

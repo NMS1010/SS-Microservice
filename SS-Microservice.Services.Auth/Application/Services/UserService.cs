@@ -18,7 +18,7 @@ using SS_Microservice.Services.Auth.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace SS_Microservice.Services.Auth.Infrastructure.Services
+namespace SS_Microservice.Services.Auth.Application.Services
 {
     public class UserService : IUserService
     {
@@ -85,7 +85,7 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
             }
 
             string error = "";
-            res.Errors.ToList().ForEach(x => error += (x.Description + "/n"));
+            res.Errors.ToList().ForEach(x => error += x.Description + "/n");
             throw new Exception(error);
         }
 
@@ -185,7 +185,7 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
 
         public async Task<bool> UpdateStaff(UpdateStaffCommand command)
         {
-            var staff = await _unitOfWork.Repository<Domain.Entities.Staff>().GetEntityWithSpec(new StaffSpecification(command.Id))
+            var staff = await _unitOfWork.Repository<Staff>().GetEntityWithSpec(new StaffSpecification(command.Id))
                 ?? throw new NotFoundException("Cannot find this staff");
 
             await UpdateProperty(command, staff.User);
@@ -238,13 +238,13 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
 
         public async Task<bool> ToggleStaffStatus(ToggleStaffCommand command)
         {
-            var staff = await _unitOfWork.Repository<Domain.Entities.Staff>().GetEntityWithSpec(new StaffSpecification(command.StaffId))
+            var staff = await _unitOfWork.Repository<Staff>().GetEntityWithSpec(new StaffSpecification(command.StaffId))
                 ?? throw new InvalidRequestException("Unexpected staffId");
 
             await ToggleUserStatus(new ToggleUserCommand() { UserId = staff.UserId });
             staff.UpdatedAt = DateTime.Now;
             staff.UpdatedBy = _currentUserService.UserId;
-            _unitOfWork.Repository<Domain.Entities.Staff>().Update(staff);
+            _unitOfWork.Repository<Staff>().Update(staff);
             var isSuccess = await _unitOfWork.Save() > 0;
 
             if (!isSuccess)
@@ -258,7 +258,7 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
             List<string> userIds = new();
             foreach (var staffId in command.StaffIds)
             {
-                var staff = await _unitOfWork.Repository<Domain.Entities.Staff>().GetEntityWithSpec(new StaffSpecification(staffId))
+                var staff = await _unitOfWork.Repository<Staff>().GetEntityWithSpec(new StaffSpecification(staffId))
                     ?? throw new InvalidRequestException("Unexpected staffId");
                 userIds.Add(staff.UserId);
             }
@@ -267,11 +267,11 @@ namespace SS_Microservice.Services.Auth.Infrastructure.Services
 
             foreach (var staffId in command.StaffIds)
             {
-                var staff = await _unitOfWork.Repository<Domain.Entities.Staff>().GetEntityWithSpec(new StaffSpecification(staffId))
+                var staff = await _unitOfWork.Repository<Staff>().GetEntityWithSpec(new StaffSpecification(staffId))
                     ?? throw new InvalidRequestException("Unexpected staffId");
                 staff.UpdatedAt = DateTime.Now;
                 staff.UpdatedBy = _currentUserService.UserId;
-                _unitOfWork.Repository<Domain.Entities.Staff>().Update(staff);
+                _unitOfWork.Repository<Staff>().Update(staff);
             }
 
             var isSuccess = await _unitOfWork.Save() > 0;

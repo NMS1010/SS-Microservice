@@ -19,6 +19,8 @@ namespace SS_Microservice.Services.UserOperation.Application.Features.Review.Com
 
         public async Task<bool> Handle(ToggleReviewCommand request, CancellationToken cancellationToken)
         {
+            //pub event to product service to update review
+
             return await _reviewService.ToggleReview(request);
         }
     }

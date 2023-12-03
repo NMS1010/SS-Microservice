@@ -7,7 +7,6 @@ using SS_Microservice.Services.UserOperation.Application.Interfaces;
 using SS_Microservice.Services.UserOperation.Application.Models.UserFollowProduct;
 using SS_Microservice.Services.UserOperation.Application.Specifications.UserFollowProduct;
 using SS_Microservice.Services.UserOperation.Domain.Entities;
-using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product.Model.Response;
 
 namespace SS_Microservice.Services.UserOperation.Application.Services
@@ -16,13 +15,11 @@ namespace SS_Microservice.Services.UserOperation.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IProductClientAPI _productClientAPI;
 
-        public UserFollowProductService(IUnitOfWork unitOfWork, IMapper mapper, IProductClientAPI productClientAPI)
+        public UserFollowProductService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _productClientAPI = productClientAPI;
         }
 
         public async Task<PaginatedResult<ProductDto>> GetListFollowProduct(GetFollowProductPagingRequest request)
@@ -33,10 +30,10 @@ namespace SS_Microservice.Services.UserOperation.Application.Services
             var productDtos = new List<ProductDto>();
             foreach (var item in list)
             {
-                var product = await _productClientAPI.GetProduct(item.ProductId)
-                    ?? throw new NotFoundException("Cannot find product");
-
-                productDtos.Add(product);
+                productDtos.Add(new ProductDto()
+                {
+                    Id = item.ProductId,
+                });
             }
 
             return new PaginatedResult<ProductDto>(productDtos, request.PageIndex, count, request.PageSize);
@@ -50,7 +47,7 @@ namespace SS_Microservice.Services.UserOperation.Application.Services
 
             if (res != null)
             {
-                throw new InvalidRequestException("User has already liked this product");
+                throw new InvalidRequestException("User has already followed this product");
             }
 
             UserFollowProduct userFollowProduct = new()
@@ -73,7 +70,7 @@ namespace SS_Microservice.Services.UserOperation.Application.Services
         {
             var userFollowProduct = await _unitOfWork.Repository<UserFollowProduct>()
                 .GetEntityWithSpec(new UserFollowProductSpecification(command.UserId, command.ProductId))
-                ?? throw new NotFoundException("Cannot find follow product of user");
+                ?? throw new NotFoundException("Cannot find this product in following list of user");
 
             _unitOfWork.Repository<UserFollowProduct>().Delete(userFollowProduct);
 

@@ -1,4 +1,5 @@
 ﻿using SS_Microservice.Common.Specifications;
+using SS_Microservice.Services.Products.Application.Common.Enums;
 using SS_Microservice.Services.Products.Application.Features.Product.Queries;
 
 namespace SS_Microservice.Services.Products.Application.Specification.Product
@@ -7,7 +8,7 @@ namespace SS_Microservice.Services.Products.Application.Specification.Product
     {
         public ProductSearchSpecification(GetListSearchingProductQuery query, bool isPaging = false)
         {
-            Criteria = x => x.Name.Contains(query.Search);
+            Criteria = x => x.Name.Contains(query.Search) && x.Status != PRODUCT_STATUS.INACTIVE;
 
             if (string.IsNullOrEmpty(query.ColumnName))
                 query.ColumnName = "Name";

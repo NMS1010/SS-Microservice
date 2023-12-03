@@ -12,7 +12,7 @@ using SS_Microservice.Services.Products.Application.Specification.Product;
 using SS_Microservice.Services.Products.Application.Specification.Sale;
 using SS_Microservice.Services.Products.Domain.Entities;
 
-namespace SS_Microservice.Services.Products.Infrastructure.Services
+namespace SS_Microservice.Services.Products.Application.Services
 {
     public class SaleService : ISaleService
     {

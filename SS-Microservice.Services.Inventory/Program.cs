@@ -15,8 +15,8 @@ using SS_Microservice.Common.Swagger;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Inventory.Application.Common.AutoMapper;
 using SS_Microservice.Services.Inventory.Application.Interfaces;
+using SS_Microservice.Services.Inventory.Application.Services;
 using SS_Microservice.Services.Inventory.Infrastructure.Data.DBContext;
-using SS_Microservice.Services.Inventory.Infrastructure.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

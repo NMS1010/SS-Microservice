@@ -15,8 +15,8 @@ using SS_Microservice.Common.Swagger;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Products.Application.Features.Order.EventConsumer;
 using SS_Microservice.Services.Products.Application.Interfaces;
+using SS_Microservice.Services.Products.Application.Services;
 using SS_Microservice.Services.Products.Infrastructure.Data.Context;
-using SS_Microservice.Services.Products.Infrastructure.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

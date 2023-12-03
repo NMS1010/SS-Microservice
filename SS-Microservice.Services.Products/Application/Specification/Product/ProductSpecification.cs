@@ -1,4 +1,5 @@
 ﻿using SS_Microservice.Common.Specifications;
+using SS_Microservice.Services.Products.Application.Common.Enums;
 using SS_Microservice.Services.Products.Application.Features.Product.Queries;
 
 namespace SS_Microservice.Services.Products.Application.Specification.Product
@@ -69,24 +70,55 @@ namespace SS_Microservice.Services.Products.Application.Specification.Product
 
             if (!string.IsNullOrEmpty(keyword))
             {
-                if (!string.IsNullOrEmpty(query.CategorySlug))
+                if (query.Status)
                 {
-                    Criteria = x => x.Name.ToLower().Contains(keyword) && x.Category.Slug == query.CategorySlug;
+                    if (!string.IsNullOrEmpty(query.CategorySlug))
+                    {
+                        Criteria = x => x.Name.ToLower().Contains(keyword) && x.Category.Slug == query.CategorySlug && x.Status != PRODUCT_STATUS.INACTIVE;
+                    }
+                    else
+                    {
+                        Criteria = x => x.Name.ToLower().Contains(keyword) && x.Status != PRODUCT_STATUS.INACTIVE;
+                    }
                 }
                 else
                 {
-                    Criteria = x => x.Name.ToLower().Contains(keyword);
+                    if (!string.IsNullOrEmpty(query.CategorySlug))
+                    {
+                        Criteria = x => x.Name.ToLower().Contains(keyword) && x.Category.Slug == query.CategorySlug;
+                    }
+                    else
+                    {
+                        Criteria = x => x.Name.ToLower().Contains(keyword);
+                    }
+
                 }
             }
             else
             {
-                if (!string.IsNullOrEmpty(query.CategorySlug))
+                if (query.Status)
                 {
-                    Criteria = x => x.Category.Slug == query.CategorySlug;
+
+                    if (!string.IsNullOrEmpty(query.CategorySlug))
+                    {
+                        Criteria = x => x.Category.Slug == query.CategorySlug && x.Status != PRODUCT_STATUS.INACTIVE;
+                    }
+                    else
+                    {
+                        Criteria = x => true && x.Status != PRODUCT_STATUS.INACTIVE;
+                    }
                 }
                 else
                 {
-                    Criteria = x => true;
+
+                    if (!string.IsNullOrEmpty(query.CategorySlug))
+                    {
+                        Criteria = x => x.Category.Slug == query.CategorySlug;
+                    }
+                    else
+                    {
+                        Criteria = x => true;
+                    }
                 }
             }
             var columnName = query.ColumnName.ToLower();
