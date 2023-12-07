@@ -12,7 +12,7 @@ namespace SS_Microservice.Services.UserOperation.Infrastructure.Services.Product
         Task<CustomAPIResponse<PaginatedResult<ProductDto>>> GetListProduct([Query] GetProductPagingRequest request);
 
         [Get("api/products/{id}")]
-        Task<ProductDto> GetProduct([Path] long id);
+        Task<CustomAPIResponse<ProductDto>> GetProduct([Path] long id);
 
     }
 }

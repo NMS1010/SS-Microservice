@@ -1,4 +1,5 @@
 ﻿using SS_Microservice.Common.Entities;
+using SS_Microservice.Services.Auth.Infrastructure.Services.Address.Model.Response;
 
 namespace SS_Microservice.Services.Auth.Application.Dto
 {
@@ -14,5 +15,6 @@ namespace SS_Microservice.Services.Auth.Application.Dto
         public int Status { get; set; }
 
         public List<string> Roles { get; set; } = new List<string>();
+        public List<AddressDto> Addresses { get; set; }
     }
 }

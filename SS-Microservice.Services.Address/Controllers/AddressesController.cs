@@ -75,6 +75,7 @@ namespace SS_Microservice.Services.Address.Controllers
         [HttpGet]
         public async Task<IActionResult> GetListAddress([FromQuery] GetAddressPagingRequest request)
         {
+            request.UserId = _currentUserService.UserId;
             var query = _mapper.Map<GetListAddressQuery>(request);
 
             var res = await _sender.Send(query);
@@ -128,6 +129,19 @@ namespace SS_Microservice.Services.Address.Controllers
             var res = await _sender.Send(query);
 
             return Ok(CustomAPIResponse<List<WardDto>>.Success(res, StatusCodes.Status200OK));
+        }
+
+
+        //call from other service
+        [HttpGet("internal")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetListAddressByUserFromOtherService([FromQuery] GetAddressPagingRequest request)
+        {
+            var query = _mapper.Map<GetListAddressQuery>(request);
+
+            var res = await _sender.Send(query);
+
+            return Ok(CustomAPIResponse<PaginatedResult<AddressDto>>.Success(res, StatusCodes.Status200OK));
         }
     }
 }

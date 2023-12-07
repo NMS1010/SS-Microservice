@@ -7,5 +7,6 @@ namespace SS_Microservice.Services.Auth.Application.Dto
         public string Type { get; set; }
         public string Code { get; set; }
         public UserDto User { get; set; }
+        public string UserId { get; set; }
     }
 }

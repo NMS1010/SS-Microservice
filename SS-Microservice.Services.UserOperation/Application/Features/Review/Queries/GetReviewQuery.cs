@@ -33,18 +33,21 @@ namespace SS_Microservice.Services.UserOperation.Application.Features.Review.Que
             var res = await _reviewService.GetReview(request);
 
 
-            var product = await _productClientAPI.GetProduct(res.ProductId)
-                ?? throw new NotFoundException("Cannot find product");
+            var productResp = await _productClientAPI.GetProduct(res.ProductId);
+            if (productResp == null || productResp.Data == null)
+                throw new InternalServiceCommunicationException("Get product failed");
 
-            var user = await _userClientAPI.GetUser(res.UserId)
-                ?? throw new NotFoundException("Cannot find user");
+            var userResp = await _userClientAPI.GetUser(res.UserId);
+            if (userResp == null || userResp.Data == null)
+                throw new InternalServiceCommunicationException("Get user failed");
 
-            var orderItem = await _orderClientAPI.GetOrderItem(res.OrderItemId)
-                ?? throw new NotFoundException("Cannot find order item");
+            var orderItemResp = await _orderClientAPI.GetOrderItem(res.OrderItemId);
+            if (orderItemResp == null || orderItemResp.Data == null)
+                throw new InternalServiceCommunicationException("Get order item failed");
 
-            res.Product = product;
-            res.User = user;
-            res.VariantName = orderItem.VariantName;
+            res.Product = productResp.Data;
+            res.User = userResp.Data;
+            res.VariantName = orderItemResp.Data.VariantName;
 
             return res;
         }

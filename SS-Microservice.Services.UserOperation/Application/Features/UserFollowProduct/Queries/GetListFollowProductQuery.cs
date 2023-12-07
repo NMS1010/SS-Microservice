@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SS_Microservice.Common.Exceptions;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.UserOperation.Application.Interfaces;
 using SS_Microservice.Services.UserOperation.Application.Models.UserFollowProduct;
@@ -27,8 +28,11 @@ namespace SS_Microservice.Services.UserOperation.Application.Features.UserFollow
             var res = await _userFollowProductService.GetListFollowProduct(request);
             for (int i = 0; i <= res.Items.Count; i++)
             {
-                var product = await _productClientAPI.GetProduct(res.Items[i].Id);
-                res.Items[i] = product;
+                var productResp = await _productClientAPI.GetProduct(res.Items[i].Id);
+                if (productResp == null || productResp.Data == null)
+                    throw new InternalServiceCommunicationException("Get product failed");
+
+                res.Items[i] = productResp.Data;
             }
 
             return res;
