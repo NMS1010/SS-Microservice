@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
@@ -14,7 +13,7 @@ namespace SS_Microservice.Services.Order.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "ADMIN")]
     public class DeliveriesController : ControllerBase
     {
         private readonly ISender _sender;
@@ -26,57 +25,56 @@ namespace SS_Microservice.Services.Order.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllDeliveries([FromQuery] GetDeliveryPagingRequest request)
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetListDelivery([FromQuery] GetDeliveryPagingRequest request)
         {
-            var query = _mapper.Map<GetAllDeliveryQuery>(request);
+            var resp = await _sender.Send(_mapper.Map<GetListDeliveryQuery>(request));
 
-            var res = await _sender.Send(query);
-
-            return Ok(CustomAPIResponse<PaginatedResult<DeliveryDto>>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<PaginatedResult<DeliveryDto>>.Success(resp, StatusCodes.Status200OK));
         }
 
-        [HttpGet("detail/{deliveryId}")]
-        [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> GetDeliveryById([FromRoute] long deliveryId)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetDelivery([FromRoute] long id)
         {
-            var query = new GetDeliveryByIdQuery()
-            {
-                Id = deliveryId
-            };
-            var res = await _sender.Send(query);
+            var resp = await _sender.Send(new GetDeliveryQuery() { Id = id });
 
-            return Ok(CustomAPIResponse<DeliveryDto>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<DeliveryDto>.Success(resp, StatusCodes.Status200OK));
         }
 
-        [HttpPost("create")]
-        [Authorize(Roles = "ADMIN")]
+        [HttpPost]
         public async Task<IActionResult> CreateDelivery([FromForm] CreateDeliveryRequest request)
         {
-            var command = _mapper.Map<CreateDeliveryCommand>(request);
-            await _sender.Send(command);
+            var deliveryId = await _sender.Send(_mapper.Map<CreateDeliveryCommand>(request));
 
-            return Ok(CustomAPIResponse<NoContentAPIResponse>.Success(StatusCodes.Status201Created));
+            var url = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/deliveries/{deliveryId}";
+
+            return Created(url, CustomAPIResponse<object>.Success(new { id = deliveryId }, StatusCodes.Status201Created));
         }
 
-        [HttpPut("update")]
-        [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> UpdateDelivery([FromForm] UpdateDeliveryRequest request)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateDelivery([FromRoute] long id, [FromForm] UpdateDeliveryRequest request)
         {
-            var command = _mapper.Map<UpdateDeliveryCommand>(request);
-            var isSuccess = await _sender.Send(command);
+            request.Id = id;
+            var resp = await _sender.Send(_mapper.Map<UpdateDeliveryCommand>(request));
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(resp, StatusCodes.Status204NoContent));
         }
 
-        [HttpDelete("delete/{deliveryId}")]
-        [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> DeleteDelivery(long deliveryId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDelivery([FromRoute] long id)
         {
-            var command = new DeleteDeliveryCommand() { Id = deliveryId };
-            var isSuccess = await _sender.Send(command);
+            var resp = await _sender.Send(new DeleteDeliveryCommand() { Id = id });
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(resp, StatusCodes.Status204NoContent));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteListDelivery([FromQuery] List<long> ids)
+        {
+            var resp = await _sender.Send(new DeleteListDeliveryCommand() { Ids = ids });
+
+            return Ok(CustomAPIResponse<bool>.Success(resp, StatusCodes.Status204NoContent));
         }
     }
 }

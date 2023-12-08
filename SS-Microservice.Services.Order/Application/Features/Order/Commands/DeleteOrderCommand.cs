@@ -5,7 +5,7 @@ namespace SS_Microservice.Services.Order.Application.Features.Order.Commands
 {
     public class DeleteOrderCommand : IRequest<bool>
     {
-        public long OrderId { get; set; }
+        public long Id { get; set; }
     }
 
     public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, bool>

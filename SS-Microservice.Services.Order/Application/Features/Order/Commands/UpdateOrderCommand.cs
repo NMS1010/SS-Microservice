@@ -6,7 +6,6 @@ namespace SS_Microservice.Services.Order.Application.Features.Order.Commands
 {
     public class UpdateOrderCommand : UpdateOrderRequest, IRequest<bool>
     {
-        public string UserId { get; set; }
     }
 
     public class UpdateOrderHandler : IRequestHandler<UpdateOrderCommand, bool>

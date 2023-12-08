@@ -1,19 +1,16 @@
-﻿using SS_Microservice.Services.Order.Application.Models.OrderItem;
+﻿using System.Text.Json.Serialization;
 
 namespace SS_Microservice.Services.Order.Application.Models.Order
 {
     public class CreateOrderRequest
     {
-        public int AddressId { get; set; }
-        public long OrderStateId { get; set; }
-        public long DeliveryId { get; set; }
-        public string PaymentMethodId { get; set; }
-        public string PaymentMethodType { get; set; }
-        public string PaypalOrderId { get; set; }
-        public string PaypalOrderStatus { get; set; }
+        [JsonIgnore]
+        public string UserId { get; set; }
+
         public string Note { get; set; }
-        public string OtherCancelReason { get; set; }
-        public long OrderCancellationReasonId { get; set; }
+        public long PaymentMethodId { get; set; }
+        public long DeliveryId { get; set; }
+
         public List<CreateOrderItemRequest> Items { get; set; }
     }
 }

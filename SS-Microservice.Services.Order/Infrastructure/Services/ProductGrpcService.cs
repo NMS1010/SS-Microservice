@@ -14,18 +14,19 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             _logger = logger;
         }
 
-        public async Task<ProductCustomGrpcResponse> GetProductByVariantId(long variantId)
+        public async Task<ProductCustomGrpcResponse> GetProductByVariant(GetProductByVariant request)
         {
-            _logger.LogInformation("Starting gRPC connection from Order to Product Service");
-            var product = await _productProtoServiceClient.GetProductInformationAsync(new GetProductByVariant() { VariantId = variantId });
+            _logger.LogInformation("[Order Service] Starting gRPC connection to Product Service");
+            var product = await _productProtoServiceClient.GetProductInformationAsync(request);
             if (product == null)
             {
-                _logger.LogError("Failed to get result from gRPC service");
+                _logger.LogError("[Order Service] Failed to get product from gRPC service");
             }
             else
             {
-                _logger.LogInformation("Get result successfully from gRPC service");
+                _logger.LogInformation("[Order Service] Get product successfully from gRPC service");
             }
+
             return product;
         }
     }

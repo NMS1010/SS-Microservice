@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
@@ -12,9 +11,9 @@ using SS_Microservice.Services.Order.Application.Models.PaymentMethod;
 
 namespace SS_Microservice.Services.Order.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/payment-methods")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "ADMIN")]
     public class PaymentMethodsController : ControllerBase
     {
         private readonly ISender _sender;
@@ -26,55 +25,56 @@ namespace SS_Microservice.Services.Order.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllPaymentMethods([FromQuery] GetPaymentMethodPagingRequest request)
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetListPaymentMethod([FromQuery] GetPaymentMethodPagingRequest request)
         {
-            var query = _mapper.Map<GetAllPaymentMethodQuery>(request);
+            var resp = await _sender.Send(_mapper.Map<GetListPaymentMethodQuery>(request));
 
-            var res = await _sender.Send(query);
-
-            return Ok(CustomAPIResponse<PaginatedResult<PaymentMethodDto>>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<PaginatedResult<PaymentMethodDto>>.Success(resp, StatusCodes.Status200OK));
         }
 
-        [HttpGet("detail/{paymentMethodId}")]
-        [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> GetOrderById([FromRoute] long paymentMethodId)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPaymentMethod([FromRoute] long id)
         {
-            var query = new GetPaymentMethodByIdQuery()
-            {
-                Id = paymentMethodId
-            };
-            var res = await _sender.Send(query);
+            var resp = await _sender.Send(new GetPaymentMethodQuery() { Id = id });
 
-            return Ok(CustomAPIResponse<PaymentMethodDto>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<PaymentMethodDto>.Success(resp, StatusCodes.Status200OK));
         }
 
-        [HttpPost("create")]
-        [Authorize(Roles = "ADMIN")]
+        [HttpPost]
         public async Task<IActionResult> CreatePaymentMethod([FromForm] CreatePaymentMethodRequest request)
         {
-            var command = _mapper.Map<CreatePaymentMethodCommand>(request);
-            var isSuccess = await _sender.Send(command);
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status201Created));
+            var paymentMethodId = await _sender.Send(_mapper.Map<CreatePaymentMethodCommand>(request));
+
+            var url = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/paymentmethods/{paymentMethodId}";
+
+            return Created(url, CustomAPIResponse<object>.Success(new { id = paymentMethodId }, StatusCodes.Status201Created));
         }
 
-        [HttpPut("update")]
-        [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> UpdatePaymentMethod([FromForm] UpdatePaymentMethodRequest request)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePaymentMethod([FromRoute] long id, [FromForm] UpdatePaymentMethodRequest request)
         {
-            var command = _mapper.Map<UpdatePaymentMethodCommand>(request);
-            var isSuccess = await _sender.Send(command);
+            request.Id = id;
+            var resp = await _sender.Send(_mapper.Map<UpdatePaymentMethodCommand>(request));
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(resp, StatusCodes.Status204NoContent));
         }
 
-        [HttpDelete("delete/{paymentMethodId}")]
-        [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> DeletePaymentMethod(long paymentMethodId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePaymentMethod([FromRoute] long id)
         {
-            var command = new DeletePaymentMethodCommand() { Id = paymentMethodId };
-            var isSuccess = await _sender.Send(command);
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            var resp = await _sender.Send(new DeletePaymentMethodCommand() { Id = id });
+
+            return Ok(CustomAPIResponse<bool>.Success(resp, StatusCodes.Status204NoContent));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteListPaymentMethod([FromQuery] List<long> ids)
+        {
+            var resp = await _sender.Send(new DeleteListPaymentMethodCommand() { Ids = ids });
+
+            return Ok(CustomAPIResponse<bool>.Success(resp, StatusCodes.Status204NoContent));
         }
     }
 }

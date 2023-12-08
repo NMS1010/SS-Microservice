@@ -6,8 +6,10 @@ namespace SS_Microservice.Services.Order.Application.Interfaces
 {
     public interface ITransactionService
     {
-        Task<PaginatedResult<TransactionDto>> GetTransactionList(GetAllTransactionQuery query);
+        Task<PaginatedResult<TransactionDto>> GetListTransaction(GetListTransactionQuery query);
 
-        Task<TransactionDto> GetTransaction(GetTransactionByIdQuery query);
+        Task<TransactionDto> GetTransaction(GetTransactionQuery query);
+
+        Task<List<StatisticTransactionDto>> GetTopLatestTransaction(GetTopLatestTransactionQuery query);
     }
 }

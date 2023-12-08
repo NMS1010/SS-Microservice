@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SS_Microservice.Common.Entities;
 using SS_Microservice.Common.Services.CurrentUser;
@@ -45,7 +44,6 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.DBContext
 
         public DbSet<Domain.Entities.Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-        public DbSet<OrderState> OrderStates { get; set; }
         public DbSet<Delivery> Deliveries { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }

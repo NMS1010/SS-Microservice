@@ -7,14 +7,16 @@ namespace SS_Microservice.Services.Order.Application.Interfaces
 {
     public interface IPaymentMethodService
     {
-        Task<PaginatedResult<PaymentMethodDto>> GetPaymentMethodList(GetAllPaymentMethodQuery query);
-
-        Task<PaymentMethodDto> GetPaymentMethod(GetPaymentMethodByIdQuery query);
-
-        Task<bool> CreatePaymentMethod(CreatePaymentMethodCommand command);
+        Task<long> CreatePaymentMethod(CreatePaymentMethodCommand command);
 
         Task<bool> UpdatePaymentMethod(UpdatePaymentMethodCommand command);
 
         Task<bool> DeletePaymentMethod(DeletePaymentMethodCommand command);
+
+        Task<bool> DeleteListPaymentMethod(DeleteListPaymentMethodCommand command);
+
+        Task<PaginatedResult<PaymentMethodDto>> GetListPaymentMethod(GetListPaymentMethodQuery query);
+
+        Task<PaymentMethodDto> GetPaymentMethod(GetPaymentMethodQuery query);
     }
 }

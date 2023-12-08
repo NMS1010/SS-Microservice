@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
@@ -12,9 +11,9 @@ using SS_Microservice.Services.Order.Application.Models.OrderCancellationReason;
 
 namespace SS_Microservice.Services.Order.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/order-cancel-reasons")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "ADMIN")]
     public class OrderCancellationReasonsController : ControllerBase
     {
         private readonly ISender _sender;
@@ -26,57 +25,56 @@ namespace SS_Microservice.Services.Order.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllOrderCancellationReasons([FromQuery] GetOrderCancellationReasonPagingRequest request)
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetListOrderCancellationReason([FromQuery] GetOrderCancellationReasonPagingRequest request)
         {
-            var query = _mapper.Map<GetAllOrderCancellationReasonQuery>(request);
+            var resp = await _sender.Send(_mapper.Map<GetListOrderCancellationReasonQuery>(request));
 
-            var res = await _sender.Send(query);
-
-            return Ok(CustomAPIResponse<PaginatedResult<OrderCancellationReasonDto>>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<PaginatedResult<OrderCancellationReasonDto>>.Success(resp, StatusCodes.Status200OK));
         }
 
-        [HttpGet("detail/{orderCancellationReasonId}")]
-        [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> GetOrderOrderCancellationReasonById([FromRoute] long orderCancellationReasonId)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOrderCancellationReason([FromRoute] long id)
         {
-            var query = new GetOrderCancellationReasonByIdQuery()
-            {
-                Id = orderCancellationReasonId
-            };
-            var res = await _sender.Send(query);
+            var resp = await _sender.Send(new GetOrderCancellationReasonQuery() { Id = id });
 
-            return Ok(CustomAPIResponse<OrderCancellationReasonDto>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<OrderCancellationReasonDto>.Success(resp, StatusCodes.Status200OK));
         }
 
-        [HttpPost("create")]
-        [Authorize(Roles = "ADMIN")]
+        [HttpPost]
         public async Task<IActionResult> CreateOrderCancellationReason([FromBody] CreateOrderCancellationReasonRequest request)
         {
-            var command = _mapper.Map<CreateOrderCancellationReasonCommand>(request);
-            var isSuccess = await _sender.Send(command);
+            var id = await _sender.Send(_mapper.Map<CreateOrderCancellationReasonCommand>(request));
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status201Created));
+            var url = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/ordercancellationreasons/{id}";
+
+            return Created(url, CustomAPIResponse<object>.Success(new { id }, StatusCodes.Status201Created));
         }
 
-        [HttpPut("update")]
-        [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> UpdateOrderCancellationReason([FromBody] UpdateOrderCancellationReasonRequest request)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOrderCancellationReason([FromRoute] long id, [FromBody] UpdateOrderCancellationReasonRequest request)
         {
-            var command = _mapper.Map<UpdateOrderCancellationReasonCommand>(request);
-            var isSuccess = await _sender.Send(command);
+            request.Id = id;
+            var resp = await _sender.Send(_mapper.Map<UpdateOrderCancellationReasonCommand>(request));
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(resp, StatusCodes.Status204NoContent));
         }
 
-        [HttpDelete("delete/{orderCancellationReasonId}")]
-        [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> DeleteOrderCancellationReason(long orderCancellationReasonId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOrderCancellationReason([FromRoute] long id)
         {
-            var command = new DeleteOrderCancellationReasonCommand() { Id = orderCancellationReasonId };
-            var isSuccess = await _sender.Send(command);
+            var resp = await _sender.Send(new DeleteOrderCancellationReasonCommand() { Id = id });
 
-            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<bool>.Success(resp, StatusCodes.Status204NoContent));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteListOrderCancellationReason([FromQuery] List<long> ids)
+        {
+            var resp = await _sender.Send(new DeleteListOrderCancellationReasonCommand() { Ids = ids });
+
+            return Ok(CustomAPIResponse<bool>.Success(resp, StatusCodes.Status204NoContent));
         }
     }
 }

@@ -7,14 +7,16 @@ namespace SS_Microservice.Services.Order.Application.Interfaces
 {
     public interface IOrderCancellationReasonService
     {
-        Task<PaginatedResult<OrderCancellationReasonDto>> GetOrderCancellationReasonList(GetAllOrderCancellationReasonQuery query);
-
-        Task<OrderCancellationReasonDto> GetOrderCancellationReason(GetOrderCancellationReasonByIdQuery query);
-
-        Task<bool> CreateOrderCancellationReason(CreateOrderCancellationReasonCommand command);
+        Task<long> CreateOrderCancellationReason(CreateOrderCancellationReasonCommand command);
 
         Task<bool> UpdateOrderCancellationReason(UpdateOrderCancellationReasonCommand command);
 
         Task<bool> DeleteOrderCancellationReason(DeleteOrderCancellationReasonCommand command);
+
+        Task<bool> DeleteListOrderCancellationReason(DeleteListOrderCancellationReasonCommand command);
+
+        Task<PaginatedResult<OrderCancellationReasonDto>> GetListOrderCancellationReason(GetListOrderCancellationReasonQuery query);
+
+        Task<OrderCancellationReasonDto> GetOrderCancellationReason(GetOrderCancellationReasonQuery query);
     }
 }

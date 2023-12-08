@@ -8,17 +8,10 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Delivery> builder)
         {
-            builder.ToTable("delivery");
-
-            builder.HasKey(x => x.Id);
-
-            builder.Property(x => x.Name).IsRequired();
-            builder.Property(x => x.Status).IsRequired();
+            builder.HasIndex(u => u.Name).IsUnique();
+            builder.Property(x => x.Price).HasColumnType("DECIMAL");
             builder.Property(x => x.Image).IsRequired();
-            builder.Property(x => x.Description).IsRequired(false);
-            builder.Property(x => x.Price)
-                .HasColumnType("DECIMAL")
-                .IsRequired();
+            builder.Property(x => x.Status).IsRequired();
         }
     }
 }

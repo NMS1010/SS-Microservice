@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SS_Microservice.Common.Services.CurrentUser
 {
@@ -18,5 +13,13 @@ namespace SS_Microservice.Common.Services.CurrentUser
         }
 
         public string UserId => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "System";
+
+        public bool IsInRole(string role)
+        {
+            var userRoles = _httpContextAccessor.HttpContext?.User.FindAll(ClaimTypes.Role);
+
+            return userRoles.FirstOrDefault(x => x.Value == role) != null;
+        }
+
     }
 }

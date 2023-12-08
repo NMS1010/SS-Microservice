@@ -7,14 +7,16 @@ namespace SS_Microservice.Services.Order.Application.Interfaces
 {
     public interface IDeliveryService
     {
-        Task<PaginatedResult<DeliveryDto>> GetDeliveryList(GetAllDeliveryQuery query);
-
-        Task<DeliveryDto> GetDelivery(GetDeliveryByIdQuery query);
-
-        Task<bool> CreateDelivery(CreateDeliveryCommand command);
+        Task<long> CreateDelivery(CreateDeliveryCommand command);
 
         Task<bool> UpdateDelivery(UpdateDeliveryCommand command);
 
         Task<bool> DeleteDelivery(DeleteDeliveryCommand command);
+
+        Task<bool> DeleteListDelivery(DeleteListDeliveryCommand command);
+
+        Task<PaginatedResult<DeliveryDto>> GetListDelivery(GetListDeliveryQuery query);
+
+        Task<DeliveryDto> GetDelivery(GetDeliveryQuery query);
     }
 }

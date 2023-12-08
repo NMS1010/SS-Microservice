@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SS_Microservice.Common.Services.Upload
 {
@@ -11,6 +6,6 @@ namespace SS_Microservice.Common.Services.Upload
     {
         Task<string> UploadFile(IFormFile file);
 
-        Task DeleteFile(string filename);
+        void DeleteFile(string filename);
     }
 }

@@ -1,14 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using System.Net.Http.Headers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Http;
 
 namespace SS_Microservice.Common.Services.Upload
 {
@@ -29,10 +21,10 @@ namespace SS_Microservice.Common.Services.Upload
             return Path.GetFileNameWithoutExtension(url);
         }
 
-        public async Task DeleteFile(string url)
+        public void DeleteFile(string url)
         {
             var publicId = GetPublicId(url);
-            await _cloudinary.DestroyAsync(new(publicId));
+            _ = Task.Run(() => _cloudinary.Destroy(new(publicId)));
         }
 
         public async Task<string> UploadFile(IFormFile file)

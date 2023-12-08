@@ -4,6 +4,6 @@ namespace SS_Microservice.Services.Basket.Application.Interfaces
 {
     public interface IProductGrpcService
     {
-        Task<ProductCustomGrpcResponse> GetProductByVariantId(GetProductByVariant request);
+        Task<ProductCustomGrpcResponse> GetProductByVariant(GetProductByVariant request);
     }
 }

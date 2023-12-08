@@ -12,6 +12,7 @@ using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
+using SS_Microservice.Common.RestEase;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Common.Swagger;
@@ -21,6 +22,7 @@ using SS_Microservice.Services.Auth.Application.Services;
 using SS_Microservice.Services.Auth.Domain.Entities;
 using SS_Microservice.Services.Auth.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Auth.Infrastructure.Repositotires;
+using SS_Microservice.Services.Auth.Infrastructure.Services.Address;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +53,8 @@ builder.Services.AddIdentity<AppUser, AppRole>(opts =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.RegisterServiceForwarder<IAddressClientAPI>("address-service");
 
 builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
 {

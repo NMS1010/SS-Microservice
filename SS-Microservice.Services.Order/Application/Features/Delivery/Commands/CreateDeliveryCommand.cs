@@ -4,11 +4,11 @@ using SS_Microservice.Services.Order.Application.Models.Delivery;
 
 namespace SS_Microservice.Services.Order.Application.Features.Delivery.Commands
 {
-    public class CreateDeliveryCommand : CreateDeliveryRequest, IRequest<bool>
+    public class CreateDeliveryCommand : CreateDeliveryRequest, IRequest<long>
     {
     }
 
-    public class CreateDeliveryHandler : IRequestHandler<CreateDeliveryCommand, bool>
+    public class CreateDeliveryHandler : IRequestHandler<CreateDeliveryCommand, long>
     {
         private readonly IDeliveryService _deliveryService;
 
@@ -17,7 +17,7 @@ namespace SS_Microservice.Services.Order.Application.Features.Delivery.Commands
             _deliveryService = deliveryService;
         }
 
-        public async Task<bool> Handle(CreateDeliveryCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(CreateDeliveryCommand request, CancellationToken cancellationToken)
         {
             return await _deliveryService.CreateDelivery(request);
         }

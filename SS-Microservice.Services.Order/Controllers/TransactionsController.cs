@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 using SS_Microservice.Services.Order.Application.Dtos;
-using SS_Microservice.Services.Order.Application.Features.Order.Queries;
 using SS_Microservice.Services.Order.Application.Features.Transaction.Queries;
-using SS_Microservice.Services.Order.Application.Models.Order;
 using SS_Microservice.Services.Order.Application.Models.Transaction;
 
 namespace SS_Microservice.Services.Order.Controllers
@@ -18,35 +15,37 @@ namespace SS_Microservice.Services.Order.Controllers
     [Authorize(Roles = "ADMIN")]
     public class TransactionsController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly ISender _sender;
+        private readonly IMapper _mapper;
 
-        public TransactionsController(IMapper mapper, ISender sender)
+        public TransactionsController(ISender sender, IMapper mapper)
         {
-            _mapper = mapper;
             _sender = sender;
+            _mapper = mapper;
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllTransactions([FromQuery] GetTransactionPagingRequest request)
+        [HttpGet]
+        public async Task<IActionResult> GetListTranssaction([FromQuery] GetTransactionPagingRequest request)
         {
-            var query = _mapper.Map<GetAllTransactionQuery>(request);
+            var transactions = await _sender.Send(_mapper.Map<GetListTransactionQuery>(request));
 
-            var res = await _sender.Send(query);
-
-            return Ok(CustomAPIResponse<PaginatedResult<TransactionDto>>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<PaginatedResult<TransactionDto>>.Success(transactions, StatusCodes.Status200OK));
         }
 
-        [HttpGet("detail/{transactionId}")]
-        public async Task<IActionResult> GetTransactionById([FromRoute] long transactionId)
+        [HttpGet("top5-tracsaction-latest")]
+        public async Task<IActionResult> GetTop5TransactionLatest()
         {
-            var query = new GetTransactionByIdQuery()
-            {
-                Id = transactionId
-            };
-            var res = await _sender.Send(query);
+            var transactions = await _sender.Send(new GetTopLatestTransactionQuery());
 
-            return Ok(CustomAPIResponse<TransactionDto>.Success(res, StatusCodes.Status200OK));
+            return Ok(CustomAPIResponse<List<StatisticTransactionDto>>.Success(transactions, StatusCodes.Status200OK));
+        }
+
+        [HttpGet("{transactionId}")]
+        public async Task<IActionResult> GetTranssaction([FromRoute] long transactionId)
+        {
+            var transaction = await _sender.Send(new GetTransactionQuery() { Id = transactionId });
+
+            return Ok(CustomAPIResponse<TransactionDto>.Success(transaction, StatusCodes.Status200OK));
         }
     }
 }

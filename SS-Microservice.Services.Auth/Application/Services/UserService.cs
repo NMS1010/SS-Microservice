@@ -213,7 +213,7 @@ namespace SS_Microservice.Services.Auth.Application.Services
             {
                 var imageUrl = user.Avatar;
                 user.Avatar = await _uploadService.UploadFile(request.Avatar);
-                await _uploadService.DeleteFile(imageUrl);
+                _uploadService.DeleteFile(imageUrl);
             }
             else
             {

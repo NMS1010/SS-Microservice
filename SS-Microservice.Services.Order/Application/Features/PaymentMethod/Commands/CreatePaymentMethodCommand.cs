@@ -4,11 +4,11 @@ using SS_Microservice.Services.Order.Application.Models.PaymentMethod;
 
 namespace SS_Microservice.Services.Order.Application.Features.PaymentMethod.Commands
 {
-    public class CreatePaymentMethodCommand : CreatePaymentMethodRequest, IRequest<bool>
+    public class CreatePaymentMethodCommand : CreatePaymentMethodRequest, IRequest<long>
     {
     }
 
-    public class CreatePaymentMethodHandler : IRequestHandler<CreatePaymentMethodCommand, bool>
+    public class CreatePaymentMethodHandler : IRequestHandler<CreatePaymentMethodCommand, long>
     {
         private readonly IPaymentMethodService _service;
 
@@ -17,7 +17,7 @@ namespace SS_Microservice.Services.Order.Application.Features.PaymentMethod.Comm
             _service = service;
         }
 
-        public async Task<bool> Handle(CreatePaymentMethodCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(CreatePaymentMethodCommand request, CancellationToken cancellationToken)
         {
             return await _service.CreatePaymentMethod(request);
         }

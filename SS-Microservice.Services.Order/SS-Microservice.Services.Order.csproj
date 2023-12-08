@@ -45,7 +45,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Application\Interfaces\Repositories\" />
+	  <Folder Include="Application\Messaging\Commands\" />
+	  <Folder Include="Application\Models\Statistic\" />
 	  <Folder Include="wwwroot\" />
 	</ItemGroup>
 </Project>

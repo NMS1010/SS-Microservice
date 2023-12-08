@@ -8,7 +8,6 @@ namespace SS_Microservice.Services.Order.Application.Dtos
         public string Description { get; set; }
         public decimal Price { get; set; }
         public string Image { get; set; }
-
         public bool Status { get; set; }
     }
 }

@@ -34,7 +34,7 @@ namespace SS_Microservice.Services.Basket.Application.Features.Basket.Commands
 
             var variantId = basketItems[0].VariantId;
 
-            var product = await _productGrpcService.GetProductByVariantId(new SS_Microservice.Common.Grpc.Product.Protos.GetProductByVariant()
+            var product = await _productGrpcService.GetProductByVariant(new SS_Microservice.Common.Grpc.Product.Protos.GetProductByVariant()
             {
                 VariantId = variantId
             }) ?? throw new InvalidRequestException("Unexpected variantId");

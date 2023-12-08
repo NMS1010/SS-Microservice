@@ -1,11 +1,17 @@
-﻿namespace SS_Microservice.Services.Order.Application.Models.Order
+﻿using System.Text.Json.Serialization;
+
+namespace SS_Microservice.Services.Order.Application.Models.Order
 {
     public class UpdateOrderRequest
     {
-        public long OrderId { get; set; }
-        public long OrderStateId { get; set; }
+        [JsonIgnore]
+        public string UserId { get; set; }
 
-        public string OtherCancelReason { get; set; }
-        public long OrderCancellationReasonId { get; set; }
+        [JsonIgnore]
+        public long OrderId { get; set; }
+
+        public string Status { get; set; }
+        public string OtherCancellation { get; set; }
+        public long? OrderCancellationReasonId { get; set; }
     }
 }

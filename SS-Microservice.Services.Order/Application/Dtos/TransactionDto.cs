@@ -10,7 +10,6 @@ namespace SS_Microservice.Services.Order.Application.Dtos
         public decimal TotalPay { get; set; }
         public string PaypalOrderId { get; set; }
         public string PaypalOrderStatus { get; set; }
-
-        public long OrderId { get; set; }
+        public string OrderCode { get; set; }
     }
 }

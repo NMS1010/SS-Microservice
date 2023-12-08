@@ -8,12 +8,10 @@ namespace SS_Microservice.Services.Order.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<PaymentMethod> builder)
         {
-            builder.ToTable(nameof(PaymentMethod));
-
-            builder.HasKey(x => x.Id);
+            builder.HasIndex(u => u.Name).IsUnique();
+            builder.HasIndex(u => u.Code).IsUnique();
+            builder.Property(x => x.Image).IsRequired();
             builder.Property(x => x.Status).IsRequired();
-            builder.Property(x => x.Code).IsRequired();
-            builder.Property(x => x.Name).IsRequired();
         }
     }
 }

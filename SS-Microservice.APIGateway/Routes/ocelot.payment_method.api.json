@@ -3,7 +3,7 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "OrderService",
-      "DownstreamPathTemplate": "/api/paymentmethods/{everything}",
+      "DownstreamPathTemplate": "/api/payment-methods/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "order",
       "DownstreamHostAndPorts": [
@@ -12,12 +12,46 @@
           "Port": 7037
         }
       ],
-      "UpstreamPathTemplate": "/paymentmethods/{everything}",
+      "UpstreamPathTemplate": "/api/payment-methods/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []
       }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "OrderService",
+      "DownstreamPathTemplate": "/api/payment-methods",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "order",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7037
+        }
+      ],
+      "UpstreamPathTemplate": "/api/payment-methods",
+      "UpstreamHttpMethod": [ "POST", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "OrderService",
+      "DownstreamPathTemplate": "/api/payment-methods",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "order",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7037
+        }
+      ],
+      "UpstreamPathTemplate": "/api/payment-methods",
+      "UpstreamHttpMethod": [ "GET" ]
     }
   ]
 }

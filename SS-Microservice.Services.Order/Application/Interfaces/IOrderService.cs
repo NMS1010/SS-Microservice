@@ -7,14 +7,22 @@ namespace SS_Microservice.Services.Order.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<PaginatedResult<OrderDto>> GetOrderList(GetAllOrderQuery query);
+        Task<string> CreateOrder(CreateOrderCommand command);
 
-        Task<OrderDto> GetOrder(GetOrderByIdQuery query);
-
-        Task<(bool, long)> CreateOrder(CreateOrderCommand command);
+        Task<bool> CompletePaypalOrder(CompletePaypalOrderCommand command);
 
         Task<bool> UpdateOrder(UpdateOrderCommand command);
 
         Task<bool> DeleteOrder(DeleteOrderCommand command);
+
+        Task<OrderDto> GetOrder(GetOrderQuery query);
+
+        Task<OrderDto> GetOrderByCode(GetOrderByCodeQuery query);
+
+        Task<PaginatedResult<OrderDto>> GetListOrder(GetListOrderQuery query);
+
+        Task<List<OrderDto>> GetTopOrderLatest(GetTopLatestOrderQuery query);
+
+        Task<PaginatedResult<OrderDto>> GetListUserOrder(GetListUserOrderQuery query);
     }
 }

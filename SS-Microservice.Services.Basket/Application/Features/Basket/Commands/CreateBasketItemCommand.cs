@@ -23,7 +23,7 @@ namespace SS_Microservice.Services.Basket.Application.Features.Basket.Commands
 
         public async Task<bool> Handle(CreateBasketItemCommand request, CancellationToken cancellationToken)
         {
-            var product = await _productGrpcService.GetProductByVariantId(new SS_Microservice.Common.Grpc.Product.Protos.GetProductByVariant()
+            var product = await _productGrpcService.GetProductByVariant(new SS_Microservice.Common.Grpc.Product.Protos.GetProductByVariant()
             {
                 VariantId = request.VariantId
             }) ?? throw new InvalidRequestException("Unexpected variantId");

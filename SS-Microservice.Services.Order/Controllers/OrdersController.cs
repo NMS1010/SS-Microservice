@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Services.CurrentUser;
@@ -29,58 +28,83 @@ namespace SS_Microservice.Services.Order.Controllers
             _currentUserService = currentUserService;
         }
 
-        [HttpGet("all")]
-        [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> GetAllOrders([FromQuery] GetOrderPagingRequest request)
-        {
-            var query = _mapper.Map<GetAllOrderQuery>(request);
-
-            var res = await _sender.Send(query);
-
-            return Ok(CustomAPIResponse<PaginatedResult<OrderDto>>.Success(res, StatusCodes.Status200OK));
-        }
-
-        [HttpGet("me")]
-        public async Task<IActionResult> GetUserOrders([FromQuery] GetOrderPagingRequest request)
-        {
-            var query = _mapper.Map<GetAllOrderQuery>(request);
-            query.UserId = _currentUserService.UserId;
-            var res = await _sender.Send(query);
-
-            return Ok(CustomAPIResponse<PaginatedResult<OrderDto>>.Success(res, StatusCodes.Status200OK));
-        }
-
-        [HttpGet("detail/{orderId}")]
-        public async Task<IActionResult> GetOrderById([FromRoute] long orderId)
-        {
-            var query = new GetOrderByIdQuery()
-            {
-                OrderId = orderId,
-                UserId = _currentUserService.UserId
-            };
-            var res = await _sender.Send(query);
-
-            return Ok(CustomAPIResponse<OrderDto>.Success(res, StatusCodes.Status200OK));
-        }
-
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
         {
-            var command = _mapper.Map<CreateOrderCommand>(request);
-            command.UserId = _currentUserService.UserId;
-            var success = await _sender.Send(command);
+            request.UserId = _currentUserService.UserId;
+            var code = await _sender.Send(_mapper.Map<CreateOrderCommand>(request));
 
-            return Ok(CustomAPIResponse<bool>.Success(success, StatusCodes.Status201Created));
+            var url = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/orders/detail/{code}";
+
+            return Created(url, CustomAPIResponse<object>.Success(new { code }, StatusCodes.Status201Created));
         }
 
-        [HttpPut("update")]
+        [HttpGet]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderRequest request)
+        public async Task<IActionResult> GetListOrder([FromQuery] GetOrderPagingRequest request)
         {
-            var command = _mapper.Map<UpdateOrderCommand>(request);
-            var success = await _sender.Send(command);
+            request.UserId = null;
+            var orders = await _sender.Send(_mapper.Map<GetListOrderQuery>(request));
 
-            return Ok(CustomAPIResponse<bool>.Success(success, StatusCodes.Status204NoContent));
+            return Ok(CustomAPIResponse<PaginatedResult<OrderDto>>.Success(orders, StatusCodes.Status200OK));
+        }
+
+        [HttpGet("me/list")]
+        public async Task<IActionResult> GetListUserOrder([FromQuery] GetOrderPagingRequest request)
+        {
+            request.UserId = _currentUserService.UserId;
+            var orders = await _sender.Send(_mapper.Map<GetListUserOrderQuery>(request));
+
+            return Ok(CustomAPIResponse<PaginatedResult<OrderDto>>.Success(orders, StatusCodes.Status200OK));
+        }
+
+        [HttpGet("top5-order-latest")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetTop5OrderLatest()
+        {
+            var resp = await _sender.Send(new GetTopLatestOrderQuery());
+
+            return Ok(CustomAPIResponse<List<OrderDto>>.Success(resp, StatusCodes.Status200OK));
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetOrder([FromRoute] long id)
+        {
+            var order = await _sender.Send(new GetOrderQuery() { Id = id });
+
+            return Ok(CustomAPIResponse<OrderDto>.Success(order, StatusCodes.Status200OK));
+        }
+
+        [HttpGet("detail/{code}")]
+        public async Task<IActionResult> GetOrderByCode([FromRoute] string code)
+        {
+            var order = await _sender.Send(new GetOrderByCodeQuery() { Code = code, UserId = _currentUserService.UserId });
+
+            return Ok(CustomAPIResponse<OrderDto>.Success(order, StatusCodes.Status200OK));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOrder([FromRoute] long id, [FromBody] UpdateOrderRequest request)
+        {
+            request.OrderId = id;
+            if (!_currentUserService.IsInRole("ADMIN"))
+                request.UserId = _currentUserService.UserId;
+
+            var isSuccess = await _sender.Send(_mapper.Map<UpdateOrderCommand>(request));
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+        }
+
+        [HttpPut("paypal/{id}")]
+        public async Task<IActionResult> CompletePaypalOrder([FromRoute] long id, [FromBody] CompletePaypalOrderRequest request)
+        {
+            request.OrderId = id;
+            request.UserId = _currentUserService.UserId;
+
+            var isSuccess = await _sender.Send(_mapper.Map<CompletePaypalOrderCommand>(request));
+
+            return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
         }
     }
 }
