@@ -4,22 +4,22 @@ using SS_Microservice.Services.Infrastructure.Application.Model.Notification;
 
 namespace SS_Microservice.Services.Infrastructure.Application.Features.Notification.Commands
 {
-    public class CreateNotificationCommand : CreateNotificationRequest, IRequest
+    public class UpdateNotificationCommand : UpdateNotificationRequest, IRequest<bool>
     {
     }
 
-    public class CreateNotificationHandler : IRequestHandler<CreateNotificationCommand>
+    public class UpdateNotificationHandler : IRequestHandler<UpdateNotificationCommand, bool>
     {
         private readonly INotificationService _notificationService;
 
-        public CreateNotificationHandler(INotificationService notificationService)
+        public UpdateNotificationHandler(INotificationService notificationService)
         {
             _notificationService = notificationService;
         }
 
-        public async Task Handle(CreateNotificationCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(UpdateNotificationCommand request, CancellationToken cancellationToken)
         {
-            await _notificationService.CreateOrderNotification(request);
+            return await _notificationService.UpdateNotification(request);
         }
     }
 }

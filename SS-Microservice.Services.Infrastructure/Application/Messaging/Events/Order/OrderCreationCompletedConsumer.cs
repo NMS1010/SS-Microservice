@@ -1,7 +1,7 @@
 ﻿using MassTransit;
 using SS_Microservice.Common.Messages.Events.Order;
 
-namespace SS_Microservice.Services.Infrastructure.Application.Features.Order
+namespace SS_Microservice.Services.Infrastructure.Application.Messaging.Events.Order
 {
     public class OrderCreationCompletedConsumer : IConsumer<OrderCreationCompletedEvent>
     {

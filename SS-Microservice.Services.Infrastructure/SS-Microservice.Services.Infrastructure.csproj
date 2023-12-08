@@ -10,6 +10,8 @@
 		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
 		<PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
+		<PackageReference Include="MailKit" Version="4.3.0" />
+		<PackageReference Include="MimeKit" Version="4.3.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
@@ -36,7 +38,8 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\Data\Configuration\" />
+    <Folder Include="Application\Messaging\Commands\" />
+    <Folder Include="Application\Validators\" />
   </ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\SS-Microservice.Common\SS-Microservice.Common.csproj" />

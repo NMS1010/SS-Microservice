@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SS_Microservice.Common.Entities;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Services.Infrastructure.Domain.Entities;
+using SS_Microservice.Services.Infrastructure.Infrastructure.Data.Configuration;
 
 namespace SS_Microservice.Services.Infrastructure.Infrastructure.Data.DBContext
 {
@@ -18,6 +19,7 @@ namespace SS_Microservice.Services.Infrastructure.Infrastructure.Data.DBContext
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.ApplyConfigurationsFromAssembly(typeof(NotificationConfiguration).Assembly);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

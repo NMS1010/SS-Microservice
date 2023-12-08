@@ -7,10 +7,14 @@ namespace SS_Microservice.Services.Infrastructure.Application.Interfaces
 {
     public interface INotificationService
     {
-        Task<bool> CreateNotification(CreateNotificationCommand command);
+        Task CreateOrderNotification(CreateNotificationCommand command);
 
-        Task<bool> UpdateNotificationStatus(long notificationId);
+        Task CreateSaleNotification(CreateNotificationCommand command);
 
-        Task<PaginatedResult<NotificationDto>> GetAllNotification(GetAllNotificationQuery query);
+        Task<bool> UpdateNotification(UpdateNotificationCommand command);
+
+        Task<bool> UpdateListNotification(UpdateListNotificationCommand command);
+
+        Task<PaginatedResult<NotificationDto>> GetListNotification(GetListNotificationQuery query);
     }
 }

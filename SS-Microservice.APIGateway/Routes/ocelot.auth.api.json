@@ -12,7 +12,7 @@
           "Port": 7026
         }
       ],
-      "UpstreamPathTemplate": "/api/auth/{everything}",
+      "UpstreamPathTemplate": "/api/auths/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST" ]
     },
     {
@@ -27,7 +27,7 @@
           "Port": 7026
         }
       ],
-      "UpstreamPathTemplate": "/api/auth/revoke-refresh-token",
+      "UpstreamPathTemplate": "/api/auths/revoke-refresh-token",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",

@@ -1,8 +1,6 @@
-﻿using SS_Microservice.Common.Entities;
-
-namespace SS_Microservice.Services.Infrastructure.Application.Dto
+﻿namespace SS_Microservice.Services.Infrastructure.Application.Model.Notification
 {
-    public class NotificationDto : BaseAuditableEntity<long>
+    public class CreateNotificationRequest
     {
         public string UserId { get; set; }
         public string Type { get; set; }

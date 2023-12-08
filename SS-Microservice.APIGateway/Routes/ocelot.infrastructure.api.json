@@ -1,0 +1,70 @@
+{
+  "Routes": [
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "InfrastructureService",
+      "DownstreamPathTemplate": "/api/notifications/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "infrastructure",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7129
+        }
+      ],
+      "UpstreamPathTemplate": "/api/notifications/{everything}",
+      "UpstreamHttpMethod": [ "PATCH", "PUT" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "InfrastructureService",
+      "DownstreamPathTemplate": "/api/notifications",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "infrastructure",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7129
+        }
+      ],
+      "UpstreamPathTemplate": "/api/notifications",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "InfrastructureService",
+      "DownstreamPathTemplate": "/infrastructure-hub/{everything}",
+      "DownstreamScheme": "ws",
+      "SwaggerKey": "infrastructure",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7129
+        }
+      ],
+      "UpstreamPathTemplate": "/infrastructure-hub/{everything}",
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "InfrastructureService",
+      "DownstreamPathTemplate": "/infrastructure-hub",
+      "DownstreamScheme": "ws",
+      "SwaggerKey": "infrastructure",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7129
+        }
+      ],
+      "UpstreamPathTemplate": "/infrastructure-hub"
+    }
+  ]
+}
