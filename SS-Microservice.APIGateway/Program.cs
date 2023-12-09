@@ -1,3 +1,4 @@
+using Hellang.Middleware.ProblemDetails;
 using MMLib.SwaggerForOcelot.DependencyInjection;
 using Ocelot.Cache.CacheManager;
 using Ocelot.DependencyInjection;
@@ -5,9 +6,12 @@ using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
 using Ocelot.Provider.Polly;
 using Serilog;
+using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
+using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Swagger;
+using SS_Microservice.Common.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,11 +39,12 @@ builder.Services.AddOcelot(builder.Configuration)
 
 builder.Services.AddSwaggerForOcelot(builder.Configuration);
 
+builder.Services.AddProblemDetailsSetup();
+
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
     .AddOcelot(routes, builder.Environment)
     .AddEnvironmentVariables();
-
 
 builder.Services.AddJwtAuthentication(configuration);
 
@@ -49,6 +54,8 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
 
 builder.Services.AddSwaggerGenWithJWTAuth();
 
@@ -60,16 +67,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
 }
 
+app.UseProblemDetails();
 app.UseSerilogRequestLogging();
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
 app.UseSwaggerForOcelotUI(options =>
 {
     options.PathToSwaggerGenerator = "/swagger/docs";
     options.ReConfigureUpstreamSwaggerJson = SS_Microservice.APIGateway.Configs.AlterUpstream.AlterUpstreamSwaggerJson;
 }).UseOcelot().Wait();
-
-app.MapControllers();
 
 app.Run();

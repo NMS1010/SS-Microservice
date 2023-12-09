@@ -12,6 +12,7 @@ using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.RestEase;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Common.Swagger;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.UserOperation.Application.Common.AutoMapper;
@@ -55,6 +56,7 @@ builder.Services.AddAutoMapper(typeof(ReviewProfile).Assembly);
 
 builder.Services
             .AddSingleton<ICurrentUserService, CurrentUserService>()
+            .AddSingleton<IUploadService, UploadService>()
             .AddScoped<IReviewService, ReviewService>()
             .AddScoped<IUserFollowProductService, UserFollowProductService>()
             .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))

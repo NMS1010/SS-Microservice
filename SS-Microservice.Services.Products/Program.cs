@@ -8,7 +8,9 @@ using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
+using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.RabbitMQ;
+using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Common.Swagger;
@@ -17,6 +19,7 @@ using SS_Microservice.Services.Products.Application.Features.Order.EventConsumer
 using SS_Microservice.Services.Products.Application.Interfaces;
 using SS_Microservice.Services.Products.Application.Services;
 using SS_Microservice.Services.Products.Infrastructure.Data.Context;
+using SS_Microservice.Services.Products.Infrastructure.Repositories;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,7 +55,9 @@ builder.Services
     .AddScoped<IVariantService, VariantService>()
     .AddScoped<ISaleService, SaleService>()
     .AddScoped<IProductImageService, ProductImageService>()
-    .AddScoped<ICategoryService, CategoryService>();
+    .AddScoped<ICategoryService, CategoryService>()
+    .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
+    .AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 builder.Services.AddGrpc();
 builder.Services.AddControllers()
@@ -95,5 +100,5 @@ app.UseEndpoints(endpoints =>
     endpoints.MapGrpcService<ProductService>();
 });
 app.MapControllers();
-
+app.MigrateDatabase<ProductDbContext>();
 app.Run();

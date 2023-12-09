@@ -52,7 +52,7 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "ProductService",
-      "DownstreamPathTemplate": "/api/sales/{everything}",
+      "DownstreamPathTemplate": "/api/sales/{ev}",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
       "DownstreamHostAndPorts": [
@@ -61,7 +61,7 @@
           "Port": 7096
         }
       ],
-      "UpstreamPathTemplate": "/api/sales/{everything}",
+      "UpstreamPathTemplate": "/api/sales/{ev}",
       "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",

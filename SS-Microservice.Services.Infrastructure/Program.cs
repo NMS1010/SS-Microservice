@@ -8,6 +8,7 @@ using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
+using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Swagger;
@@ -45,8 +46,8 @@ builder.Services.AddAutoMapper(typeof(InfrastructureProfile).Assembly);
 
 builder.Services
             .AddSingleton<ICurrentUserService, CurrentUserService>()
-            .AddSingleton<IMailService, MailService>()
-            .AddSingleton<INotificationService, NotificationService>()
+            .AddTransient<IMailService, MailService>()
+            .AddTransient<INotificationService, NotificationService>()
             .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
             .AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
@@ -89,5 +90,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<InfrastructureHub>("/infrastructure-hub");
-
+app.MigrateDatabase<InfrastructureDbContext>();
 app.Run();

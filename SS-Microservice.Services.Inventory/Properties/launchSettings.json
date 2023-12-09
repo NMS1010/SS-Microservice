@@ -12,7 +12,7 @@
     "SS_Microservice.Services.Inventory": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7261;http://localhost:5237",
       "environmentVariables": {
@@ -21,7 +21,7 @@
     },
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

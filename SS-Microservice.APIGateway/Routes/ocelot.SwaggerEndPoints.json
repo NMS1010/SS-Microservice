@@ -87,6 +87,17 @@
           "Url": "https://localhost:7120/swagger/v1/swagger.json"
         }
       ]
+    },
+    {
+      "Key": "infrastructure",
+      "TransformByOcelotConfig": true,
+      "Config": [
+        {
+          "Name": "SS-Microservice.Services.Infrastructure",
+          "Version": "1.0",
+          "Url": "https://localhost:7129/swagger/v1/swagger.json"
+        }
+      ]
     }
   ]
 }

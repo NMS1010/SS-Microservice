@@ -83,6 +83,7 @@ builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
 
 builder.Services
         .AddScoped<IJwtService, JwtService>()
+        .AddScoped<ITokenService, TokenService>()
         .AddScoped<IAuthService, AuthService>()
         .AddScoped<IUserService, UserService>()
         .AddScoped<IRoleService, RoleService>()
