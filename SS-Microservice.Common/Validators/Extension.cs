@@ -1,7 +1,7 @@
 ﻿using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.Extensions.DependencyInjection;
-using SS_Microservice.Common.Model.CustomResponse;
+using SS_Microservice.Common.Types.Model.CustomResponse;
 using System.Reflection;
 
 namespace SS_Microservice.Common.Validators

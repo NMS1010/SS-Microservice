@@ -9,6 +9,7 @@ using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
+using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Swagger;
@@ -64,6 +65,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithJWTAuth();
 
 builder.Services.AddJwtAuthentication(configuration);
+
+builder.Services.AddMessaging(configuration);
 
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
 

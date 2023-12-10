@@ -1,8 +1,8 @@
-﻿using SS_Microservice.Common.Entities;
+﻿using SS_Microservice.Common.Types.Entities;
 
 namespace SS_Microservice.Services.Products.Domain.Entities
 {
-	public class Variant : BaseAuditableEntity<long>
+    public class Variant : BaseAuditableEntity<long>
 	{
 		public string Name { get; set; }
 		public string Sku { get; set; }

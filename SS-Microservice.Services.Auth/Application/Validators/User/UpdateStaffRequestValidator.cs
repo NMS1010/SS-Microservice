@@ -8,7 +8,6 @@ namespace green_craze_be_v1.Application.Validators.User
         public UpdateStaffRequestValidator()
         {
             RuleFor(x => x.Type).NotEmpty().NotNull();
-            RuleFor(x => x.Code).NotEmpty().NotNull();
             RuleFor(x => x.Gender).NotEmpty().NotNull();
             RuleFor(x => x.Dob).NotEmpty().NotNull();
             RuleFor(x => x.FirstName).NotEmpty().NotNull();

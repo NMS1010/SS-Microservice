@@ -22,7 +22,7 @@ namespace SS_Microservice.Services.Basket.Application.Common.AutoMapper
             CreateMap<GetBasketPagingRequest, GetListBasketByUserQuery>();
 
             // mapping event - command
-            CreateMap<UserRegistedEvent, CreateBasketCommand>();
+            CreateMap<IUserRegistedEvent, CreateBasketCommand>();
         }
     }
 }

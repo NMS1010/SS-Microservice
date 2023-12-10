@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SS_Microservice.Common.Exceptions;
-using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Repository;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Address.Application.Dto;
 using SS_Microservice.Services.Address.Application.Features.Address.Commands;
 using SS_Microservice.Services.Address.Application.Features.Address.Queries;
@@ -64,7 +64,7 @@ namespace SS_Microservice.Services.Address.Application.Services
 
                 if (!isSuccess)
                 {
-                    throw new Exception("Cannot insert address for user");
+                    throw new Exception("Cannot handle to insert address for user, an error has occured");
                 }
 
                 return address.Id;
@@ -92,7 +92,7 @@ namespace SS_Microservice.Services.Address.Application.Services
 
             if (!isSuccess)
             {
-                throw new Exception("Cannot delete address");
+                throw new Exception("Cannot handle to delete address, an error has occured");
             }
 
             return true;
@@ -124,46 +124,39 @@ namespace SS_Microservice.Services.Address.Application.Services
             var addresses = await _unitOfWork.Repository<Domain.Entities.Address>().ListAsync(spec);
             var count = await _unitOfWork.Repository<Domain.Entities.Address>().CountAsync(countSpec);
 
-            var addressDtos = new List<AddressDto>();
-            addresses.ForEach(x => addressDtos.Add(_mapper.Map<AddressDto>(x)));
-
-            return new PaginatedResult<AddressDto>(addressDtos, query.PageIndex, count, query.PageSize);
+            return new PaginatedResult<AddressDto>(addresses
+                .Select(x => _mapper.Map<AddressDto>(x))
+                .ToList(), query.PageIndex, count, query.PageSize);
         }
 
         public async Task<List<DistrictDto>> GetListDistrictByProvince(GetListDistrictByProvinceQuery query)
         {
             var province = await _unitOfWork.Repository<Province>().GetEntityWithSpec(new ProvinceSpecification(query.ProvinceId))
-                ?? throw new NotFoundException("Cannot find province");
+                ?? throw new InvalidRequestException("Unexpected provinceId");
 
-            var districtDtos = new List<DistrictDto>();
-
-            province.Districts.ToList().ForEach(x => districtDtos.Add(_mapper.Map<DistrictDto>(x)));
-
-            return districtDtos;
+            return province.Districts
+                .Select(x => _mapper.Map<DistrictDto>(x))
+                .ToList();
         }
 
         public async Task<List<ProvinceDto>> GetListProvince()
         {
             var provinces = (await _unitOfWork.Repository<Province>().GetAll()).ToList();
 
-            var provinceDtos = new List<ProvinceDto>();
-
-            provinces.ForEach(x => provinceDtos.Add(_mapper.Map<ProvinceDto>(x)));
-
-            return provinceDtos;
+            return provinces
+                .Select(x => _mapper.Map<ProvinceDto>(x))
+                .ToList();
         }
 
         public async Task<List<WardDto>> GetListWardByDistrict(GetListWardByDistrictQuery query)
         {
             var district = await _unitOfWork.Repository<District>()
                 .GetEntityWithSpec(new DistrictSpecification(query.DistrictId))
-                ?? throw new NotFoundException("Cannot find district");
+                ?? throw new InvalidRequestException("Unexpected districtId");
 
-            var wardDtos = new List<WardDto>();
-
-            district.Wards.ToList().ForEach(x => wardDtos.Add(_mapper.Map<WardDto>(x)));
-
-            return wardDtos;
+            return district.Wards
+                .Select(x => _mapper.Map<WardDto>(x))
+                .ToList();
         }
 
         public async Task<bool> SetAddressDefault(SetDefaultAddressCommand command)
@@ -173,11 +166,13 @@ namespace SS_Microservice.Services.Address.Application.Services
                 await _unitOfWork.CreateTransaction();
                 var address = await _unitOfWork.Repository<Domain.Entities.Address>()
                     .GetEntityWithSpec(new AddressSpecification(command.UserId, command.Id))
-                    ?? throw new NotFoundException("Cannot find this address");
+                    ?? throw new InvalidRequestException("Unexpected addressId");
 
                 address.IsDefault = true;
 
-                var addresses = await _unitOfWork.Repository<Domain.Entities.Address>().ListAsync(new AddressSpecification(command.UserId, isDefault: true));
+                var addresses = await _unitOfWork.Repository<Domain.Entities.Address>()
+                    .ListAsync(new AddressSpecification(command.UserId, isDefault: true));
+
                 foreach (var a in addresses)
                 {
                     a.IsDefault = false;
@@ -192,7 +187,7 @@ namespace SS_Microservice.Services.Address.Application.Services
 
                 if (!isSuccess)
                 {
-                    throw new Exception("Cannot set default address");
+                    throw new Exception("Cannot handle to set default address, an error has occured");
                 }
 
                 return true;
@@ -215,38 +210,24 @@ namespace SS_Microservice.Services.Address.Application.Services
                     ?? throw new NotFoundException("Cannot find address of this user");
 
                 var province = await _unitOfWork.Repository<Province>().GetById(command.ProvinceId)
-                    ?? throw new NotFoundException("Cannot find province");
+                    ?? throw new InvalidRequestException("Unexpected provinceId");
 
                 var district = await _unitOfWork.Repository<District>().GetEntityWithSpec(new DistrictSpecification(command.DistrictId))
-                    ?? throw new NotFoundException("Cannot find district");
+                    ?? throw new InvalidRequestException("Unexpected districtId");
 
                 var ward = await _unitOfWork.Repository<Ward>().GetEntityWithSpec(new WardSpecification(command.WardId))
-                    ?? throw new NotFoundException("Cannot find ward");
+                    ?? throw new InvalidRequestException("Unexpected wardId");
 
                 if (ward.District.Id != district.Id || district.Province.Id != province.Id)
-                    throw new ValidationException("Cannot identify this address");
+                    throw new InvalidRequestException("Cannot identify combined address, may be unexpected provinceId, districtId, wardId");
 
+                var isDefault = address.IsDefault;
                 _mapper.Map(command, address);
 
                 address.Province = province;
                 address.District = district;
                 address.Ward = ward;
-                if (!address.IsDefault)
-                {
-                    address.IsDefault = command.IsDefault;
-
-                    if (command.IsDefault)
-                    {
-                        var addresses = await _unitOfWork.Repository<Domain.Entities.Address>()
-                            .ListAsync(new AddressSpecification(address.UserId, isDefault: true));
-
-                        foreach (var a in addresses)
-                        {
-                            a.IsDefault = false;
-                            _unitOfWork.Repository<Domain.Entities.Address>().Update(a);
-                        }
-                    }
-                }
+                address.IsDefault = isDefault;
 
                 _unitOfWork.Repository<Domain.Entities.Address>().Update(address);
 
@@ -255,7 +236,7 @@ namespace SS_Microservice.Services.Address.Application.Services
 
                 if (!isSuccess)
                 {
-                    throw new Exception("Cannot update address for user");
+                    throw new Exception("Cannot handle to update address for current user, an error has occured");
                 }
 
                 return true;

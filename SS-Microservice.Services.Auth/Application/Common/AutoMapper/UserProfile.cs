@@ -11,7 +11,7 @@ namespace SS_Microservice.Services.Auth.Application.Common.AutoMapper
     {
         public UserProfile()
         {
-            CreateMap<AppUser, UserDto>();
+            CreateMap<AppUser, UserDto>().ForMember(des => des.Phone, act => act.MapFrom(x => x.PhoneNumber));
             CreateMap<Staff, StaffDto>();
 
             CreateMap<ChangePasswordRequest, ChangePasswordCommand>();
@@ -23,8 +23,11 @@ namespace SS_Microservice.Services.Auth.Application.Common.AutoMapper
             CreateMap<GetUserPagingRequest, GetListStaffQuery>();
             CreateMap<GetUserPagingRequest, GetListUserQuery>();
 
-            CreateMap<CreateStaffCommand, AppUser>();
-            CreateMap<UpdateUserCommand, AppUser>();
+            CreateMap<CreateStaffCommand, AppUser>().ForMember(des => des.PhoneNumber, act => act.MapFrom(x => x.Phone));
+            CreateMap<UpdateUserCommand, AppUser>().ForMember(des => des.PhoneNumber, act => act.MapFrom(x => x.Phone));
+            CreateMap<UpdateStaffCommand, AppUser>()
+                .ForMember(des => des.PhoneNumber, act => act.MapFrom(x => x.Phone))
+                .ForMember(des => des.Id, act => act.Ignore());
         }
     }
 }

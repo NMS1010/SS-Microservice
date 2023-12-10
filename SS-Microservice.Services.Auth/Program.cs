@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Jaeger;
+using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
@@ -79,6 +80,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGenWithJWTAuth();
 
+builder.Services.AddJwtAuthentication(configuration);
+
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
 
 builder.Services
@@ -92,6 +95,7 @@ builder.Services
         .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
         .AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -104,7 +108,8 @@ app.UseProblemDetails();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
+app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();

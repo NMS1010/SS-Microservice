@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Repository;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Order.Application.Dtos;
 using SS_Microservice.Services.Order.Application.Features.OrderCancellationReason.Commands;
 using SS_Microservice.Services.Order.Application.Features.OrderCancellationReason.Queries;

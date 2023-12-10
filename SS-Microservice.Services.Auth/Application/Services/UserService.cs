@@ -2,10 +2,11 @@
 using green_craze_be_v1.Application.Specification.User;
 using Microsoft.AspNetCore.Identity;
 using SS_Microservice.Common.Exceptions;
-using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Services.Upload;
+using SS_Microservice.Common.StringUtil;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Common.Constants;
 using SS_Microservice.Services.Auth.Application.Dto;
 using SS_Microservice.Services.Auth.Application.Features.Staff.Commands;
@@ -59,15 +60,13 @@ namespace SS_Microservice.Services.Auth.Application.Services
             user.UserName = Regex.Replace(command.Email, "[^A-Za-z0-9 -]", "");
             user.CreatedAt = DateTime.Now;
             user.CreatedBy = _currentUserService.UserId;
-            if (command.Avatar != null)
-            {
-                var url = await _uploadService.UploadFile(command.Avatar);
-                user.Avatar = url;
-            }
+
             var staff = new Staff()
             {
                 Type = command.Type,
-                Code = command.Code,
+                Code = string.Empty.GenerateUniqueCode(),
+                CreatedAt = DateTime.Now,
+                CreatedBy = _currentUserService.UserId,
             };
             user.Staff = staff;
             var res = await _userManager.CreateAsync(user, command.Password);
@@ -94,13 +93,13 @@ namespace SS_Microservice.Services.Auth.Application.Services
             foreach (var userId in command.UserIds)
             {
                 var user = await _userManager.FindByIdAsync(userId)
-                    ?? throw new NotFoundException("Cannot find this user");
+                    ?? throw new InvalidRequestException("Unexpected userId");
                 user.Status = 0;
                 user.UpdatedAt = DateTime.Now;
                 user.UpdatedBy = _currentUserService.UserId;
                 var res = await _userManager.UpdateAsync(user);
                 if (!res.Succeeded)
-                    throw new Exception("Cannot toggle status of user");
+                    throw new Exception("Cannot handle to toggle status of user, an error has occured");
             }
 
             return true;
@@ -149,7 +148,7 @@ namespace SS_Microservice.Services.Auth.Application.Services
         public async Task<StaffDto> GetStaff(GetStaffQuery query)
         {
             var staff = await _unitOfWork.Repository<Staff>().GetEntityWithSpec(new StaffSpecification(query.StaffId))
-                ?? throw new NotFoundException("Cannot find this staff");
+                ?? throw new InvalidRequestException("Unexpected staffId");
 
             var staffRoles = (await _userManager.GetRolesAsync(staff.User)).ToList();
             var staffDto = _mapper.Map<StaffDto>(staff);
@@ -161,7 +160,7 @@ namespace SS_Microservice.Services.Auth.Application.Services
         public async Task<UserDto> GetUser(GetUserQuery query)
         {
             var user = await _userManager.FindByIdAsync(query.UserId)
-                ?? throw new NotFoundException("Cannot find this user");
+                ?? throw new InvalidRequestException("Unexpected userId");
             var userRoles = (await _userManager.GetRolesAsync(user)).ToList();
             var userDto = _mapper.Map<UserDto>(user);
             userDto.Roles = userRoles;
@@ -172,37 +171,50 @@ namespace SS_Microservice.Services.Auth.Application.Services
         public async Task<bool> ToggleUserStatus(ToggleUserCommand command)
         {
             var user = await _userManager.FindByIdAsync(command.UserId)
-                ?? throw new NotFoundException("Cannot find this user");
+                ?? throw new InvalidRequestException("Unexpected userId");
             user.Status = user.Status == 1 ? 0 : 1;
             user.UpdatedAt = DateTime.Now;
             user.UpdatedBy = _currentUserService.UserId;
-            var res = await _userManager.UpdateAsync(user);
-            if (!res.Succeeded)
-                throw new Exception("Cannot toggle status of user");
+            var userToken = user.AppUserTokens.FirstOrDefault(x => x.Type == TOKEN_TYPE.REFRESH_TOKEN);
+            if (userToken != null)
+            {
+                userToken.Token = null;
+                userToken.ExpiredAt = null;
+                userToken.UpdatedAt = DateTime.Now;
+                userToken.UpdatedBy = _currentUserService.UserId;
+            }
+
+            _unitOfWork.Repository<AppUser>().Update(user);
+
+            var res = await _unitOfWork.Save() > 0;
+
+            if (!res)
+                throw new Exception("Cannot handle to toggle status of user, an error has occured");
 
             return true;
         }
 
-        public async Task<bool> UpdateStaff(UpdateStaffCommand command)
+        public async Task<string> UpdateStaff(UpdateStaffCommand command)
         {
             var staff = await _unitOfWork.Repository<Staff>().GetEntityWithSpec(new StaffSpecification(command.Id))
-                ?? throw new NotFoundException("Cannot find this staff");
+                ?? throw new InvalidRequestException("Unexpedted staffId");
 
             await UpdateProperty(command, staff.User);
             staff.Type = command.Type;
-            staff.Code = command.Code;
+
             staff.UpdatedAt = DateTime.Now;
             staff.UpdatedBy = _currentUserService.UserId;
             if (!string.IsNullOrEmpty(command.Password))
             {
                 staff.User.PasswordHash = _userManager.PasswordHasher.HashPassword(staff.User, command.Password);
             }
+
             _unitOfWork.Repository<Staff>().Update(staff);
             var isSuccess = await _unitOfWork.Save() > 0;
             if (!isSuccess)
-                throw new Exception("Cannot update staff information");
+                throw new Exception("Cannot handle to update staff, an error has occured");
 
-            return true;
+            return staff.User.Id;
         }
 
         private async Task UpdateProperty(UpdateUserRequest request, AppUser user)
@@ -231,7 +243,7 @@ namespace SS_Microservice.Services.Auth.Application.Services
             user.UpdatedBy = _currentUserService.UserId;
             var res = await _userManager.UpdateAsync(user);
             if (!res.Succeeded)
-                throw new ValidationException("Cannot update of user");
+                throw new Exception("Cannot handle to update of user, an error has occured");
 
             return true;
         }
@@ -244,6 +256,7 @@ namespace SS_Microservice.Services.Auth.Application.Services
             await ToggleUserStatus(new ToggleUserCommand() { UserId = staff.UserId });
             staff.UpdatedAt = DateTime.Now;
             staff.UpdatedBy = _currentUserService.UserId;
+
             _unitOfWork.Repository<Staff>().Update(staff);
             var isSuccess = await _unitOfWork.Save() > 0;
 

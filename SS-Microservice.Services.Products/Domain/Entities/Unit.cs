@@ -1,8 +1,8 @@
-﻿using SS_Microservice.Common.Entities;
+﻿using SS_Microservice.Common.Types.Entities;
 
 namespace SS_Microservice.Services.Products.Domain.Entities
 {
-	public class Unit : BaseAuditableEntity<long>
+    public class Unit : BaseAuditableEntity<long>
 	{
 		public string Name { get; set; }
 		public bool Status { get; set; } = true;

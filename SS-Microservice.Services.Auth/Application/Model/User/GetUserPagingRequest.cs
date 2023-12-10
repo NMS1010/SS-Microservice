@@ -1,4 +1,4 @@
-﻿using SS_Microservice.Common.Model.Paging;
+﻿using SS_Microservice.Common.Types.Model.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -3,12 +3,12 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Types.Model.CustomResponse;
 using SS_Microservice.Services.Auth.Application.Common.Constants;
 using SS_Microservice.Services.Auth.Application.Dto;
 using SS_Microservice.Services.Auth.Application.Features.Auth.Commands;
 using SS_Microservice.Services.Auth.Application.Features.Auth.Queries;
 using SS_Microservice.Services.Auth.Application.Model.Auth;
-using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 
 namespace SS_Microservice.Services.Auth.Controllers
 {

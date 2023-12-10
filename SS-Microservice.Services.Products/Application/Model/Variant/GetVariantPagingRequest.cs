@@ -1,7 +1,7 @@
-﻿using SS_Microservice.Common.Model.Paging;
+﻿using SS_Microservice.Common.Types.Model.Paging;
 
 namespace SS_Microservice.Services.Products.Application.Model.Variant
 {
-	public class GetVariantPagingRequest : PagingRequest
+    public class GetVariantPagingRequest : PagingRequest
 	{ }
 }

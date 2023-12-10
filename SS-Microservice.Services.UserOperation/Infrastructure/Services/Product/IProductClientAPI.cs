@@ -1,6 +1,6 @@
 ﻿using RestEase;
-using SS_Microservice.Common.Model.Paging;
-using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
+using SS_Microservice.Common.Types.Model.CustomResponse;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product.Model.Request;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product.Model.Response;
 

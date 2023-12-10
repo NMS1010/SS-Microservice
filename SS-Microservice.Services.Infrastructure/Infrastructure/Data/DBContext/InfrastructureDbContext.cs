@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using SS_Microservice.Common.Entities;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Types.Entities;
 using SS_Microservice.Services.Infrastructure.Domain.Entities;
 using SS_Microservice.Services.Infrastructure.Infrastructure.Data.Configuration;
 

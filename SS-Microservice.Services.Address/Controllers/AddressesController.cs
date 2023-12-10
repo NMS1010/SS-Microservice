@@ -2,8 +2,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SS_Microservice.Common.Model.Paging;
+using SS_Microservice.Common.Attributes;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Types.Enums;
+using SS_Microservice.Common.Types.Model.CustomResponse;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Address.Application.Dto;
 using SS_Microservice.Services.Address.Application.Features.Address.Commands;
 using SS_Microservice.Services.Address.Application.Features.Address.Queries;
@@ -11,7 +14,6 @@ using SS_Microservice.Services.Address.Application.Features.District.Queries;
 using SS_Microservice.Services.Address.Application.Features.Province.Queries;
 using SS_Microservice.Services.Address.Application.Features.Ward.Queries;
 using SS_Microservice.Services.Address.Application.Models.Address;
-using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
 
 namespace SS_Microservice.Services.Address.Controllers
 {
@@ -133,10 +135,13 @@ namespace SS_Microservice.Services.Address.Controllers
 
 
         //call from other service
-        [HttpGet("internal")]
+
+        [InternalCommunicationAPI(APPLICATION_SERVICE.AUTH_SERVICE)]
+        [HttpGet("internal/user/{userId}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetListAddressByUserFromOtherService([FromQuery] GetAddressPagingRequest request)
+        public async Task<IActionResult> GetListAddressByUserFromOtherService([FromQuery] GetAddressPagingRequest request, [FromRoute] string userId)
         {
+            request.UserId = userId;
             var query = _mapper.Map<GetListAddressQuery>(request);
 
             var res = await _sender.Send(query);

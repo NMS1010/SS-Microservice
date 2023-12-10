@@ -4,7 +4,7 @@ using SS_Microservice.Common.Configuration;
 using SS_Microservice.Services.Infrastructure.Application.Common.Constants;
 using SS_Microservice.Services.Infrastructure.Application.Common.Options;
 using SS_Microservice.Services.Infrastructure.Application.Interfaces;
-using SS_Microservice.Services.Infrastructure.Application.Model.Mail;
+using SS_Microservice.Services.Infrastructure.Application.Messaging.Commands.Mail;
 
 namespace SS_Microservice.Services.Infrastructure.Infrastructure.Services
 {
@@ -21,15 +21,15 @@ namespace SS_Microservice.Services.Infrastructure.Infrastructure.Services
             _configuration = configuration;
         }
 
-        private string GetMailContent(CreateMailRequest request)
+        private string GetMailContent(SendMailCommand command)
         {
-            var path = Path.Combine(_mailTemplate, request.Type);
+            var path = Path.Combine(_mailTemplate, command.Type);
             string body = string.Empty;
             using (StreamReader reader = new(path))
             {
                 body = reader.ReadToEnd();
             }
-            foreach (var payload in request.Payloads)
+            foreach (var payload in command.Payloads)
             {
                 body = body.Replace($"{{{payload.Key}}}", payload.Value);
             }
@@ -51,7 +51,7 @@ namespace SS_Microservice.Services.Infrastructure.Infrastructure.Services
             return body;
         }
 
-        public void SendMail(CreateMailRequest request)
+        public void SendMail(SendMailCommand command)
         {
             try
             {
@@ -81,13 +81,13 @@ namespace SS_Microservice.Services.Infrastructure.Infrastructure.Services
                 };
 
                 mailMessage.From.Add(new MailboxAddress(options.DisplayName, options.Mail));
-                mailMessage.To.Add(MailboxAddress.Parse(request.To));
+                mailMessage.To.Add(MailboxAddress.Parse(command.To));
 
-                mailMessage.Subject = MAIL_TYPE.Subject[request.Type];
+                mailMessage.Subject = MAIL_TYPE.Subject[command.Type];
 
                 var builder = new BodyBuilder
                 {
-                    HtmlBody = GetMailContent(request)
+                    HtmlBody = GetMailContent(command)
                 };
                 mailMessage.Body = builder.ToMessageBody();
 

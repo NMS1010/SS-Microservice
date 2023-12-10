@@ -3,6 +3,7 @@ using SS_Microservice.Common.Exceptions;
 using SS_Microservice.Services.Auth.Application.Dto;
 using SS_Microservice.Services.Auth.Application.Interfaces;
 using SS_Microservice.Services.Auth.Infrastructure.Services.Address;
+using SS_Microservice.Services.Auth.Infrastructure.Services.Address.Model.Request;
 
 namespace SS_Microservice.Services.Auth.Application.Features.User.Queries
 {
@@ -26,9 +27,10 @@ namespace SS_Microservice.Services.Auth.Application.Features.User.Queries
         {
             var res = await _userService.GetUser(request);
 
-            var address = await _addressClientAPI.GetListAddressByUser(new Infrastructure.Services.Address.Model.Request.GetListAddressRequest()
+            var address = await _addressClientAPI.GetListAddressByUser(res.Id, new GetListAddressRequest()
             {
-                UserId = request.UserId
+                IsSortAscending = false,
+                ColumnName = "Default"
             });
 
             if (address == null || address.Data == null)

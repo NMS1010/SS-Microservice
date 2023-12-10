@@ -1,8 +1,8 @@
 ﻿namespace SS_Microservice.Common.Messages.Events.User
 {
-    public class UserRegistedEvent
+    public interface IUserRegistedEvent : IEvent
     {
-        public string UserId { get; set; }
-        public string Email { get; set; }
+        string UserId { get; set; }
+        string Email { get; set; }
     }
 }

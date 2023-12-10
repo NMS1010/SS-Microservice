@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
+using SS_Microservice.Common.Types.Model.CustomResponse;
 using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Features.Variant.Commands;
 using SS_Microservice.Services.Products.Application.Features.Variant.Queries;

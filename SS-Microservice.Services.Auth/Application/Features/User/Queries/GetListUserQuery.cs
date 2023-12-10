@@ -1,6 +1,5 @@
 ﻿using MediatR;
-using SS_Microservice.Common.Model.Paging;
-using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Dto;
 using SS_Microservice.Services.Auth.Application.Interfaces;
 using SS_Microservice.Services.Auth.Application.Model.User;

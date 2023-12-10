@@ -1,4 +1,4 @@
-﻿using SS_Microservice.Common.Entities;
+﻿using SS_Microservice.Common.Types.Entities;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product.Model.Response;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.User.Model.Response;
 

@@ -47,7 +47,7 @@ namespace SS_Microservice.Services.Order.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UpdatedBy")
@@ -108,7 +108,7 @@ namespace SS_Microservice.Services.Order.Migrations
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("DECIMAL");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UpdatedBy")
@@ -149,7 +149,7 @@ namespace SS_Microservice.Services.Order.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UpdatedBy")
@@ -187,7 +187,7 @@ namespace SS_Microservice.Services.Order.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("DECIMAL");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UpdatedBy")
@@ -228,7 +228,7 @@ namespace SS_Microservice.Services.Order.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UpdatedBy")
@@ -279,7 +279,7 @@ namespace SS_Microservice.Services.Order.Migrations
                     b.Property<decimal>("TotalPay")
                         .HasColumnType("DECIMAL");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UpdatedBy")

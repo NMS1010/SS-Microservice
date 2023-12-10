@@ -10,15 +10,15 @@ namespace SS_Microservice.Services.Auth.Application.Interfaces
 
         Task<AuthDto> AuthenticateWithGoogle(GoogleAuthCommand command);
 
-        Task<string> Register(RegisterUserCommand command, bool isGoogleAuthen = false);
+        Task<CreateUserOTPDto> Register(RegisterUserCommand command, bool isGoogleAuthen = false);
 
         Task<AuthDto> RefreshToken(RefreshTokenCommand command);
 
         Task<bool> VerifyOTP(VerifyOTPCommand command);
 
-        Task<bool> ResendOTP(ResendOTPCommand command);
+        Task<CreateUserOTPDto> ResendOTP(ResendOTPCommand command);
 
-        Task<bool> ForgotPassword(ForgotPasswordCommand command);
+        Task<CreateUserOTPDto> ForgotPassword(ForgotPasswordCommand command);
 
         Task<bool> ResetPassword(ResetPasswordCommand command);
 

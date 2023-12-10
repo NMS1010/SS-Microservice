@@ -1,5 +1,5 @@
 ﻿using SS_Microservice.Common.Specifications;
-using SS_Microservice.Services.Address.Application.Features.Address.Queries;
+using SS_Microservice.Services.Address.Application.Models.Address;
 
 namespace SS_Microservice.Services.Address.Application.Specifications
 {
@@ -7,18 +7,28 @@ namespace SS_Microservice.Services.Address.Application.Specifications
     {
         public AddressSpecification(string userId) : base(x => x.UserId == userId)
         {
+            AddInclude(x => x.Province);
+            AddInclude(x => x.District);
+            AddInclude(x => x.Ward);
         }
 
-        public AddressSpecification(GetListAddressQuery query, bool isPaging = false)
-            : base(x => x.UserId == query.UserId)
+        public AddressSpecification(GetAddressPagingRequest request, bool isPaging = false)
         {
+            if (request.Status)
+            {
+                Criteria = x => x.Status == true && x.UserId == request.UserId;
+            }
+            else
+            {
+                Criteria = x => x.UserId == request.UserId;
+            }
             AddInclude(x => x.Province);
             AddInclude(x => x.District);
             AddInclude(x => x.Ward);
             AddOrderByDescending(x => x.IsDefault);
             if (!isPaging) return;
-            int skip = (query.PageIndex - 1) * query.PageSize;
-            int take = query.PageSize;
+            int skip = (request.PageIndex - 1) * request.PageSize;
+            int take = request.PageSize;
             ApplyPaging(take, skip);
         }
 
@@ -34,6 +44,9 @@ namespace SS_Microservice.Services.Address.Application.Specifications
         public AddressSpecification(string userId, bool isDefault)
             : base(x => x.UserId == userId && x.IsDefault == isDefault)
         {
+            AddInclude(x => x.Province);
+            AddInclude(x => x.District);
+            AddInclude(x => x.Ward);
         }
     }
 }

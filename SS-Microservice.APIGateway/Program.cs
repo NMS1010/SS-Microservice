@@ -59,6 +59,16 @@ builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
 
 builder.Services.AddSwaggerGenWithJWTAuth();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,7 +80,9 @@ if (app.Environment.IsDevelopment())
 app.UseProblemDetails();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<InternalAPIMiddleware>();
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

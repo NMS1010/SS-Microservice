@@ -2,9 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Services.CurrentUser;
-using SS_Microservice.Services.Auth.Application.Model.CustomResponse;
+using SS_Microservice.Common.Types.Model.CustomResponse;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Basket.Application.Dto;
 using SS_Microservice.Services.Basket.Application.Features.Basket.Commands;
 using SS_Microservice.Services.Basket.Application.Features.Basket.Queries;

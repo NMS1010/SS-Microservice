@@ -1,4 +1,4 @@
-﻿using SS_Microservice.Common.Model.Paging;
+﻿using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Features.Category.Commands;
 using SS_Microservice.Services.Products.Application.Features.Category.Queries;

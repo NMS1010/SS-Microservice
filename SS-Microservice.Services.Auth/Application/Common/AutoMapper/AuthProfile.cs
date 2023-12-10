@@ -2,6 +2,7 @@
 using SS_Microservice.Services.Auth.Application.Features.Auth.Commands;
 using SS_Microservice.Services.Auth.Application.Features.Auth.Queries;
 using SS_Microservice.Services.Auth.Application.Model.Auth;
+using SS_Microservice.Services.Auth.Domain.Entities;
 
 namespace SS_Microservice.Services.Auth.Application.Common.AutoMapper
 {
@@ -9,6 +10,8 @@ namespace SS_Microservice.Services.Auth.Application.Common.AutoMapper
     {
         public AuthProfile()
         {
+            CreateMap<RegisterUserCommand, AppUser>();
+
             CreateMap<LoginRequest, LoginQuery>();
             CreateMap<GoogleAuthRequest, GoogleAuthCommand>();
             CreateMap<VerifyOTPRequest, VerifyOTPCommand>();

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SS_Microservice.Common.Exceptions;
-using SS_Microservice.Common.Model.Paging;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.UserOperation.Application.Dto;
 using SS_Microservice.Services.UserOperation.Application.Interfaces;
 using SS_Microservice.Services.UserOperation.Application.Models.Review;

@@ -9,7 +9,7 @@ namespace SS_Microservice.Services.Infrastructure.Application.Common.AutoMapper
 {
     public class InfrastructureProfile : Profile
     {
-        protected InfrastructureProfile()
+        public InfrastructureProfile()
         {
             CreateMap<Notification, NotificationDto>();
 

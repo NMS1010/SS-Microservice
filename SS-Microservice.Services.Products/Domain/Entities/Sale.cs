@@ -1,8 +1,8 @@
-﻿using SS_Microservice.Common.Entities;
+﻿using SS_Microservice.Common.Types.Entities;
 
 namespace SS_Microservice.Services.Products.Domain.Entities
 {
-	public class Sale : BaseAuditableEntity<long>
+    public class Sale : BaseAuditableEntity<long>
 	{
 		public string Name { get; set; }
 		public string Description { get; set; }

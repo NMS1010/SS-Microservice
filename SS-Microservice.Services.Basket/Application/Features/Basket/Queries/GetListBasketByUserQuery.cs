@@ -2,7 +2,7 @@
 using MediatR;
 using SS_Microservice.Common.Exceptions;
 using SS_Microservice.Common.Grpc.Product.Protos;
-using SS_Microservice.Common.Model.Paging;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Basket.Application.Dto;
 using SS_Microservice.Services.Basket.Application.Interfaces;
 using SS_Microservice.Services.Basket.Application.Model;

@@ -18,6 +18,21 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "AuthService",
+      "DownstreamPathTemplate": "/api/roles",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "auth",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7026
+        }
+      ],
+      "UpstreamPathTemplate": "/api/roles",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "AuthService",
       "DownstreamPathTemplate": "/api/roles/revoke-refresh-token",
       "DownstreamScheme": "https",
       "SwaggerKey": "auth",

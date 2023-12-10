@@ -1,8 +1,8 @@
-﻿using SS_Microservice.Common.Entities;
+﻿using SS_Microservice.Common.Types.Entities;
 
 namespace SS_Microservice.Services.Products.Application.Dto
 {
-	public class CategoryDto : BaseAuditableEntity<long>
+    public class CategoryDto : BaseAuditableEntity<long>
 	{
 		public string Name { get; set; }
 		public string ParentName { get; set; }

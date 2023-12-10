@@ -14,7 +14,8 @@ namespace SS_Microservice.Common.Middleware
 
         public ExceptionMiddleware(RequestDelegate next, ProblemDetailsFactory problemDetailsFactory)
         {
-            _next = next; _problemDetailsFactory = problemDetailsFactory;
+            _next = next;
+            _problemDetailsFactory = problemDetailsFactory;
         }
 
         public async Task Invoke(HttpContext context)
@@ -41,6 +42,7 @@ namespace SS_Microservice.Common.Middleware
 
                 string strJson = JsonSerializer.Serialize(problemDetails);
                 context.Response.Headers.Add("Content-Type", "application/json");
+                context.Response.StatusCode = statusCode;
                 await context.Response.WriteAsync(strJson);
             }
         }

@@ -1,8 +1,8 @@
-﻿using SS_Microservice.Common.Entities;
+﻿using SS_Microservice.Common.Types.Entities;
 
 namespace SS_Microservice.Services.Products.Application.Dto
 {
-	public class ProductImageDto : BaseAuditableEntity<long>
+    public class ProductImageDto : BaseAuditableEntity<long>
 	{
 		public string Image { get; set; }
 		public long ProductId { get; set; }

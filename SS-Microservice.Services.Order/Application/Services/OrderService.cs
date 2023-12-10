@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using SS_Microservice.Common.Exceptions;
-using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.StringUtil;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Order.Application.Common.Constants;
 using SS_Microservice.Services.Order.Application.Dtos;
 using SS_Microservice.Services.Order.Application.Features.Order.Commands;

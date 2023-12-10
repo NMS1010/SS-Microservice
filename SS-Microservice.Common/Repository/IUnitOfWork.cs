@@ -1,11 +1,4 @@
-﻿using SS_Microservice.Common.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SS_Microservice.Common.Repository
+﻿namespace SS_Microservice.Common.Repository
 {
     public interface IUnitOfWork
     {

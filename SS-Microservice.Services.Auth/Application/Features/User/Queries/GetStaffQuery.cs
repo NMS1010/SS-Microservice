@@ -3,6 +3,7 @@ using SS_Microservice.Common.Exceptions;
 using SS_Microservice.Services.Auth.Application.Dto;
 using SS_Microservice.Services.Auth.Application.Interfaces;
 using SS_Microservice.Services.Auth.Infrastructure.Services.Address;
+using SS_Microservice.Services.Auth.Infrastructure.Services.Address.Model.Request;
 
 namespace SS_Microservice.Services.Auth.Application.Features.User.Queries
 {
@@ -25,9 +26,10 @@ namespace SS_Microservice.Services.Auth.Application.Features.User.Queries
         public async Task<StaffDto> Handle(GetStaffQuery request, CancellationToken cancellationToken)
         {
             var res = await _userService.GetStaff(request);
-            var address = await _addressClientAPI.GetListAddressByUser(new Infrastructure.Services.Address.Model.Request.GetListAddressRequest()
+            var address = await _addressClientAPI.GetListAddressByUser(res.UserId, new GetListAddressRequest()
             {
-                UserId = res.UserId
+                IsSortAscending = false,
+                ColumnName = "Default"
             });
 
             if (address == null || address.Data == null)

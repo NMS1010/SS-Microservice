@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SS_Microservice.Common.Model.Paging;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Order.Application.Dtos;
 using SS_Microservice.Services.Order.Application.Interfaces;
 using SS_Microservice.Services.Order.Application.Models.Order;

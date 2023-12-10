@@ -2,37 +2,42 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SS_Microservice.Common.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace SS_Microservice.Common.RabbitMQ
 {
     public static class Extension
     {
-        [Obsolete]
-        public static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration, params Type[] consumers)
+        public static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration)
         {
             var rabbitMqSettings = configuration.GetOptions<RabbitMqSettings>("RabbitMqSettings");
             services
                 .AddMassTransit(mt =>
                 {
-                    var consumerList = consumers.ToList();
-                    consumerList?.ForEach(consumer => mt.AddConsumer(consumer));
+                    mt.AddDelayedMessageScheduler();
 
-                    mt.AddBus(bus => Bus.Factory.CreateUsingRabbitMq(rmq =>
+                    mt.SetKebabCaseEndpointNameFormatter();
+
+                    var entryAssembly = Assembly.GetEntryAssembly();
+                    mt.AddConsumers(entryAssembly);
+                    mt.AddActivities(entryAssembly);
+                    mt.AddSagas(entryAssembly);
+                    mt.AddSagaStateMachines(entryAssembly);
+
+                    mt.UsingRabbitMq((context, cfg) =>
                     {
-                        rmq.Host(rabbitMqSettings.Uri);
-
-                        consumerList?.ForEach(consumer => rmq.ReceiveEndpoint(consumer.FullName, endpoint =>
+                        cfg.UseDelayedMessageScheduler();
+                        cfg.Host(rabbitMqSettings.Uri, "/", h =>
                         {
-                            endpoint.ConfigureConsumer(bus, consumer);
-                        }));
-                    }));
-                })
-                .AddMassTransitHostedService();
+                            h.Username(rabbitMqSettings.UserName);
+                            h.Password(rabbitMqSettings.Password);
+                        });
+                        cfg.ConfigureEndpoints(context);
+                        cfg.AutoDelete = false;
+                        cfg.Durable = true;
+                        cfg.AutoStart = true;
+                    });
+                });
 
             return services;
         }

@@ -15,7 +15,6 @@ using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Common.Swagger;
 using SS_Microservice.Common.Validators;
-using SS_Microservice.Services.Products.Application.Features.Order.EventConsumer;
 using SS_Microservice.Services.Products.Application.Interfaces;
 using SS_Microservice.Services.Products.Application.Services;
 using SS_Microservice.Services.Products.Infrastructure.Data.Context;
@@ -78,7 +77,7 @@ builder.Services.AddOpenTracing();
 
 builder.Services.AddJaeger(configuration.GetJaegerOptions());
 
-builder.Services.AddMessaging(configuration, typeof(OrderCreatedConsumer));
+builder.Services.AddMessaging(configuration);
 
 var app = builder.Build();
 

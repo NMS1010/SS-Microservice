@@ -148,8 +148,8 @@ namespace SS_Microservice.Services.Auth.Application.Services
                 LastName = payload.GivenName,
                 Password = payload.Subject
             };
-            var userId = await Register(registerCommand, isGoogleAuthen: true);
-            user = await _userManager.FindByIdAsync(userId);
+            var userDto = await Register(registerCommand, isGoogleAuthen: true);
+            user = await _userManager.FindByIdAsync(user.Id);
             user.Avatar = payload.Picture;
 
             var resp = await GenerateAuthCredential(user);
@@ -186,7 +186,7 @@ namespace SS_Microservice.Services.Auth.Application.Services
             return new AuthDto { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
         }
 
-        public async Task<string> Register(RegisterUserCommand command, bool isGoogleAuthen = false)
+        public async Task<CreateUserOTPDto> Register(RegisterUserCommand command, bool isGoogleAuthen = false)
         {
             var user = _mapper.Map<AppUser>(command);
             user.Status = USER_STATUS.ACTIVE;
@@ -206,6 +206,13 @@ namespace SS_Microservice.Services.Auth.Application.Services
                     USER_ROLE.USER
                 };
                 await _userManager.AddToRolesAsync(user, roles);
+
+                CreateUserOTPDto resp = new()
+                {
+                    Email = user.Email,
+                    Name = user.FirstName + " " + user.LastName,
+                    UserId = user.Id
+                };
                 if (!isGoogleAuthen)
                 {
                     var otp = _tokenService.GenerateOTP();
@@ -219,20 +226,10 @@ namespace SS_Microservice.Services.Auth.Application.Services
                     });
 
                     await _userManager.UpdateAsync(user);
-
-                    //var title = "Xác nhận đăng ký tài khoản";
-                    //var name = user.FirstName + " " + user.LastName;
-                    //_mailService.SendMail(new Model.Mail.CreateMailRequest()
-                    //{
-                    //    Email = user.Email,
-                    //    Name = name,
-                    //    OTP = otp,
-                    //    Title = title,
-                    //    Type = MAIL_TYPE.REGISTATION
-                    //});
+                    resp.OTP = otp;
                 }
 
-                return user.Id;
+                return resp;
             }
 
             string error = "";
@@ -302,7 +299,7 @@ namespace SS_Microservice.Services.Auth.Application.Services
             return true;
         }
 
-        public async Task<bool> ResendOTP(ResendOTPCommand command)
+        public async Task<CreateUserOTPDto> ResendOTP(ResendOTPCommand command)
         {
             var user = await _unitOfWork.Repository<AppUser>().GetEntityWithSpec(new UserSpecification(command.Email, true))
                 ?? throw new NotFoundException("Cannot find user with email: " + command.Email);
@@ -326,21 +323,16 @@ namespace SS_Microservice.Services.Auth.Application.Services
 
             await _userManager.UpdateAsync(user);
 
-            //var title = "Gửi lại mã OTP";
-            //var name = user.FirstName + " " + user.LastName;
-            //_mailService.SendMail(new Model.Mail.CreateMailRequest()
-            //{
-            //    Email = user.Email,
-            //    Name = name,
-            //    OTP = otp,
-            //    Title = title,
-            //    Type = MAIL_TYPE.RESEND
-            //});
 
-            return true;
+            return new CreateUserOTPDto()
+            {
+                Email = user.Email,
+                Name = user.FirstName + " " + user.LastName,
+                OTP = otp
+            };
         }
 
-        public async Task<bool> ForgotPassword(ForgotPasswordCommand command)
+        public async Task<CreateUserOTPDto> ForgotPassword(ForgotPasswordCommand command)
         {
             var user = await _unitOfWork.Repository<AppUser>().GetEntityWithSpec(new UserSpecification(command.Email, true))
                 ?? throw new NotFoundException("Cannot find user with email: " + command.Email);
@@ -370,18 +362,12 @@ namespace SS_Microservice.Services.Auth.Application.Services
             }
             await _userManager.UpdateAsync(user);
 
-            var title = "Quên mật khẩu";
-            var name = user.FirstName + " " + user.LastName;
-            //_mailService.SendMail(new Model.Mail.CreateMailRequest()
-            //{
-            //    Email = user.Email,
-            //    Name = name,
-            //    OTP = otp,
-            //    Title = title,
-            //    Type = MAIL_TYPE.FORGOT_PASSWORD
-            //});
-
-            return true;
+            return new CreateUserOTPDto()
+            {
+                Email = user.Email,
+                Name = user.FirstName + " " + user.LastName,
+                OTP = otp
+            };
         }
 
         public async Task<bool> ResetPassword(ResetPasswordCommand command)

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
 using SS_Microservice.Common.Exceptions;
-using SS_Microservice.Common.Model.Paging;
 using SS_Microservice.Common.Repository;
+using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Infrastructure.Application.Common.SignalR;
 using SS_Microservice.Services.Infrastructure.Application.Dto;
 using SS_Microservice.Services.Infrastructure.Application.Features.Notification.Commands;

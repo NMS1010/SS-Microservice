@@ -161,27 +161,27 @@ namespace SS_Microservice.Services.Auth.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6f3c0c98-d2bb-439d-920f-a832465e2e24",
-                            ConcurrencyStamp = "36b3fdaf-98a9-45ae-a5b1-5e28547f5b5b",
-                            CreatedAt = new DateTime(2023, 12, 8, 22, 43, 6, 671, DateTimeKind.Local).AddTicks(2716),
+                            Id = "86a8601b-14a3-445a-86ec-685a970220cc",
+                            ConcurrencyStamp = "bbcc51cc-d0bd-48d8-803e-f2f38a475e11",
+                            CreatedAt = new DateTime(2023, 12, 9, 18, 52, 22, 744, DateTimeKind.Local).AddTicks(6351),
                             CreatedBy = "System",
                             Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e91f9157-420b-424b-8a99-5568d2c0660b",
-                            ConcurrencyStamp = "71b05487-c736-414e-9fe4-490a47513b93",
-                            CreatedAt = new DateTime(2023, 12, 8, 22, 43, 6, 671, DateTimeKind.Local).AddTicks(2716),
+                            Id = "8b2a5c63-cf17-4a00-b879-e0a5e45bf691",
+                            ConcurrencyStamp = "ebd0305c-2f2e-4399-8471-c2867b66de02",
+                            CreatedAt = new DateTime(2023, 12, 9, 18, 52, 22, 744, DateTimeKind.Local).AddTicks(6351),
                             CreatedBy = "System",
                             Name = "USER",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "59c0cde4-12d6-463d-bf5e-05e0cb9dfeb8",
-                            ConcurrencyStamp = "5cf6e9b0-ce75-4478-acf9-4015d8c7132f",
-                            CreatedAt = new DateTime(2023, 12, 8, 22, 43, 6, 671, DateTimeKind.Local).AddTicks(2716),
+                            Id = "b3bd81c5-1564-4af4-8120-c686f42b0f93",
+                            ConcurrencyStamp = "59abf8d2-4933-4fd1-acb4-ca81719cdbd7",
+                            CreatedAt = new DateTime(2023, 12, 9, 18, 52, 22, 744, DateTimeKind.Local).AddTicks(6351),
                             CreatedBy = "System",
                             Name = "STAFF",
                             NormalizedName = "STAFF"
@@ -302,14 +302,13 @@ namespace SS_Microservice.Services.Auth.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Token")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UpdatedBy")
@@ -344,7 +343,7 @@ namespace SS_Microservice.Services.Auth.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UpdatedBy")

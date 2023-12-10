@@ -1,4 +1,4 @@
-﻿using SS_Microservice.Common.Model.Paging;
+﻿using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.UserOperation.Application.Features.UserFollowProduct.Commands;
 using SS_Microservice.Services.UserOperation.Application.Models.UserFollowProduct;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product.Model.Response;

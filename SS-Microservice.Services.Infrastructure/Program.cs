@@ -1,3 +1,4 @@
+using AutoMapper;
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,11 @@ using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
+using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Swagger;
 using SS_Microservice.Common.Validators;
-using SS_Microservice.Services.Infrastructure.Application.Common.AutoMapper;
 using SS_Microservice.Services.Infrastructure.Application.Common.SignalR;
 using SS_Microservice.Services.Infrastructure.Application.Interfaces;
 using SS_Microservice.Services.Infrastructure.Application.Services;
@@ -41,8 +42,10 @@ builder.Services
     .ConfigureValidationErrorResponse();
 
 builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddAutoMapper(typeof(InfrastructureProfile).Assembly);
+builder.Services.AddSingleton(provider => new MapperConfiguration(cfg =>
+{
+    cfg.AddMaps(Assembly.GetEntryAssembly());
+}).CreateMapper());
 
 builder.Services
             .AddSingleton<ICurrentUserService, CurrentUserService>()
@@ -52,6 +55,8 @@ builder.Services
             .AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+builder.Services.AddMessaging(configuration);
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

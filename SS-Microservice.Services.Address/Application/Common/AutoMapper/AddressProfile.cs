@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SS_Microservice.Common.Messages.Commands.Address;
 using SS_Microservice.Services.Address.Application.Dto;
 using SS_Microservice.Services.Address.Application.Features.Address.Commands;
 using SS_Microservice.Services.Address.Application.Features.Address.Queries;
@@ -22,6 +23,10 @@ namespace SS_Microservice.Services.Address.Application.Common.AutoMapper
             CreateMap<CreateAddressRequest, CreateAddressCommand>();
             CreateMap<UpdateAddressRequest, UpdateAddressCommand>();
             CreateMap<GetAddressPagingRequest, GetListAddressQuery>();
+
+            // mapping from messaging
+            CreateMap<ICreateAddressCommand, CreateAddressCommand>();
+            CreateMap<IUpdateAddressCommand, UpdateAddressCommand>();
         }
     }
 }

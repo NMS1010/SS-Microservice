@@ -1,4 +1,4 @@
-use addressservice;
+use address_service;
 -- provinces TABLE: 63 records
 insert into provinces (CreatedAt, UpdatedAt, name, code) values ('2023-10-02 00:00:00', '2023-10-02 00:00:00', 'Hà Nội', '01');
 insert into provinces (CreatedAt, UpdatedAt, name, code) values ('2023-10-02 00:00:00', '2023-10-02 00:00:00', 'Vĩnh Phúc', '26');

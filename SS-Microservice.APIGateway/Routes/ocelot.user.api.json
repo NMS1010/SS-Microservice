@@ -3,25 +3,6 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "AuthService",
-      "DownstreamPathTemplate": "/api/users/{everything}",
-      "DownstreamScheme": "https",
-      "SwaggerKey": "auth",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7026
-        }
-      ],
-      "UpstreamPathTemplate": "/api/users/{everything}",
-      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowScopes": []
-      }
-    },
-    {
-      "UseServiceDiscovery": true,
-      "Servicename": "AuthService",
       "DownstreamPathTemplate": "/api/users",
       "DownstreamScheme": "https",
       "SwaggerKey": "auth",
@@ -32,6 +13,25 @@
         }
       ],
       "UpstreamPathTemplate": "/api/users",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "AuthService",
+      "DownstreamPathTemplate": "/api/users/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "auth",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7026
+        }
+      ],
+      "UpstreamPathTemplate": "/api/users/{everything}",
       "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",

@@ -1,5 +1,4 @@
-﻿using SS_Microservice.Common.Entities;
-using SS_Microservice.Services.Address.Domain.Entities;
+﻿using SS_Microservice.Common.Types.Entities;
 
 namespace SS_Microservice.Services.Address.Application.Dto
 {

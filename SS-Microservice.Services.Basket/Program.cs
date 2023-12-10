@@ -17,8 +17,6 @@ using SS_Microservice.Common.Swagger;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Basket.Application.Common.AutoMapper;
 using SS_Microservice.Services.Basket.Application.Interfaces;
-using SS_Microservice.Services.Basket.Application.Messaging.Events.Product;
-using SS_Microservice.Services.Basket.Application.Messaging.Events.User;
 using SS_Microservice.Services.Basket.Application.Services;
 using SS_Microservice.Services.Basket.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Basket.Infrastructure.Repositories;
@@ -53,9 +51,7 @@ builder.Services
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-#pragma warning disable CS0612 // Type or member is obsolete
-builder.Services.AddMessaging(configuration, typeof(UserRegistedConsumer), typeof(ProductInventoryUpdatedConsumer));
-#pragma warning restore CS0612 // Type or member is obsolete
+builder.Services.AddMessaging(configuration);
 
 builder.Services.AddOpenTracing();
 builder.Services.AddJaeger(configuration.GetJaegerOptions());
