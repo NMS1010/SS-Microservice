@@ -1,4 +1,4 @@
-﻿using SS_Microservice.Common.Messages.Commands.Address;
+﻿using SS_Microservice.Contracts.Commands.Address;
 
 namespace SS_Microservice.Services.Auth.Application.Features.Address.Commands
 {

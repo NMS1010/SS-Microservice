@@ -32,7 +32,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/products/images/{everything}",
-      "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "PATCH" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []

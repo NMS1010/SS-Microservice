@@ -1,4 +1,4 @@
-﻿using SS_Microservice.Common.Messages.Commands.Mail;
+﻿using SS_Microservice.Contracts.Commands.Mail;
 
 namespace SS_Microservice.Services.Auth.Application.Features.Mail.Command
 {

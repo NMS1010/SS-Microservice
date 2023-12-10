@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 using MediatR;
-using SS_Microservice.Common.Messages.Events.Basket;
+using SS_Microservice.Contracts.Events.Basket;
 
 namespace SS_Microservice.Services.Order.Application.Messaging.Events.Basket
 {

@@ -32,10 +32,8 @@ namespace SS_Microservice.Common.RabbitMQ
                             h.Username(rabbitMqSettings.UserName);
                             h.Password(rabbitMqSettings.Password);
                         });
+
                         cfg.ConfigureEndpoints(context);
-                        cfg.AutoDelete = false;
-                        cfg.Durable = true;
-                        cfg.AutoStart = true;
                     });
                 });
 

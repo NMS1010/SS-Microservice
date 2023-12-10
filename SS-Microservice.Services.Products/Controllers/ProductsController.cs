@@ -76,7 +76,7 @@ namespace SS_Microservice.Services.Products.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductRequest request)
         {
-            var productId = await _sender.Send(_mapper.Map<CreateProductImageCommand>(request));
+            var productId = await _sender.Send(_mapper.Map<CreateProductCommand>(request));
             var url = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/products/{productId}";
 
             return Created(url, new CustomAPIResponse<object>(new { id = productId }, StatusCodes.Status201Created));
@@ -86,7 +86,7 @@ namespace SS_Microservice.Services.Products.Controllers
         public async Task<IActionResult> UpdateProduct([FromRoute] long id, [FromForm] UpdateProductRequest request)
         {
             request.Id = id;
-            var res = await _sender.Send(_mapper.Map<UpdateProductImageCommand>(request));
+            var res = await _sender.Send(_mapper.Map<UpdateProductCommand>(request));
 
             return Ok(new CustomAPIResponse<bool>(res, StatusCodes.Status204NoContent));
         }
@@ -162,7 +162,7 @@ namespace SS_Microservice.Services.Products.Controllers
         [HttpDelete("images")]
         public async Task<IActionResult> DeleteListProductImage([FromQuery] List<long> ids)
         {
-            var res = await _sender.Send(new DeleteListProductCommand() { Ids = ids });
+            var res = await _sender.Send(new DeleteListProductImageCommand() { Ids = ids });
 
             return Ok(new CustomAPIResponse<bool>(res, StatusCodes.Status204NoContent));
         }

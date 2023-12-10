@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SS-Microservice.Common\SS-Microservice.Common.csproj" />
+    <ProjectReference Include="..\SS-Microservice.Contracts\SS-Microservice.Contracts.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

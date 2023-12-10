@@ -2,8 +2,8 @@
 using MassTransit;
 using MediatR;
 using SS_Microservice.Common.Logging.Messaging;
-using SS_Microservice.Common.Messages.Commands.Address;
 using SS_Microservice.Common.Types.Enums;
+using SS_Microservice.Contracts.Commands.Address;
 using SS_Microservice.Services.Auth.Application.Features.Address.Commands;
 using SS_Microservice.Services.Auth.Application.Interfaces;
 using SS_Microservice.Services.Auth.Application.Model.User;

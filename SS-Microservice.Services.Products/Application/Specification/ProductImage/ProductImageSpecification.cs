@@ -2,14 +2,15 @@
 
 namespace SS_Microservice.Services.Products.Application.Specification.ProductImage
 {
-	public class ProductImageSpecification : BaseSpecification<Domain.Entities.ProductImage>
-	{
-		public ProductImageSpecification(long productId) : base(x => x.Product.Id == productId)
-		{
-			AddInclude(x => x.Product);
-		}
+    public class ProductImageSpecification : BaseSpecification<Domain.Entities.ProductImage>
+    {
+        public ProductImageSpecification(long productId) : base(x => x.Product.Id == productId)
+        {
+            AddInclude(x => x.Product);
+            AddOrderByDescending(x => x.IsDefault);
+        }
 
-		public ProductImageSpecification(long productId, bool isDefault = true)
-			: base(x => x.Product.Id == productId && x.IsDefault == true) { }
-	}
+        public ProductImageSpecification(long productId, bool isDefault = true)
+            : base(x => x.Product.Id == productId && x.IsDefault == true) { }
+    }
 }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MassTransit;
 using MediatR;
-using SS_Microservice.Common.Messages.Events.User;
+using SS_Microservice.Contracts.Events.User;
 using SS_Microservice.Services.Basket.Application.Features.Basket.Commands;
 
 namespace SS_Microservice.Services.Basket.Application.Messaging.Events.User
@@ -22,7 +22,6 @@ namespace SS_Microservice.Services.Basket.Application.Messaging.Events.User
         public async Task Consume(ConsumeContext<IUserRegistedEvent> context)
         {
             var command = _mapper.Map<CreateBasketCommand>(context.Message);
-            _logger.LogInformation($"[Basket Service] Message from User Service with userId = {command.UserId} is received");
 
             await _sender.Send(command);
         }

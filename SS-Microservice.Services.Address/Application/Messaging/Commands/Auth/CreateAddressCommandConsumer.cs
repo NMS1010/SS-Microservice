@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MassTransit;
 using MediatR;
-using SS_Microservice.Common.Messages.Commands.Address;
+using SS_Microservice.Contracts.Commands.Address;
 
 namespace SS_Microservice.Services.Address.Application.Messaging.Commands.Auth
 {

@@ -2,8 +2,8 @@
 using MassTransit;
 using MediatR;
 using SS_Microservice.Common.Logging.Messaging;
-using SS_Microservice.Common.Messages.Events.User;
 using SS_Microservice.Common.Types.Enums;
+using SS_Microservice.Contracts.Events.User;
 using SS_Microservice.Services.Auth.Application.Features.Address.Commands;
 using SS_Microservice.Services.Auth.Application.Features.Auth.Events;
 using SS_Microservice.Services.Auth.Application.Interfaces;

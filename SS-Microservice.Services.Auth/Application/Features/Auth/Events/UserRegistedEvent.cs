@@ -1,4 +1,4 @@
-﻿using SS_Microservice.Common.Messages.Events.User;
+﻿using SS_Microservice.Contracts.Events.User;
 
 namespace SS_Microservice.Services.Auth.Application.Features.Auth.Events
 {

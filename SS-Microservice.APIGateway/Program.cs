@@ -5,8 +5,10 @@ using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
 using Ocelot.Provider.Polly;
+using Ocelot.Tracing.OpenTracing;
 using Serilog;
 using SS_Microservice.Common.Consul;
+using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Middleware;
@@ -30,12 +32,16 @@ builder.Configuration.AddOcelotWithSwaggerSupport(options =>
 
 //add ocelot with consul
 builder.Services.AddOcelot(builder.Configuration)
+    .AddOpenTracing()
     .AddConsul()
     .AddCacheManager(x =>
     {
         x.WithDictionaryHandle();
     })
     .AddPolly();
+
+builder.Services.AddJaeger(builder.Configuration.GetJaegerOptions());
+
 
 builder.Services.AddSwaggerForOcelot(builder.Configuration);
 
@@ -68,6 +74,8 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 

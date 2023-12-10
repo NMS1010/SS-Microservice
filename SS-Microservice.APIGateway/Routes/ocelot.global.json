@@ -8,6 +8,9 @@
     "LoadBalancerOptions": {
       "Type": "LeastConnection"
     },
+    "HttpHandlerOptions": {
+      "UseTracing": true
+    },
     "BaseUrl": "https://localhost:7182",
     "ServiceDiscoveryProvider": {
       "Scheme": "http",

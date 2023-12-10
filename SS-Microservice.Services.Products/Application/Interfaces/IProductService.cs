@@ -2,6 +2,7 @@
 using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Features.Product.Commands;
 using SS_Microservice.Services.Products.Application.Features.Product.Queries;
+using SS_Microservice.Services.Products.Application.Messaging.Commands.Inventory;
 
 namespace SS_Microservice.Services.Products.Application.Interfaces
 {
@@ -25,6 +26,8 @@ namespace SS_Microservice.Services.Products.Application.Interfaces
 
         Task<bool> DeleteListProduct(DeleteListProductCommand command);
 
-        Task<bool> UpdateProductQuantity(UpdateProductQuantityCommand command);
+        Task<bool> UpdateListProductQuantity(UpdateListProductQuantityCommand command);
+
+        Task UpdateOneProductQuantity(UpdateOneProductQuantityCommand command);
     }
 }

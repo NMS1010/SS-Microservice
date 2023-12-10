@@ -42,7 +42,7 @@ namespace SS_Microservice.Services.Products.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUnit([FromForm] CreateUnitRequest request)
+        public async Task<IActionResult> CreateUnit([FromBody] CreateUnitRequest request)
         {
             var unitId = await _sender.Send(_mapper.Map<CreateUnitCommand>(request));
             var url = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/units/{unitId}";
@@ -51,7 +51,7 @@ namespace SS_Microservice.Services.Products.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUnit([FromRoute] long id, [FromForm] UpdateUnitRequest request)
+        public async Task<IActionResult> UpdateUnit([FromRoute] long id, [FromBody] UpdateUnitRequest request)
         {
             request.Id = id;
             var res = await _sender.Send(_mapper.Map<UpdateUnitCommand>(request));

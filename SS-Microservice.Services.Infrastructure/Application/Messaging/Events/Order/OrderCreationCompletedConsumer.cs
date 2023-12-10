@@ -1,5 +1,5 @@
 ﻿using MassTransit;
-using SS_Microservice.Common.Messages.Events.Order;
+using SS_Microservice.Contracts.Events.Order;
 
 namespace SS_Microservice.Services.Infrastructure.Application.Messaging.Events.Order
 {

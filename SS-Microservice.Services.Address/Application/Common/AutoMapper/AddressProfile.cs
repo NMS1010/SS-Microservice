@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SS_Microservice.Common.Messages.Commands.Address;
+using SS_Microservice.Contracts.Commands.Address;
 using SS_Microservice.Services.Address.Application.Dto;
 using SS_Microservice.Services.Address.Application.Features.Address.Commands;
 using SS_Microservice.Services.Address.Application.Features.Address.Queries;

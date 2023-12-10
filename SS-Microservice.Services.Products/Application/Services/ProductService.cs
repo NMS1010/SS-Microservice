@@ -11,6 +11,7 @@ using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Features.Product.Commands;
 using SS_Microservice.Services.Products.Application.Features.Product.Queries;
 using SS_Microservice.Services.Products.Application.Interfaces;
+using SS_Microservice.Services.Products.Application.Messaging.Commands.Inventory;
 using SS_Microservice.Services.Products.Application.Model.Variant;
 using SS_Microservice.Services.Products.Application.Specification.Product;
 using SS_Microservice.Services.Products.Application.Specification.Variant;
@@ -64,12 +65,6 @@ namespace SS_Microservice.Services.Products.Application.Services
                 ProductActualQuantity = productDto.ActualInventory,
                 Status = productDto.Status
             };
-        }
-
-        public async Task<bool> UpdateProductQuantity(UpdateProductQuantityCommand command)
-        {
-            return true;
-            //return await _repository.UpdateProductQuantity(command);
         }
 
         public async Task<PaginatedResult<ProductDto>> GetListProduct(GetListProductQuery query)
@@ -282,6 +277,24 @@ namespace SS_Microservice.Services.Products.Application.Services
             var productDtos = products.Select(x => _mapper.Map<ProductDto>(x)).ToList();
 
             return new PaginatedResult<ProductDto>(productDtos, query.PageIndex, count, query.PageSize);
+        }
+
+        public async Task UpdateOneProductQuantity(UpdateOneProductQuantityCommand command)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetById(command.ProductId)
+                ?? throw new NotFoundException("Cannot find product");
+
+            product.Quantity += command.Quantity;
+            product.ActualInventory = command.ActualInventory;
+
+            _unitOfWork.Repository<Product>().Update(product);
+            await _unitOfWork.Save();
+        }
+
+        public async Task<bool> UpdateListProductQuantity(UpdateListProductQuantityCommand command)
+        {
+            return true;
+            //return await _repository.UpdateProductQuantity(command);
         }
     }
 }

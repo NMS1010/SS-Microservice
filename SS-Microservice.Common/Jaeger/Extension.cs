@@ -8,11 +8,6 @@ using Microsoft.Extensions.Logging;
 using OpenTracing;
 using OpenTracing.Util;
 using SS_Microservice.Common.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SS_Microservice.Common.Jaeger
 {
@@ -62,15 +57,6 @@ namespace SS_Microservice.Common.Jaeger
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            //return new JaegerOptions()
-            //{
-            //    Enabled = bool.Parse(configuration["jaeger:enabled"]),
-            //    MaxPacketSize = int.Parse(configuration["jaeger:maxPacketSize"]),
-            //    Sampler = configuration["jaeger:sampler"],
-            //    ServiceName = configuration["jaeger:serviceName"],
-            //    UdpHost = configuration["jaeger:udpHost"],
-            //    UdpPort = int.Parse(configuration["jaeger:udpPort"])
-            //};
             return configuration.GetOptions<JaegerOptions>("jaeger");
         }
 
