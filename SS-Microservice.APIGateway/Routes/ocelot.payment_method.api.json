@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/payment-methods/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "order",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7037
-        }
-      ],
       "UpstreamPathTemplate": "/api/payment-methods/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
@@ -25,12 +19,6 @@
       "DownstreamPathTemplate": "/api/payment-methods",
       "DownstreamScheme": "https",
       "SwaggerKey": "order",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7037
-        }
-      ],
       "UpstreamPathTemplate": "/api/payment-methods",
       "UpstreamHttpMethod": [ "POST", "DELETE" ],
       "AuthenticationOptions": {
@@ -44,12 +32,6 @@
       "DownstreamPathTemplate": "/api/payment-methods",
       "DownstreamScheme": "https",
       "SwaggerKey": "order",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7037
-        }
-      ],
       "UpstreamPathTemplate": "/api/payment-methods",
       "UpstreamHttpMethod": [ "GET" ]
     }

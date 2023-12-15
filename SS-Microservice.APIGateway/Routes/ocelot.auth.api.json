@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/auths/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "auth",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7026
-        }
-      ],
       "UpstreamPathTemplate": "/api/auths/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
     },
@@ -21,12 +15,6 @@
       "DownstreamPathTemplate": "/api/auths/revoke-refresh-token",
       "DownstreamScheme": "https",
       "SwaggerKey": "auth",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7026
-        }
-      ],
       "UpstreamPathTemplate": "/api/auths/revoke-refresh-token",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {

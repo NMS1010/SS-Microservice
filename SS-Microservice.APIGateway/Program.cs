@@ -29,7 +29,6 @@ builder.Configuration.AddOcelotWithSwaggerSupport(options =>
 {
     options.Folder = routes;
 });
-
 //add ocelot with consul
 builder.Services.AddOcelot(builder.Configuration)
     .AddOpenTracing()
@@ -89,7 +88,7 @@ app.UseProblemDetails();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<InternalAPIMiddleware>();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseCors();
 app.UseRouting();
 app.UseAuthentication();
@@ -99,6 +98,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
 });
 
+app.UseWebSockets();
 app.UseSwaggerForOcelotUI(options =>
 {
     options.PathToSwaggerGenerator = "/swagger/docs";

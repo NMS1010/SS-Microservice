@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/notifications/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "infrastructure",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7129
-        }
-      ],
       "UpstreamPathTemplate": "/api/notifications/{everything}",
       "UpstreamHttpMethod": [ "PATCH", "PUT" ],
       "AuthenticationOptions": {
@@ -25,12 +19,6 @@
       "DownstreamPathTemplate": "/api/notifications",
       "DownstreamScheme": "https",
       "SwaggerKey": "infrastructure",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7129
-        }
-      ],
       "UpstreamPathTemplate": "/api/notifications",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
@@ -41,30 +29,14 @@
     {
       "UseServiceDiscovery": true,
       "Servicename": "InfrastructureService",
-      "DownstreamPathTemplate": "/infrastructure-hub/{everything}",
-      "DownstreamScheme": "ws",
-      "SwaggerKey": "infrastructure",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7129
-        }
-      ],
-      "UpstreamPathTemplate": "/infrastructure-hub/{everything}",
-    },
-    {
-      "UseServiceDiscovery": true,
-      "Servicename": "InfrastructureService",
       "DownstreamPathTemplate": "/infrastructure-hub",
-      "DownstreamScheme": "ws",
-      "SwaggerKey": "infrastructure",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7129
-        }
-      ],
-      "UpstreamPathTemplate": "/infrastructure-hub"
+      "DownstreamScheme": "wss",
+      "UpstreamPathTemplate": "/app-hub",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+      "QoSOptions": {
+        "TimeoutValue": 320000
+      },
+      "Priority": 50
     }
   ]
 }

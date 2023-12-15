@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/user-follow-products/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "user-operation",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7120
-        }
-      ],
       "UpstreamPathTemplate": "/api/user-follow-products/{everything}",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
@@ -25,12 +19,6 @@
       "DownstreamPathTemplate": "/api/user-follow-products",
       "DownstreamScheme": "https",
       "SwaggerKey": "user-operation",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7120
-        }
-      ],
       "UpstreamPathTemplate": "/api/user-follow-products",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {

@@ -2,6 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SS_Microservice.Common.Attributes;
+using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Common.Types.Model.CustomResponse;
 using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Products.Application.Dto;
@@ -56,7 +58,6 @@ namespace SS_Microservice.Services.Products.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetProduct([FromRoute] long id)
         {
             var res = await _sender.Send(new GetProductQuery() { Id = id });
@@ -165,6 +166,18 @@ namespace SS_Microservice.Services.Products.Controllers
             var res = await _sender.Send(new DeleteListProductImageCommand() { Ids = ids });
 
             return Ok(new CustomAPIResponse<bool>(res, StatusCodes.Status204NoContent));
+        }
+
+
+        // call from other service
+        [InternalCommunicationAPI(APPLICATION_SERVICE.USER_OPERATION_SERVICE)]
+        [HttpGet("internal/{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetProductFromOtherService([FromRoute] long id)
+        {
+            var res = await _sender.Send(new GetProductQuery() { Id = id });
+
+            return Ok(new CustomAPIResponse<ProductDto>(res, StatusCodes.Status200OK));
         }
     }
 }

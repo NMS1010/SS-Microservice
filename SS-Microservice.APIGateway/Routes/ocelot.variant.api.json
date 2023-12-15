@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/variants",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/variants",
       "UpstreamHttpMethod": [ "GET", "DELETE", "POST" ],
       "AuthenticationOptions": {
@@ -25,12 +19,6 @@
       "DownstreamPathTemplate": "/api/variants/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/variants/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "GET" ],
       "AuthenticationOptions": {

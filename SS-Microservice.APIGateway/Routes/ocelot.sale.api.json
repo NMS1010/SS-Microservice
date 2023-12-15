@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/sales",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/sales",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -21,12 +15,6 @@
       "DownstreamPathTemplate": "/api/sales/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/sales/{everything}",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -36,12 +24,6 @@
       "DownstreamPathTemplate": "/api/sales",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/sales",
       "UpstreamHttpMethod": [ "DELETE", "POST" ],
       "AuthenticationOptions": {
@@ -55,12 +37,6 @@
       "DownstreamPathTemplate": "/api/sales/{ev}",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/sales/{ev}",
       "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "GET" ],
       "AuthenticationOptions": {

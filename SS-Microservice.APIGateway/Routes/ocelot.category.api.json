@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/product-categories",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/product-categories",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -21,12 +15,6 @@
       "DownstreamPathTemplate": "/api/product-categories/slug/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/product-categories/slug/{everything}",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -36,12 +24,6 @@
       "DownstreamPathTemplate": "/api/product-categories",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/product-categories",
       "UpstreamHttpMethod": [ "DELETE", "POST" ],
       "AuthenticationOptions": {
@@ -55,12 +37,6 @@
       "DownstreamPathTemplate": "/api/product-categories/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/product-categories/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "GET" ],
       "AuthenticationOptions": {

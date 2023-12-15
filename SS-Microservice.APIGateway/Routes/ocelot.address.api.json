@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/addresses/p",
       "DownstreamScheme": "https",
       "SwaggerKey": "address",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7075
-        }
-      ],
       "UpstreamPathTemplate": "/api/addresses/p",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -21,12 +15,6 @@
       "DownstreamPathTemplate": "/api/addresses/p/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "address",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7075
-        }
-      ],
       "UpstreamPathTemplate": "/api/addresses/p/{everything}",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -36,12 +24,6 @@
       "DownstreamPathTemplate": "/api/addresses/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "address",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7075
-        }
-      ],
       "UpstreamPathTemplate": "/api/addresses/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
@@ -55,12 +37,6 @@
       "DownstreamPathTemplate": "/api/addresses",
       "DownstreamScheme": "https",
       "SwaggerKey": "address",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7075
-        }
-      ],
       "UpstreamPathTemplate": "/api/addresses",
       "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ],
       "AuthenticationOptions": {

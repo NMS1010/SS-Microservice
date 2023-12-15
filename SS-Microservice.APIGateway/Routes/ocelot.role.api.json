@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/roles/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "auth",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7026
-        }
-      ],
       "UpstreamPathTemplate": "/api/roles/{everything}",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -21,12 +15,6 @@
       "DownstreamPathTemplate": "/api/roles",
       "DownstreamScheme": "https",
       "SwaggerKey": "auth",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7026
-        }
-      ],
       "UpstreamPathTemplate": "/api/roles",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -36,12 +24,6 @@
       "DownstreamPathTemplate": "/api/roles/revoke-refresh-token",
       "DownstreamScheme": "https",
       "SwaggerKey": "auth",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7026
-        }
-      ],
       "UpstreamPathTemplate": "/api/roles/revoke-refresh-token",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {

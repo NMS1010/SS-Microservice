@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/staffs/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "auth",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7026
-        }
-      ],
       "UpstreamPathTemplate": "/api/staffs/{everything}",
       "UpstreamHttpMethod": [ "GET", "PUT", "POST", "DELETE" ],
       "AuthenticationOptions": {
@@ -25,12 +19,6 @@
       "DownstreamPathTemplate": "/api/staffs",
       "DownstreamScheme": "https",
       "SwaggerKey": "auth",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7026
-        }
-      ],
       "UpstreamPathTemplate": "/api/staffs",
       "UpstreamHttpMethod": [ "GET", "DELETE", "POST" ],
       "AuthenticationOptions": {

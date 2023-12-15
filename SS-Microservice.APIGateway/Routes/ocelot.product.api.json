@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/products/images",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/products/images",
       "UpstreamHttpMethod": [ "POST", "GET", "DELETE" ],
       "AuthenticationOptions": {
@@ -25,12 +19,6 @@
       "DownstreamPathTemplate": "/api/products/images/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/products/images/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "DELETE", "PATCH" ],
       "AuthenticationOptions": {
@@ -44,12 +32,6 @@
       "DownstreamPathTemplate": "/api/products/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/products/{everything}",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -59,12 +41,6 @@
       "DownstreamPathTemplate": "/api/products",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/products",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -74,12 +50,6 @@
       "DownstreamPathTemplate": "/api/products/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/products/{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
@@ -93,12 +63,6 @@
       "DownstreamPathTemplate": "/api/products",
       "DownstreamScheme": "https",
       "SwaggerKey": "products",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7096
-        }
-      ],
       "UpstreamPathTemplate": "/api/products",
       "UpstreamHttpMethod": [ "POST", "DELETE" ],
       "AuthenticationOptions": {

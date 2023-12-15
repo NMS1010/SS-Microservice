@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/transactions/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "order",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7037
-        }
-      ],
       "UpstreamPathTemplate": "/api/transactions/{everything}",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
@@ -25,12 +19,6 @@
       "DownstreamPathTemplate": "/api/transactions",
       "DownstreamScheme": "https",
       "SwaggerKey": "order",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7037
-        }
-      ],
       "UpstreamPathTemplate": "/api/transactions",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {

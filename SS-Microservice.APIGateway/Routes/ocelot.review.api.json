@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/reviews",
       "DownstreamScheme": "https",
       "SwaggerKey": "user-operation",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7120
-        }
-      ],
       "UpstreamPathTemplate": "/api/reviews",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -21,12 +15,6 @@
       "DownstreamPathTemplate": "/api/reviews/count/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "user-operation",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7120
-        }
-      ],
       "UpstreamPathTemplate": "/api/reviews/count/{everything}",
       "UpstreamHttpMethod": [ "GET" ]
     },
@@ -36,12 +24,6 @@
       "DownstreamPathTemplate": "/api/reviews/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "user-operation",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7120
-        }
-      ],
       "UpstreamPathTemplate": "/api/reviews/{everything}",
       "UpstreamHttpMethod": [ "GET", "PUT", "DELETE", "PATCH" ],
       "AuthenticationOptions": {
@@ -55,12 +37,6 @@
       "DownstreamPathTemplate": "/api/reviews",
       "DownstreamScheme": "https",
       "SwaggerKey": "user-operation",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7120
-        }
-      ],
       "UpstreamPathTemplate": "/api/reviews",
       "UpstreamHttpMethod": [ "POST", "DELETE" ],
       "AuthenticationOptions": {

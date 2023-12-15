@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/inventories/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "inventory",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7261
-        }
-      ],
       "UpstreamPathTemplate": "/api/inventories/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
@@ -25,12 +19,6 @@
       "DownstreamPathTemplate": "/api/inventories",
       "DownstreamScheme": "https",
       "SwaggerKey": "inventory",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7261
-        }
-      ],
       "UpstreamPathTemplate": "/api/inventories",
       "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ],
       "AuthenticationOptions": {

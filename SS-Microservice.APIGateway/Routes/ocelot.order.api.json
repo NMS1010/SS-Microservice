@@ -6,12 +6,6 @@
       "DownstreamPathTemplate": "/api/orders/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "order",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7037
-        }
-      ],
       "UpstreamPathTemplate": "/orders/{everything}",
       "UpstreamHttpMethod": [ "GET", "PUT"],
       "AuthenticationOptions": {
@@ -25,12 +19,6 @@
       "DownstreamPathTemplate": "/api/orders",
       "DownstreamScheme": "https",
       "SwaggerKey": "order",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7037
-        }
-      ],
       "UpstreamPathTemplate": "/api/orders",
       "UpstreamHttpMethod": [ "GET", "POST" ],
       "AuthenticationOptions": {

@@ -11,7 +11,7 @@ namespace SS_Microservice.Services.UserOperation.Infrastructure.Services.Product
         [Get("api/products")]
         Task<CustomAPIResponse<PaginatedResult<ProductDto>>> GetListProduct([Query] GetProductPagingRequest request);
 
-        [Get("api/products/{id}")]
+        [Get("api/products/internal/{id}")]
         Task<CustomAPIResponse<ProductDto>> GetProduct([Path] long id);
 
     }
