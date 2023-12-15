@@ -94,7 +94,12 @@ namespace SS_Microservice.Services.Infrastructure.Application.Services
 
             _unitOfWork.Repository<Notification>().Update(notification);
 
-            return await _unitOfWork.Save() > 0;
+            var res = await _unitOfWork.Save() > 0;
+
+            var countNotify = await _unitOfWork.Repository<Notification>().CountAsync(new NotificationSpecification(command.UserId, false));
+            await _hub.Clients.Group(command.UserId).SendAsync("CountUnreadingNotification", countNotify);
+
+            return res;
         }
     }
 }

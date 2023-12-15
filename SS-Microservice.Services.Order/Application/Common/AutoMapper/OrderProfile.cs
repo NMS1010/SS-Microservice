@@ -17,6 +17,7 @@ namespace SS_Microservice.Services.Order.Application.Common.AutoMapper
             CreateMap<CreateOrderRequest, CreateOrderCommand>();
             CreateMap<UpdateOrderRequest, UpdateOrderCommand>();
             CreateMap<CompletePaypalOrderRequest, CompletePaypalOrderCommand>();
+            CreateMap<GetOrderPagingRequest, GetListUserOrderQuery>();
             CreateMap<GetOrderPagingRequest, GetListOrderQuery>();
         }
     }

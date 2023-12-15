@@ -35,7 +35,7 @@ namespace SS_Microservice.Services.Basket.Application.Features.Basket.Queries
                 var product = await _productGrpcService.GetProductByVariant(new GetProductByVariant() { VariantId = item.VariantId })
                     ?? throw new NotFoundException("Cannot find product with productId");
 
-                _mapper.Map(item, product);
+                _mapper.Map(product, item);
             }
 
             return basketItems;

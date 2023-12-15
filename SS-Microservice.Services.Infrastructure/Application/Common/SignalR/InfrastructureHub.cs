@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using SS_Microservice.Common.Configuration;
 using SS_Microservice.Common.Exceptions;
 using SS_Microservice.Common.Jwt;
+using SS_Microservice.Common.Repository;
+using SS_Microservice.Services.Infrastructure.Application.Specifications.Notification;
+using SS_Microservice.Services.Infrastructure.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -16,10 +19,12 @@ namespace SS_Microservice.Services.Infrastructure.Application.Common.SignalR
     public class InfrastructureHub : Hub
     {
         private readonly IConfiguration _configuration;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public InfrastructureHub(IConfiguration configuration)
+        public InfrastructureHub(IConfiguration configuration, IUnitOfWork unitOfWork)
         {
             _configuration = configuration;
+            _unitOfWork = unitOfWork;
         }
 
         private static Dictionary<string, int> clientsNotification = new();
@@ -68,6 +73,10 @@ namespace SS_Microservice.Services.Infrastructure.Application.Common.SignalR
             }
 
             await Groups.AddToGroupAsync(Context.ConnectionId, Group.SALES);
+
+
+            var countNotify = await _unitOfWork.Repository<Notification>().CountAsync(new NotificationSpecification(userId, false));
+            await Clients.Group(userId).SendAsync("CountUnreadingNotification", countNotify);
 
             await base.OnConnectedAsync();
         }

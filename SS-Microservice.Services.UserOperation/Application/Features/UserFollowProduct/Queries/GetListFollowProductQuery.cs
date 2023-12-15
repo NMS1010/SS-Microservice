@@ -26,7 +26,7 @@ namespace SS_Microservice.Services.UserOperation.Application.Features.UserFollow
         public async Task<PaginatedResult<ProductDto>> Handle(GetListFollowProductQuery request, CancellationToken cancellationToken)
         {
             var res = await _userFollowProductService.GetListFollowProduct(request);
-            for (int i = 0; i <= res.Items.Count; i++)
+            for (int i = 0; i < res.Items.Count; i++)
             {
                 var productResp = await _productClientAPI.GetProduct(res.Items[i].Id);
                 if (productResp == null || productResp.Data == null)

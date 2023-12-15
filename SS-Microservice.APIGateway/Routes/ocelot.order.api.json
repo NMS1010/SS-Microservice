@@ -6,8 +6,8 @@
       "DownstreamPathTemplate": "/api/orders/{everything}",
       "DownstreamScheme": "https",
       "SwaggerKey": "order",
-      "UpstreamPathTemplate": "/orders/{everything}",
-      "UpstreamHttpMethod": [ "GET", "PUT"],
+      "UpstreamPathTemplate": "/api/orders/{everything}",
+      "UpstreamHttpMethod": [ "GET", "PUT" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowScopes": []

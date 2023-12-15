@@ -9,7 +9,7 @@ namespace SS_Microservice.Services.Address.Application.Features.Address.Queries
         public string UserId { get; set; }
     }
 
-    public class GetDefaultAddressHandler : IRequestHandler<GetAddressQuery, AddressDto>
+    public class GetDefaultAddressHandler : IRequestHandler<GetDefaultAddressQuery, AddressDto>
     {
         private readonly IAddressService _addressService;
 
@@ -18,9 +18,9 @@ namespace SS_Microservice.Services.Address.Application.Features.Address.Queries
             _addressService = addressService;
         }
 
-        public async Task<AddressDto> Handle(GetAddressQuery request, CancellationToken cancellationToken)
+        public async Task<AddressDto> Handle(GetDefaultAddressQuery request, CancellationToken cancellationToken)
         {
-            return await _addressService.GetAddress(request);
+            return await _addressService.GetDefaultAddress(request);
         }
     }
 }
