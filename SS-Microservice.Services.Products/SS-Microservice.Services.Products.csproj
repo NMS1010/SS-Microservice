@@ -45,6 +45,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Application\Messaging\Events\Basket\" />
+    <Folder Include="Application\Messaging\Events\Order\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 	<ItemGroup>

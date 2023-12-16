@@ -8,7 +8,7 @@ namespace SS_Microservice.Common.RabbitMQ
 {
     public static class Extension
     {
-        public static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration, List<EventBusConsumer> consumers = null)
         {
             var rabbitMqSettings = configuration.GetOptions<RabbitMqSettings>("RabbitMqSettings");
             services
@@ -24,6 +24,7 @@ namespace SS_Microservice.Common.RabbitMQ
                     mt.AddSagas(entryAssembly);
                     mt.AddSagaStateMachines(entryAssembly);
 
+
                     mt.UsingRabbitMq((context, cfg) =>
                     {
                         cfg.UseDelayedMessageScheduler();
@@ -34,6 +35,17 @@ namespace SS_Microservice.Common.RabbitMQ
                         });
 
                         cfg.ConfigureEndpoints(context);
+
+                        if (consumers != null)
+                        {
+                            foreach (var consumer in consumers)
+                            {
+                                cfg.ReceiveEndpoint(consumer.Endpoint, e =>
+                                {
+                                    e.ConfigureConsumer(context, consumer.Type);
+                                });
+                            }
+                        }
                     });
                 });
 

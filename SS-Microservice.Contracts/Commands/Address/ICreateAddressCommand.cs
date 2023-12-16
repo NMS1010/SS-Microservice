@@ -4,13 +4,13 @@ namespace SS_Microservice.Contracts.Commands.Address
 {
     public interface ICreateAddressCommand : ICommand
     {
-        public string UserId { get; set; }
-        public string Receiver { get; set; }
-        public string Phone { get; set; }
-        public string Email { get; set; }
-        public string Street { get; set; }
-        public long ProvinceId { get; set; }
-        public long DistrictId { get; set; }
-        public long WardId { get; set; }
+        string UserId { get; set; }
+        string Receiver { get; set; }
+        string Phone { get; set; }
+        string Email { get; set; }
+        string Street { get; set; }
+        long ProvinceId { get; set; }
+        long DistrictId { get; set; }
+        long WardId { get; set; }
     }
 }

@@ -1,9 +1,11 @@
-﻿namespace SS_Microservice.Contracts.Commands.Product
+﻿using SS_Microservice.Common.Types.Messages;
+
+namespace SS_Microservice.Contracts.Commands.Product
 {
-    public interface IUpdateProductQuantityCommand
+    public interface IUpdateProductQuantityCommand : ICommand
     {
-        public long ProductId { get; set; }
-        public long Quantity { get; set; }
-        public long ActualInventory { get; set; }
+        long ProductId { get; set; }
+        long Quantity { get; set; }
+        long ActualInventory { get; set; }
     }
 }

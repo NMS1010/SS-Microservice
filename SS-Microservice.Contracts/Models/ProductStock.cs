@@ -4,6 +4,6 @@
     {
         public long ProductId { get; set; }
         public long VariantId { get; set; }
-        public long Quantity { get; set; }
+        public int Quantity { get; set; }
     }
 }

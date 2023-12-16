@@ -47,6 +47,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Application\Messaging\Commands\" />
+	  <Folder Include="Application\Messaging\Events\Product\" />
 	</ItemGroup>
 
 </Project>
