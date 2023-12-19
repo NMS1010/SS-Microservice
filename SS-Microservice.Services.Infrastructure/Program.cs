@@ -14,10 +14,15 @@ using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Swagger;
+using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Infrastructure.Application.Common.SignalR;
 using SS_Microservice.Services.Infrastructure.Application.Interfaces;
 using SS_Microservice.Services.Infrastructure.Application.Services;
+using SS_Microservice.Services.Infrastructure.Infrastructure.Consumers.Commands.Mail;
+using SS_Microservice.Services.Infrastructure.Infrastructure.Consumers.Events.Order;
+using SS_Microservice.Services.Infrastructure.Infrastructure.Consumers.Events.OrderingSaga;
+using SS_Microservice.Services.Infrastructure.Infrastructure.Consumers.Events.User;
 using SS_Microservice.Services.Infrastructure.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Infrastructure.Infrastructure.Repositories;
 using SS_Microservice.Services.Infrastructure.Infrastructure.Services;
@@ -56,7 +61,53 @@ builder.Services
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-builder.Services.AddMessaging(configuration);
+builder.Services.AddMessaging(configuration,
+    new List<EventBusConsumer>()
+    {
+        {
+            new EventBusConsumer()
+            {
+                Type = typeof(SendMailCommandConsumer),
+                Endpoint = EventBusConstant.SendMail
+            }
+        },
+        {
+            new EventBusConsumer()
+            {
+                Type = typeof(OrderCreationCompletedEventConsumer),
+                Endpoint = APPLICATION_SERVICE.INFRASTRUCTURE_SERVICE + "_" + EventBusConstant.OrderCreationCompleted
+            }
+        },
+        {
+            new EventBusConsumer()
+            {
+                Type = typeof(OrderCreationRejectedEventConsumer),
+                Endpoint = APPLICATION_SERVICE.INFRASTRUCTURE_SERVICE + "_" + EventBusConstant.OrderCreationRejected
+            }
+        },
+        {
+            new EventBusConsumer()
+            {
+                Type = typeof(OrderPaypalCompletedEventConsumer),
+                Endpoint = APPLICATION_SERVICE.INFRASTRUCTURE_SERVICE + "_" + EventBusConstant.OrderPaypalCompleted
+            }
+        },
+        {
+            new EventBusConsumer()
+            {
+                Type = typeof(OrderStatusUpdatedEventConsumer),
+                Endpoint = APPLICATION_SERVICE.INFRASTRUCTURE_SERVICE + "_" + EventBusConstant.OrderStatusUpdated
+            }
+        },
+        {
+            new EventBusConsumer()
+            {
+                Type = typeof(UserRegistedEventConsumer),
+                Endpoint = APPLICATION_SERVICE.INFRASTRUCTURE_SERVICE + "_" + EventBusConstant.UserRegisted
+            }
+        }
+    }
+);
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

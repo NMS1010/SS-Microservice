@@ -11,11 +11,12 @@ using SS_Microservice.Services.Products.Application.Dto;
 using SS_Microservice.Services.Products.Application.Features.Product.Commands;
 using SS_Microservice.Services.Products.Application.Features.Product.Queries;
 using SS_Microservice.Services.Products.Application.Interfaces;
-using SS_Microservice.Services.Products.Application.Messaging.Commands.Inventory;
 using SS_Microservice.Services.Products.Application.Model.Variant;
 using SS_Microservice.Services.Products.Application.Specification.Product;
 using SS_Microservice.Services.Products.Application.Specification.Variant;
 using SS_Microservice.Services.Products.Domain.Entities;
+using SS_Microservice.Services.Products.Infrastructure.Consumers.Commands.Inventory;
+using SS_Microservice.Services.Products.Infrastructure.Consumers.Commands.OrderingSaga;
 
 namespace SS_Microservice.Services.Products.Application.Services
 {
@@ -291,10 +292,70 @@ namespace SS_Microservice.Services.Products.Application.Services
             await _unitOfWork.Save();
         }
 
-        public async Task<bool> UpdateListProductQuantity(UpdateListProductQuantityCommand command)
+        public async Task<bool> ReserveStock(ReserveStockCommand command)
         {
-            return true;
-            //return await _repository.UpdateProductQuantity(command);
+            try
+            {
+                await _unitOfWork.CreateTransaction();
+                foreach (var stock in command.Stocks)
+                {
+                    var variant = await _unitOfWork.Repository<Variant>().GetEntityWithSpec(new VariantSpecification(stock.VariantId))
+                        ?? throw new InvalidRequestException("Unexpected variantId");
+
+                    var product = variant.Product ?? throw new InvalidRequestException("Unexpected variantId");
+
+                    var p = stock.Quantity * variant.Quantity;
+
+                    product.Quantity -= p;
+                    product.ActualInventory -= p;
+                    product.Sold += p;
+
+                    _unitOfWork.Repository<Product>().Update(product);
+                }
+
+                var isSuccess = await _unitOfWork.Save() > 0;
+
+                await _unitOfWork.Commit();
+
+                return isSuccess;
+            }
+            catch
+            {
+                await _unitOfWork.Rollback();
+                return false;
+            }
+        }
+
+        public async Task RollBackStock(RollBackStockCommand command)
+        {
+            try
+            {
+                await _unitOfWork.CreateTransaction();
+
+                foreach (var stock in command.Stocks)
+                {
+                    var variant = await _unitOfWork.Repository<Variant>().GetEntityWithSpec(new VariantSpecification(stock.VariantId))
+                        ?? throw new InvalidRequestException("Unexpected variantId");
+
+                    var product = variant.Product ?? throw new InvalidRequestException("Unexpected variantId");
+
+                    var p = stock.Quantity * variant.Quantity;
+
+                    product.Quantity += p;
+                    product.ActualInventory += p;
+                    product.Sold -= p;
+
+                    _unitOfWork.Repository<Product>().Update(product);
+                }
+
+                await _unitOfWork.Save();
+
+                await _unitOfWork.Commit();
+            }
+            catch
+            {
+
+            }
         }
     }
 }

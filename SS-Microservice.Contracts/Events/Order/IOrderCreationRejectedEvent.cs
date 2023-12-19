@@ -5,5 +5,6 @@ namespace SS_Microservice.Contracts.Events.Order
     public interface IOrderCreationRejectedEvent : IRejectedEvent
     {
         long OrderId { get; set; }
+        string UserId { get; set; }
     }
 }

@@ -43,7 +43,6 @@
 
   <ItemGroup>
     <Folder Include="Application\Common\Logger\" />
-    <Folder Include="Application\Messaging\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>

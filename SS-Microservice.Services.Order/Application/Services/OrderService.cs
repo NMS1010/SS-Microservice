@@ -12,6 +12,7 @@ using SS_Microservice.Services.Order.Application.Interfaces;
 using SS_Microservice.Services.Order.Application.Models.Order;
 using SS_Microservice.Services.Order.Application.Specifications.Order;
 using SS_Microservice.Services.Order.Domain.Entities;
+using SS_Microservice.Services.Order.Infrastructure.Consumers.Events.OrderingSaga;
 
 namespace SS_Microservice.Services.Order.Application.Services
 {
@@ -21,7 +22,8 @@ namespace SS_Microservice.Services.Order.Application.Services
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
 
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentUserService currentUserService)
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper,
+            ICurrentUserService currentUserService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -30,8 +32,6 @@ namespace SS_Microservice.Services.Order.Application.Services
 
         private async Task<Domain.Entities.Order> InitOrder(string userId, CreateOrderRequest request)
         {
-            //var userAddress = user.Addresses.FirstOrDefault(x => x.IsDefault == true)
-            //        ?? throw new NotFoundException("Cannot find default user's address");
 
             var delivery = await _unitOfWork.Repository<Delivery>().GetById(request.DeliveryId)
                 ?? throw new InvalidRequestException("Unexpected deliveryId");
@@ -44,18 +44,14 @@ namespace SS_Microservice.Services.Order.Application.Services
 
             foreach (var item in request.Items)
             {
-                //var variant = await _unitOfWork.Repository<Variant>().GetById(item.VariantId)
-                //    ?? throw new InvalidRequestException("Unexpected variantId");
-                //var variantPrice = item.Quantity * variant.TotalPrice;
-                var variantPrice = 0;
+                var variantPrice = item.Quantity * item.TotalPrice;
 
                 totalAmount += variantPrice;
                 orderItems.Add(new OrderItem()
                 {
                     Quantity = item.Quantity,
                     VariantId = item.VariantId,
-                    //UnitPrice = variant.TotalPrice,
-                    UnitPrice = 0,
+                    UnitPrice = item.TotalPrice,
                     TotalPrice = variantPrice
                 });
             }
@@ -72,8 +68,8 @@ namespace SS_Microservice.Services.Order.Application.Services
 
             var order = new Domain.Entities.Order()
             {
-                UserId = "", // todo
-                AddressId = 0, //todo
+                UserId = userId,
+                AddressId = request.AddressId,
                 DeliveryMethod = delivery.Name,
                 Transaction = transaction,
                 OrderItems = orderItems,
@@ -81,7 +77,7 @@ namespace SS_Microservice.Services.Order.Application.Services
                 ShippingCost = delivery.Price,
                 Tax = (double)ORDER_TAX.TAX,
                 Code = string.Empty.GenerateUniqueCode(),
-                Status = ORDER_STATUS.NOT_PROCESSED,
+                Status = ORDER_STATUS.DRAFT,
                 PaymentStatus = false,
                 TotalAmount = totalAmount
             };
@@ -89,108 +85,9 @@ namespace SS_Microservice.Services.Order.Application.Services
             return order;
         }
 
-        //private async Task UpdateProduct(List<CreateOrderItemRequest> Items, Domain.Entities.Order order, string type)
-        //{
-        //    foreach (var item in Items)
-        //    {
-        //        var variant = await _unitOfWork.Repository<Variant>().GetEntityWithSpec(new VariantSpecification(item.VariantId))
-        //            ?? throw new InvalidRequestException("Unexpected variantId");
-        //        var product = variant.Product ?? throw new InvalidRequestException("Unexpected variantId");
 
-        //        var q = item.Quantity * variant.Quantity;
-
-        //        if (product.ActualInventory < q)
-        //            throw new Exception("Unexpected quantity");
-
-        //        var docket = new Docket()
-        //        {
-        //            Code = StringUtil.GenerateUniqueCode(),
-        //            Product = product,
-        //            Order = order,
-        //            Type = type,
-        //            Quantity = q,
-        //        };
-
-        //        await _unitOfWork.Repository<Docket>().Insert(docket);
-
-        //        product.Quantity -= q;
-        //        product.ActualInventory -= q;
-        //        product.Sold += q;
-
-        //        _unitOfWork.Repository<Product>().Update(product);
-        //    }
-        //}
-
-        //private async Task UpdateUserCart(List<CreateOrderItemRequest> items, Cart cart)
-        //{
-        //    foreach (var item in items)
-        //    {
-        //        var cartItem = await _unitOfWork.Repository<CartItem>()
-        //            .GetEntityWithSpec(new CartItemSpecification(cart.Id, item.VariantId))
-        //            ?? throw new InvalidRequestException("Unexpected variantId");
-
-        //        _unitOfWork.Repository<CartItem>().Delete(cartItem);
-        //    }
-        //}
-
-        //private async Task SendOrderMail(AppUser user, Order order)
-        //{
-        //    var address = await _unitOfWork.Repository<Address>().GetEntityWithSpec(new AddressSpecification(user.Id, true));
-        //    var orderDetail = new OrderConfirmationMail()
-        //    {
-        //        Email = address.Email,
-        //        Receiver = address.Receiver,
-        //        Phone = address.Phone,
-        //        Address = $"{address.Street}, {address?.Ward?.Name}, {address?.District?.Name}, {address?.Province?.Name}",
-        //        PaymentMethod = order.Transaction.PaymentMethod,
-        //        TotalPrice = order.TotalAmount
-        //    };
-
-        //    var req = new CreateMailRequest()
-        //    {
-        //        Email = user.Email,
-        //        Name = user.FirstName + " " + user.LastName,
-        //        Type = MAIL_TYPE.ORDER_CONFIRMATION,
-        //        Title = "Xác nhận đặt hàng",
-        //        OrderConfirmationMail = orderDetail
-        //    };
-
-        //    _mailService.SendMail(req);
-        //}
-
-        //private async Task NotifyCreateOrder(AppUser user, Order order)
-        //{
-        //    var notiRequest = new CreateNotificationRequest()
-        //    {
-        //        UserId = user.Id,
-        //        Image = order.OrderItems.FirstOrDefault()?.Variant.Product.Images.FirstOrDefault()?.Image,
-        //        Title = "Đặt hàng thành công",
-        //        Content = $"Đơn hàng #{order.Code} của bạn đã được hệ thống ghi nhận và đang được xử lý",
-        //        Type = NOTIFICATION_TYPE.ORDER,
-        //        Anchor = "/user/order/" + order.Code,
-        //    };
-        //    if (order.Transaction.PaymentMethod != PAYMENT_CODE.PAYPAL)
-        //    {
-        //        await SendOrderMail(user, order);
-        //    }
-        //    else
-        //    {
-        //        notiRequest.Title = "Đơn hàng cần thanh toán";
-        //        notiRequest.Content = $"Đơn hàng #{order.Code} của bạn cần được thanh toán qua Paypal trước khi hệ thống có thể xử lý";
-        //        notiRequest.Anchor = "/checkout/payment/" + order.Code;
-
-        //        BackgroundJob.Schedule<IBackgroundJobService>(x => x.CancelOrder(order.Id), TimeSpan.FromMinutes(1));
-        //    }
-
-        //    await _notificationService.CreateOrderNotification(notiRequest);
-        //}
-
-        public async Task<string> CreateOrder(CreateOrderCommand command)
+        public async Task<CreateOrderDto> CreateOrder(CreateOrderCommand command)
         {
-
-            //var user = await _unitOfWork.Repository<AppUser>().GetEntityWithSpec(new UserSpecification(command.UserId))
-            //    ?? throw new NotFoundException("Cannot find current user");
-
             var order = await InitOrder(command.UserId, command);
 
             try
@@ -199,33 +96,22 @@ namespace SS_Microservice.Services.Order.Application.Services
 
                 await _unitOfWork.Repository<Domain.Entities.Order>().Insert(order);
 
-                //await UpdateProduct(command.Items, order);
-
-                //await UpdateUserCart(command.Items, user.Cart);
-
-                var isSuccess = await _unitOfWork.Save() > 0;
-                if (!isSuccess)
-                {
-                    throw new Exception("Cannot handle to create order, an error has occured");
-                }
+                await _unitOfWork.Save();
 
                 await _unitOfWork.Commit();
+
+                return new CreateOrderDto()
+                {
+                    OrderCode = order.Code,
+                    OrderId = order.Id,
+                    PaymentMethod = order.Transaction.PaymentMethod,
+                    TotalPrice = order.Transaction.TotalPay
+                };
             }
             catch
             {
                 await _unitOfWork.Rollback();
                 throw;
-            }
-
-            try
-            {
-                //await NotifyCreateOrder(user, order);
-
-                return order.Code;
-            }
-            catch
-            {
-                return order.Code;
             }
 
         }
@@ -240,7 +126,7 @@ namespace SS_Microservice.Services.Order.Application.Services
             {
                 var listOrderItem = await _unitOfWork.Repository<OrderItem>().ListAsync(new OrderItemSpecification(order.Id));
                 var dto = _mapper.Map<OrderDto>(order);
-                dto.Items = await GetOrderItemDto(listOrderItem);
+                dto.Items = listOrderItem.Select(x => _mapper.Map<OrderItemDto>(x)).ToList();
                 orderDtos.Add(dto);
             }
 
@@ -252,42 +138,14 @@ namespace SS_Microservice.Services.Order.Application.Services
             return GetListOrder(_mapper.Map<GetListOrderQuery>(request));
         }
 
-        private async Task<List<OrderItemDto>> GetOrderItemDto(List<OrderItem> listOrderItem)
-        {
-            var listItems = new List<OrderItemDto>();
-            foreach (var oi in listOrderItem)
-            {
-                //var variant = await _unitOfWork.Repository<Variant>().GetEntityWithSpec(new VariantSpecification(oi.Variant.Id))
-                //?? throw new NotFoundException("Cannot find varaint item");
-
-                //var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(new ProductSpecification(variant.Product.Id))
-                //    ?? throw new NotFoundException("Cannot find product of variant item");
-
-                var orderItemDto = _mapper.Map<OrderItemDto>(oi);
-                //orderItemDto.ProductId = product.Id;
-                //orderItemDto.VariantQuantity = variant.Quantity;
-                //orderItemDto.VariantName = variant.Name;
-                //orderItemDto.Sku = /*product.Code + "-" +*/ variant.Sku;
-                //orderItemDto.ProductName = product.Name;
-                //orderItemDto.ProductSlug = product.Slug;
-                //orderItemDto.ProductUnit = product.Unit.Name;
-                //orderItemDto.ProductImage = product.Images.FirstOrDefault(x => x.IsDefault)?.Image ?? product.Images.FirstOrDefault()?.Image;
-
-                listItems.Add(orderItemDto);
-            }
-            return listItems;
-        }
-
         public async Task<OrderDto> GetOrder(GetOrderQuery query)
         {
             var order = await _unitOfWork.Repository<Domain.Entities.Order>().GetEntityWithSpec(new OrderSpecification(query.Id))
                 ?? throw new InvalidRequestException("Unexpected orderId");
             var listOrderItem = await _unitOfWork.Repository<OrderItem>().ListAsync(new OrderItemSpecification(order.Id));
 
-            var listItems = await GetOrderItemDto(listOrderItem);
-
             var orderDto = _mapper.Map<OrderDto>(order);
-            orderDto.Items = listItems;
+            orderDto.Items = listOrderItem.Select(x => _mapper.Map<OrderItemDto>(x)).ToList();
 
             return orderDto;
         }
@@ -350,13 +208,6 @@ namespace SS_Microservice.Services.Order.Application.Services
                     order.OtherCancelReason = request.OtherCancellation;
                 }
 
-                var orderItems = await _unitOfWork.Repository<OrderItem>().ListAsync(new OrderItemSpecification(order.Id));
-                //await UpdateProduct(orderItems.Select(x => new CreateOrderItemRequest()
-                //{
-                //    Quantity = -1 * x.Quantity,
-                //    VariantId = x.Variant.Id
-                //}).ToList(), order, DOCKET_TYPE.IMPORT);
-
             }
             else
             {
@@ -364,21 +215,6 @@ namespace SS_Microservice.Services.Order.Application.Services
                 order.OtherCancelReason = null;
             }
         }
-
-        //private async Task NotifyUpdateOrder(Order order)
-        //{
-        //    var orderItem = await _unitOfWork.Repository<OrderItem>().GetEntityWithSpec(new OrderItemSpecification(order.OrderItems.FirstOrDefault().Id, order.Status));
-
-        //    await _notificationService.CreateOrderNotification(new CreateNotificationRequest()
-        //    {
-        //        UserId = order.User.Id,
-        //        Image = orderItem?.Variant.Product.Images.FirstOrDefault()?.Image,
-        //        Title = "Cập nhật đơn hàng",
-        //        Content = $"Đơn hàng #{order.Code} của bạn đã chuyển sang trạng thái {ORDER_STATUS.OrderStatusSubTitle[order.Status]}",
-        //        Type = NOTIFICATION_TYPE.ORDER,
-        //        Anchor = "/user/order/" + order.Code,
-        //    });
-        //}
 
         public async Task<bool> UpdateOrder(UpdateOrderCommand command)
         {
@@ -409,23 +245,12 @@ namespace SS_Microservice.Services.Order.Application.Services
                 }
                 await _unitOfWork.Commit();
 
+                return isSuccess;
             }
             catch
             {
                 await _unitOfWork.Rollback();
                 throw;
-            }
-
-            try
-            {
-
-                //await NotifyUpdateOrder(order);
-
-                return true;
-            }
-            catch
-            {
-                return true;
             }
 
         }
@@ -437,32 +262,13 @@ namespace SS_Microservice.Services.Order.Application.Services
             var listOrderItem = await _unitOfWork.Repository<OrderItem>().ListAsync(new OrderItemSpecification(order.Id));
             //var listReview = await _unitOfWork.Repository<Review>().ListAsync(new ReviewSpecification(order.Id));
 
-            var listItems = await GetOrderItemDto(listOrderItem);
-
             var orderDto = _mapper.Map<OrderDto>(order);
-            orderDto.Items = listItems;
+            orderDto.Items = listOrderItem.Select(x => _mapper.Map<OrderItemDto>(x)).ToList();
             //orderDto.IsReview = listReview.Count == listItems.Count;
             //orderDto.ReviewedDate = listReview.Count == listItems.Count ? listReview.Max(x => x.CreatedAt) : null;
 
             return orderDto;
         }
-
-        //private async Task NotifyCompletePaypalOrder(Domain.Entities.Order order)
-        //{
-        //    await SendOrderMail(order.User, order);
-
-        //    var orderItems = await _unitOfWork.Repository<OrderItem>().ListAsync(new OrderItemSpecification(order.Id));
-
-        //    await _notificationService.CreateOrderNotification(new CreateNotificationRequest()
-        //    {
-        //        UserId = order.User.Id,
-        //        Image = orderItems.FirstOrDefault()?.Variant.Product.Images.FirstOrDefault(x => x.IsDefault)?.Image,
-        //        Title = "Thanh toán thành công",
-        //        Content = $"Đơn hàng #{order.Code} của bạn đã được thanh toán, hệ thống đã ghi nhận và đang được xử lý",
-        //        Type = NOTIFICATION_TYPE.ORDER,
-        //        Anchor = "/user/order/" + order.Code,
-        //    });
-        //}
 
         public async Task<bool> CompletePaypalOrder(CompletePaypalOrderCommand command)
         {
@@ -482,21 +288,12 @@ namespace SS_Microservice.Services.Order.Application.Services
 
                 await _unitOfWork.Save();
                 await _unitOfWork.Commit();
-            }
-            catch
-            {
-                await _unitOfWork.Rollback();
-                throw;
-            }
-
-            try
-            {
-                //await NotifyCompletePaypalOrder(order);
 
                 return true;
             }
             catch
             {
+                await _unitOfWork.Rollback();
                 throw;
             }
         }

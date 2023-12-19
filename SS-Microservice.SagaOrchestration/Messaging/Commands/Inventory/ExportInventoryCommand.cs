@@ -7,5 +7,7 @@ namespace SS_Microservice.SagaOrchestration.Messaging.Commands.Inventory
     {
         public long OrderId { get; set; }
         public List<ProductStock> Stocks { get; set; }
+
+        public Guid CorrelationId { get; set; }
     }
 }

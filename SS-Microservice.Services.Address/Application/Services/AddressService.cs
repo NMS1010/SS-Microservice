@@ -101,8 +101,14 @@ namespace SS_Microservice.Services.Address.Application.Services
         public async Task<AddressDto> GetAddress(GetAddressQuery query)
         {
             var address = await _unitOfWork.Repository<Domain.Entities.Address>()
-                .GetEntityWithSpec(new AddressSpecification(query.UserId, query.Id))
+                .GetEntityWithSpec(new AddressSpecification(query.Id))
                 ?? throw new NotFoundException("Cannot find this address");
+            if (!string.IsNullOrEmpty(query.UserId))
+            {
+                address = await _unitOfWork.Repository<Domain.Entities.Address>()
+                    .GetEntityWithSpec(new AddressSpecification(query.UserId, query.Id))
+                    ?? throw new NotFoundException("Cannot find this address");
+            }
 
             return _mapper.Map<AddressDto>(address);
         }

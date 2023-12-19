@@ -1,5 +1,11 @@
-﻿using MassTransit;
+﻿using AutoMapper;
+using MassTransit;
 using MediatR;
+using SS_Microservice.Common.Logging.Messaging;
+using SS_Microservice.Common.Types.Enums;
+using SS_Microservice.Contracts.Events.Order;
+using SS_Microservice.Services.Order.Application.Features.Order.Events;
+using SS_Microservice.Services.Order.Application.Features.Order.Queries;
 using SS_Microservice.Services.Order.Application.Interfaces;
 using SS_Microservice.Services.Order.Application.Models.Order;
 
@@ -12,42 +18,56 @@ namespace SS_Microservice.Services.Order.Application.Features.Order.Commands
     public class CompletePaypalOrderHandler : IRequestHandler<CompletePaypalOrderCommand, bool>
     {
         private readonly IOrderService _orderService;
-        private readonly IBus _publisher;
+        private readonly ISender _sender;
+        private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
         private readonly ILogger<CompletePaypalOrderHandler> _logger;
+        private readonly string _handlerName = nameof(CompletePaypalOrderHandler);
 
-        public CompletePaypalOrderHandler(IOrderService orderService, IBus publisher, ILogger<CompletePaypalOrderHandler> logger)
+        public CompletePaypalOrderHandler(IOrderService orderService, ISender sender, IMapper mapper,
+            IPublishEndpoint publishEndpoint, ILogger<CompletePaypalOrderHandler> logger)
         {
             _orderService = orderService;
-            _publisher = publisher;
+            _sender = sender;
+            _mapper = mapper;
+            _publishEndpoint = publishEndpoint;
             _logger = logger;
         }
 
         public async Task<bool> Handle(CompletePaypalOrderCommand request, CancellationToken cancellationToken)
         {
             var isSuccess = await _orderService.CompletePaypalOrder(request);
-            //if (isSuccess)
-            //{
-            //    _logger.LogInformation($"Start publishing message to Product Service after created order");
-            //    var e = new OrderCreatedEvent()
-            //    {
-            //        UserId = request.UserId,
-            //        OrderId = orderId,
-            //        Products = new List<SS_Microservice.Common.Messages.Models.ProductStock>()
-            //    };
-            //    request.Items.ForEach(item =>
-            //    {
-            //        e.Products.Add(new SS_Microservice.Common.Messages.Models.ProductStock()
-            //        {
-            //            ProductId = item.VariantId,
-            //            VariantId = item.VariantId,
-            //            Quantity = item.Quantity,
-            //        });
-            //    });
-            //    await _publisher.Publish(e);
-            //    _logger.LogInformation($"Message to Product Service is published");
-            //}
+            if (isSuccess)
+            {
+                var order = await _sender.Send(new GetOrderQuery()
+                {
+                    Id = request.OrderId
+                });
 
-            //return isSuccess;
+                _logger.LogInformation(LoggerMessaging.StartPublishing(APPLICATION_SERVICE.ORDER_SERVICE,
+                        nameof(IOrderPaypalCompletedEvent), _handlerName));
+
+                var address = order.Address;
+
+                await _publishEndpoint.Publish<IOrderPaypalCompletedEvent>(new OrderPaypalCompletedEvent()
+                {
+                    OrderCode = order.Code,
+                    OrderId = order.Id,
+                    Image = order.Items.FirstOrDefault().ProductImage,
+                    UserId = order.User.Id,
+                    Address = $"{address.Street}, {address.Ward.Name}, {address.District.Name}, {address.Province.Name}",
+                    Email = order.User.Email,
+                    PaymentMethod = order.Transaction.PaymentMethod,
+                    Phone = order.Address.Phone,
+                    Receiver = order.Address.Receiver,
+                    ReceiverEmail = order.Address.Email,
+                    TotalPrice = order.Transaction.TotalPay,
+                    UserName = order.User.FirstName + " " + order.User.LastName
+                });
+
+                _logger.LogInformation(LoggerMessaging.CompletePublishing(APPLICATION_SERVICE.ORDER_SERVICE,
+                    nameof(IOrderPaypalCompletedEvent), _handlerName));
+            }
 
             return isSuccess;
         }

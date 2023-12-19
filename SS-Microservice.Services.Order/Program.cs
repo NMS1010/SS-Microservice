@@ -12,16 +12,21 @@ using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
+using SS_Microservice.Common.RestEase;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Common.Swagger;
+using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Order.Application.Common.AutoMapper;
 using SS_Microservice.Services.Order.Application.Interfaces;
 using SS_Microservice.Services.Order.Application.Services;
+using SS_Microservice.Services.Order.Infrastructure.Consumers.Events.OrderingSaga;
 using SS_Microservice.Services.Order.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Order.Infrastructure.Repositories;
 using SS_Microservice.Services.Order.Infrastructure.Services;
+using SS_Microservice.Services.Order.Infrastructure.Services.Address;
+using SS_Microservice.Services.Order.Infrastructure.Services.Auth;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,6 +62,9 @@ builder.Services.AddSwaggerGenWithJWTAuth();
 builder.Services.AddGrpcClient<ProductProtoService.ProductProtoServiceClient>
             (o => o.Address = new Uri(configuration["GrpcSettings:ProductUrl"]));
 
+builder.Services.RegisterServiceForwarder<IAddressClientAPI>("address-service")
+    .RegisterServiceForwarder<IAuthClientAPI>("auth-service");
+
 builder.Services
     .AddScoped<IProductGrpcService, ProductGrpcService>()
     .AddSingleton<ICurrentUserService, CurrentUserService>()
@@ -71,10 +79,32 @@ builder.Services
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 builder.Services.AddOpenTracing();
+
 builder.Services.AddJaeger(configuration.GetJaegerOptions());
+
 builder.Services.AddJwtAuthentication(configuration);
+
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
-builder.Services.AddMessaging(configuration);
+
+builder.Services.AddMessaging(configuration,
+    new List<EventBusConsumer>()
+    {
+        {
+            new EventBusConsumer()
+            {
+                Type = typeof(OrderCreationCompletedEventConsumer),
+                Endpoint = APPLICATION_SERVICE.ORDER_SERVICE + "_" + EventBusConstant.OrderCreationCompleted
+            }
+        },
+        {
+            new EventBusConsumer()
+            {
+                Type = typeof(OrderCreationRejectedEventConsumer),
+                Endpoint = APPLICATION_SERVICE.ORDER_SERVICE + "_" + EventBusConstant.OrderCreationRejected
+            }
+        }
+    });
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

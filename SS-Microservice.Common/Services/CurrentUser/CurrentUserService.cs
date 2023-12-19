@@ -13,6 +13,8 @@ namespace SS_Microservice.Common.Services.CurrentUser
         }
 
         public string UserId => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "System";
+        public string Email => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email) ?? "system@gmail.com";
+        public string UserName => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.GivenName) ?? "System";
 
         public bool IsInRole(string role)
         {

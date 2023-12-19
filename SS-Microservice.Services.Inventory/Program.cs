@@ -13,10 +13,13 @@ using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Swagger;
+using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Inventory.Application.Common.AutoMapper;
 using SS_Microservice.Services.Inventory.Application.Interfaces;
 using SS_Microservice.Services.Inventory.Application.Services;
+using SS_Microservice.Services.Inventory.Infrastructure.Consumers.Commands.OrderingSaga;
+using SS_Microservice.Services.Inventory.Infrastructure.Consumers.Events.Order;
 using SS_Microservice.Services.Inventory.Infrastructure.Data.DBContext;
 using System.Reflection;
 
@@ -65,7 +68,30 @@ builder.Services.AddSwaggerGenWithJWTAuth();
 
 builder.Services.AddJwtAuthentication(configuration);
 
-builder.Services.AddMessaging(configuration);
+builder.Services.AddMessaging(configuration, new List<EventBusConsumer>()
+{
+    {
+        new EventBusConsumer()
+        {
+            Type = typeof(ExportInventoryCommandConsumer),
+            Endpoint = EventBusConstant.ExportInventory
+        }
+    },
+    {
+        new EventBusConsumer()
+        {
+            Type = typeof(RollBackInventoryCommandConsumer),
+            Endpoint = EventBusConstant.RollBackInventory
+        }
+    },
+    {
+        new EventBusConsumer()
+        {
+            Type = typeof(OrderCancelledEventConsumer),
+            Endpoint = APPLICATION_SERVICE.INVENTORY_SERVICE + "_" + EventBusConstant.OrderCancelled
+        }
+    }
+});
 
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
 

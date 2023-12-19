@@ -148,5 +148,28 @@ namespace SS_Microservice.Services.Address.Controllers
 
             return Ok(CustomAPIResponse<PaginatedResult<AddressDto>>.Success(res, StatusCodes.Status200OK));
         }
+
+        [InternalCommunicationAPI(APPLICATION_SERVICE.ORDER_SERVICE)]
+        [HttpGet("internal/default/{userId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetDefaultAddress([FromRoute] string userId)
+        {
+            var query = new GetDefaultAddressQuery() { UserId = userId };
+            var res = await _sender.Send(query);
+
+            return Ok(CustomAPIResponse<AddressDto>.Success(res, StatusCodes.Status200OK));
+        }
+
+
+        [InternalCommunicationAPI(APPLICATION_SERVICE.ORDER_SERVICE)]
+        [HttpGet("internal/{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAddressFromOtherService([FromRoute] long id)
+        {
+            var query = new GetAddressQuery() { Id = id };
+            var res = await _sender.Send(query);
+
+            return Ok(CustomAPIResponse<AddressDto>.Success(res, StatusCodes.Status200OK));
+        }
     }
 }

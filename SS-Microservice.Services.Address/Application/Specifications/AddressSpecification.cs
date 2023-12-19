@@ -40,6 +40,13 @@ namespace SS_Microservice.Services.Address.Application.Specifications
             AddInclude(x => x.Ward);
             AddOrderByDescending(x => x.IsDefault);
         }
+        public AddressSpecification(long id)
+            : base(x => x.Id == id)
+        {
+            AddInclude(x => x.Province);
+            AddInclude(x => x.District);
+            AddInclude(x => x.Ward);
+        }
 
         public AddressSpecification(string userId, bool isDefault)
             : base(x => x.UserId == userId && x.IsDefault == isDefault)

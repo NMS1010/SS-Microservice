@@ -4,7 +4,7 @@ using SS_Microservice.Common.Configuration;
 using SS_Microservice.Services.Infrastructure.Application.Common.Constants;
 using SS_Microservice.Services.Infrastructure.Application.Common.Options;
 using SS_Microservice.Services.Infrastructure.Application.Interfaces;
-using SS_Microservice.Services.Infrastructure.Application.Messaging.Commands.Mail;
+using SS_Microservice.Services.Infrastructure.Infrastructure.Consumers.Commands.Mail;
 
 namespace SS_Microservice.Services.Infrastructure.Infrastructure.Services
 {
@@ -33,20 +33,6 @@ namespace SS_Microservice.Services.Infrastructure.Infrastructure.Services
             {
                 body = body.Replace($"{{{payload.Key}}}", payload.Value);
             }
-            //body = body.Replace("{name}", request.Name);
-            //body = body.Replace("{email}", request.Email);
-            //body = body.Replace("{OTP}", request.OTP);
-            //if (request.OrderConfirmationMail != null)
-            //{
-            //    body = body.Replace("{email}", request.OrderConfirmationMail.Email);
-            //    body = body.Replace("{receiver}", request.OrderConfirmationMail.Receiver);
-            //    body = body.Replace("{phone}", request.OrderConfirmationMail.Phone);
-            //    body = body.Replace("{address}", request.OrderConfirmationMail.Address);
-            //    body = body.Replace("{paymentMethod}", request.OrderConfirmationMail.PaymentMethod);
-
-            //    string totalPrice = request.OrderConfirmationMail.TotalPrice.ToString("#,###", CultureInfo.GetCultureInfo("vi-VN"));
-            //    body = body.Replace("{totalPrice}", totalPrice + "đ");
-            //}
 
             return body;
         }

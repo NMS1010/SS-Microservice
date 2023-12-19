@@ -46,9 +46,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Application\Messaging\Commands\" />
-	  <Folder Include="Application\Messaging\Events\Basket\" />
-	  <Folder Include="Application\Messaging\Events\Product\" />
 	  <Folder Include="Application\Models\Statistic\" />
 	  <Folder Include="wwwroot\" />
 	</ItemGroup>

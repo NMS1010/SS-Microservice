@@ -4,5 +4,6 @@ namespace SS_Microservice.Contracts.Events.Product
 {
     public interface IStockReservedEvent : IEvent
     {
+        string Image { get; set; }
     }
 }

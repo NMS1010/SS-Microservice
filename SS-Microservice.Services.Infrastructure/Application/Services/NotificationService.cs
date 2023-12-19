@@ -26,7 +26,7 @@ namespace SS_Microservice.Services.Infrastructure.Application.Services
             _hub = hub;
         }
 
-        public async Task CreateOrderNotification(CreateNotificationCommand command)
+        public async Task CreateOrderNotification(CreateOrderNotificationCommand command)
         {
             var notification = _mapper.Map<Notification>(command);
             notification.UserId = command.UserId;
@@ -40,7 +40,7 @@ namespace SS_Microservice.Services.Infrastructure.Application.Services
             }
         }
 
-        public Task CreateSaleNotification(CreateNotificationCommand command)
+        public Task CreateSaleNotification(CreateOrderNotificationCommand command)
         {
             throw new NotImplementedException();
             //var users = await _unitOfWork.Repository<AppUser>().GetAll();

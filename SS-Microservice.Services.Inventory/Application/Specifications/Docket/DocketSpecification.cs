@@ -8,6 +8,11 @@ namespace SS_Microservice.Services.Inventory.Application.Specifications.Docket
         {
         }
 
+
+        public DocketSpecification(long orderId, bool status = true) : base(x => x.OrderId == orderId)
+        {
+        }
+
         public DocketSpecification(string type) : base(x => x.Type == type)
         {
         }

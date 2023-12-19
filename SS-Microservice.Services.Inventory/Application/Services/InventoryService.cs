@@ -8,6 +8,8 @@ using SS_Microservice.Services.Inventory.Application.Features.Docket.Queries;
 using SS_Microservice.Services.Inventory.Application.Interfaces;
 using SS_Microservice.Services.Inventory.Application.Specifications.Docket;
 using SS_Microservice.Services.Inventory.Domain.Entities;
+using SS_Microservice.Services.Inventory.Infrastructure.Consumers.Commands.OrderingSaga;
+using SS_Microservice.Services.Inventory.Infrastructure.Consumers.Events.Order;
 
 namespace SS_Microservice.Services.Inventory.Application.Services
 {
@@ -20,6 +22,39 @@ namespace SS_Microservice.Services.Inventory.Application.Services
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+
+        public async Task<bool> ExportInventory(ExportInventoryCommand command)
+        {
+            try
+            {
+                await _unitOfWork.CreateTransaction();
+
+                foreach (var item in command.Stocks)
+                {
+                    var docket = new Docket
+                    {
+                        Type = DOCKET_TYPE.EXPORT,
+                        Code = string.Empty.GenerateUniqueCode(),
+                        Quantity = item.Quantity,
+                        ProductId = item.ProductId,
+                        OrderId = command.OrderId
+                    };
+
+                    await _unitOfWork.Repository<Docket>().Insert(docket);
+                }
+
+                var res = await _unitOfWork.Save() > 0;
+
+                await _unitOfWork.Commit();
+
+                return res;
+            }
+            catch
+            {
+                await _unitOfWork.Rollback();
+                return false;
+            }
         }
 
         public async Task<List<DocketDto>> GetListDocketByProduct(GetListDocketQuery query)
@@ -58,6 +93,55 @@ namespace SS_Microservice.Services.Inventory.Application.Services
             {
                 await _unitOfWork.Rollback();
                 throw;
+            }
+        }
+
+        public async Task ImportInventory(ImportInventoryCommand command)
+        {
+            try
+            {
+                foreach (var item in command.Products)
+                {
+                    var docket = new Docket
+                    {
+                        Type = DOCKET_TYPE.IMPORT,
+                        Code = string.Empty.GenerateUniqueCode(),
+                        Quantity = item.Quantity,
+                        ProductId = item.ProductId,
+                        OrderId = command.OrderId,
+                    };
+
+                    await _unitOfWork.Repository<Docket>().Insert(docket);
+                }
+
+                await _unitOfWork.Save();
+            }
+            catch
+            {
+
+            }
+        }
+
+        public async Task RollBackInventory(RollBackInventoryCommand command)
+        {
+            var dockets = await _unitOfWork.Repository<Docket>().ListAsync(new DocketSpecification(command.OrderId, true));
+
+            try
+            {
+                await _unitOfWork.CreateTransaction();
+
+                foreach (var docket in dockets)
+                {
+                    _unitOfWork.Repository<Docket>().Delete(docket);
+                }
+
+                await _unitOfWork.Save();
+
+                await _unitOfWork.Commit();
+            }
+            catch
+            {
+
             }
         }
     }

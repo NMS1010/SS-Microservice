@@ -14,5 +14,6 @@ namespace SS_Microservice.Services.Auth.Application.Features.Address.Commands
         public long ProvinceId { get; set; }
         public long DistrictId { get; set; }
         public long WardId { get; set; }
+        public Guid CorrelationId { get; set; }
     }
 }

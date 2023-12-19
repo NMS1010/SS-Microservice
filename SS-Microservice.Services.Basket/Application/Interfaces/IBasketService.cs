@@ -2,6 +2,8 @@
 using SS_Microservice.Services.Basket.Application.Dto;
 using SS_Microservice.Services.Basket.Application.Features.Basket.Commands;
 using SS_Microservice.Services.Basket.Application.Features.Basket.Queries;
+using SS_Microservice.Services.Basket.Infrastructure.Consumers.Commands.OrderingSaga;
+using SS_Microservice.Services.Basket.Infrastructure.Consumers.Events.User;
 
 namespace SS_Microservice.Services.Basket.Application.Interfaces
 {

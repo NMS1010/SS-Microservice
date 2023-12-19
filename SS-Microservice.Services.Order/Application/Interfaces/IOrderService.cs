@@ -2,12 +2,13 @@
 using SS_Microservice.Services.Order.Application.Dtos;
 using SS_Microservice.Services.Order.Application.Features.Order.Commands;
 using SS_Microservice.Services.Order.Application.Features.Order.Queries;
+using SS_Microservice.Services.Order.Infrastructure.Consumers.Events.OrderingSaga;
 
 namespace SS_Microservice.Services.Order.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<string> CreateOrder(CreateOrderCommand command);
+        Task<CreateOrderDto> CreateOrder(CreateOrderCommand command);
 
         Task<bool> CompletePaypalOrder(CompletePaypalOrderCommand command);
 

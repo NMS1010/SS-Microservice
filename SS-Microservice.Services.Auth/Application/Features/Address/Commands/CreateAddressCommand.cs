@@ -5,5 +5,6 @@ namespace SS_Microservice.Services.Auth.Application.Features.Address.Commands
 {
     public class CreateAddressCommand : CreateAddressRequest, ICreateAddressCommand
     {
+        public Guid CorrelationId { get; set; }
     }
 }

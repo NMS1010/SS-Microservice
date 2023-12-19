@@ -1,4 +1,6 @@
 ﻿using SS_Microservice.Common.Types.Entities;
+using SS_Microservice.Services.Order.Infrastructure.Services.Address.Model.Response;
+using SS_Microservice.Services.Order.Infrastructure.Services.Auth.Model.Response;
 
 namespace SS_Microservice.Services.Order.Application.Dtos
 {
@@ -15,8 +17,9 @@ namespace SS_Microservice.Services.Order.Application.Dtos
         public string DeliveryMethod { get; set; }
         public bool IsReview { get; set; }
         public DateTime? ReviewedDate { get; set; }
-        //public UserDto User { get; set; }
-        //public AddressDto Address { get; set; }
+        public long AddressId { get; set; }
+        public UserDto User { get; set; }
+        public AddressDto Address { get; set; }
         public TransactionDto Transaction { get; set; }
         public OrderCancellationReasonDto CancelReason { get; set; }
         public List<OrderItemDto> Items { get; set; }

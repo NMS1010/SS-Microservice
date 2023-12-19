@@ -2,7 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SS_Microservice.Common.Attributes;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Common.Types.Model.CustomResponse;
 using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Auth.Application.Dto;
@@ -88,6 +90,17 @@ namespace SS_Microservice.Services.Auth.Controllers
             var res = await _sender.Send(_mapper.Map<GetListUserQuery>(request));
 
             return Ok(CustomAPIResponse<PaginatedResult<UserDto>>.Success(res, StatusCodes.Status200OK));
+        }
+
+        // call from other service
+        [InternalCommunicationAPI(APPLICATION_SERVICE.ORDER_SERVICE)]
+        [HttpGet("internal/{userId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserFromOtherService([FromRoute] string userId)
+        {
+            var res = await _sender.Send(new GetUserQuery() { UserId = userId });
+
+            return Ok(CustomAPIResponse<UserDto>.Success(res, StatusCodes.Status200OK));
         }
     }
 }

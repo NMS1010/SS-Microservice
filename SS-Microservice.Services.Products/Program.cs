@@ -14,9 +14,13 @@ using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
 using SS_Microservice.Common.Services.Upload;
 using SS_Microservice.Common.Swagger;
+using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Products.Application.Interfaces;
 using SS_Microservice.Services.Products.Application.Services;
+using SS_Microservice.Services.Products.Infrastructure.Consumers.Commands.Inventory;
+using SS_Microservice.Services.Products.Infrastructure.Consumers.Commands.OrderingSaga;
+using SS_Microservice.Services.Products.Infrastructure.Consumers.Events.Order;
 using SS_Microservice.Services.Products.Infrastructure.Data.Context;
 using SS_Microservice.Services.Products.Infrastructure.Repositories;
 using System.Reflection;
@@ -77,7 +81,37 @@ builder.Services.AddOpenTracing();
 
 builder.Services.AddJaeger(configuration.GetJaegerOptions());
 
-builder.Services.AddMessaging(configuration);
+builder.Services.AddMessaging(configuration, new List<EventBusConsumer>()
+{
+    {
+        new EventBusConsumer()
+        {
+            Type = typeof(UpdateProductQuantityCommandConsumer),
+            Endpoint = EventBusConstant.UpdateProductQuantity
+        }
+    },
+    {
+        new EventBusConsumer()
+        {
+            Type = typeof(ReserveStockCommandConsumer),
+            Endpoint = EventBusConstant.ReserveStock
+        }
+    },
+    {
+        new EventBusConsumer()
+        {
+            Type = typeof(RollBackStockCommandConsumer),
+            Endpoint = EventBusConstant.RollBackStock
+        }
+    },
+    {
+        new EventBusConsumer()
+        {
+            Type = typeof(OrderCancelledEventConsumer),
+            Endpoint = APPLICATION_SERVICE.PRODUCT_SERVICE + "_" + EventBusConstant.OrderCancelled
+        }
+    }
+});
 
 var app = builder.Build();
 

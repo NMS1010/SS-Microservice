@@ -45,9 +45,4 @@
 		<Protobuf Include="..\SS-Microservice.Common\Grpc\Product\Protos\product.proto" GrpcServices="Client" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Application\Messaging\Commands\" />
-	  <Folder Include="Application\Messaging\Events\Product\" />
-	</ItemGroup>
-
 </Project>

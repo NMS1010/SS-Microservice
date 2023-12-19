@@ -7,6 +7,9 @@ namespace SS_Microservice.Services.Order.Application.Models.Order
         [JsonIgnore]
         public string UserId { get; set; }
 
+        [JsonIgnore]
+        public long AddressId { get; set; }
+
         public string Note { get; set; }
         public long PaymentMethodId { get; set; }
         public long DeliveryId { get; set; }

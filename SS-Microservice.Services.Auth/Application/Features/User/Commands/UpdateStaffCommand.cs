@@ -2,6 +2,7 @@
 using MassTransit;
 using MediatR;
 using SS_Microservice.Common.Logging.Messaging;
+using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Contracts.Commands.Address;
 using SS_Microservice.Services.Auth.Application.Features.Address.Commands;
@@ -18,17 +19,19 @@ namespace SS_Microservice.Services.Auth.Application.Features.User.Commands
     {
         private readonly IUserService _userService;
         private readonly IPublishEndpoint _publishEndpoint;
+        private readonly ISendEndpointProvider _sendEndpoint;
         private readonly IMapper _mapper;
         private readonly ILogger<CreateStaffHandler> _logger;
         private const string _handlerName = nameof(UpdateStaffHandler);
 
         public UpdateStaffHandler(IUserService userService, IPublishEndpoint publishEndpoint,
-            IMapper mapper, ILogger<CreateStaffHandler> logger)
+            IMapper mapper, ILogger<CreateStaffHandler> logger, ISendEndpointProvider sendEndpoint)
         {
             _userService = userService;
             _publishEndpoint = publishEndpoint;
             _mapper = mapper;
             _logger = logger;
+            _sendEndpoint = sendEndpoint;
         }
 
         public async Task<bool> Handle(UpdateStaffCommand request, CancellationToken cancellationToken)
@@ -42,7 +45,9 @@ namespace SS_Microservice.Services.Auth.Application.Features.User.Commands
 
                 var command = _mapper.Map<UpdateAddressCommand>(request.Address);
                 command.UserId = userId;
-                await _publishEndpoint.Publish<IUpdateAddressCommand>(command, cancellationToken);
+
+                await (await _sendEndpoint.GetSendEndpoint(new Uri($"queue:{EventBusConstant.UpdateAddress}")))
+                    .Send<IUpdateAddressCommand>(command, cancellationToken);
 
                 _logger.LogInformation(LoggerMessaging.CompletePublishing(APPLICATION_SERVICE.AUTH_SERVICE,
                     nameof(UpdateAddressCommand), _handlerName));

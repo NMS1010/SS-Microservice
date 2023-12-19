@@ -17,6 +17,7 @@ using SS_Microservice.Common.Validators;
 using SS_Microservice.Services.Address.Application.Common.AutoMapper;
 using SS_Microservice.Services.Address.Application.Interfaces;
 using SS_Microservice.Services.Address.Application.Services;
+using SS_Microservice.Services.Address.Infrastructure.Consumers.Commands.Auth;
 using SS_Microservice.Services.Address.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.Address.Infrastructure.Repositories;
 using System.Reflection;
@@ -66,7 +67,23 @@ builder.Services.AddSwaggerGenWithJWTAuth();
 
 builder.Services.AddJwtAuthentication(configuration);
 
-builder.Services.AddMessaging(configuration);
+builder.Services.AddMessaging(configuration, new List<EventBusConsumer>()
+{
+    {
+        new EventBusConsumer()
+        {
+            Type = typeof(CreateAddressCommandConsumer),
+            Endpoint = EventBusConstant.CreateAddress
+        }
+    },
+    {
+        new EventBusConsumer()
+        {
+            Type = typeof(UpdateAddressCommandConsumer),
+            Endpoint = EventBusConstant.UpdateAddress
+        }
+    }
+});
 
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
 

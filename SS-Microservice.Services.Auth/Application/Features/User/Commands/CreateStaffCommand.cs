@@ -2,7 +2,9 @@
 using MassTransit;
 using MediatR;
 using SS_Microservice.Common.Logging.Messaging;
+using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Types.Enums;
+using SS_Microservice.Contracts.Commands.Address;
 using SS_Microservice.Contracts.Events.User;
 using SS_Microservice.Services.Auth.Application.Features.Address.Commands;
 using SS_Microservice.Services.Auth.Application.Features.Auth.Events;
@@ -18,18 +20,20 @@ namespace SS_Microservice.Services.Auth.Application.Features.User.Commands
     public class CreateStaffHandler : IRequestHandler<CreateStaffCommand, string>
     {
         private readonly IUserService _userService;
+        private readonly ISendEndpointProvider _sendEndpoint;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IMapper _mapper;
         private readonly ILogger<CreateStaffHandler> _logger;
         private const string _handlerName = nameof(CreateStaffHandler);
 
-        public CreateStaffHandler(IUserService userService, IPublishEndpoint publishEndpoint,
-            IMapper mapper, ILogger<CreateStaffHandler> logger)
+        public CreateStaffHandler(IUserService userService, ISendEndpointProvider sendEndpoint,
+            IMapper mapper, ILogger<CreateStaffHandler> logger, IPublishEndpoint publishEndpoint)
         {
             _userService = userService;
-            _publishEndpoint = publishEndpoint;
+            _sendEndpoint = sendEndpoint;
             _mapper = mapper;
             _logger = logger;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<string> Handle(CreateStaffCommand request, CancellationToken cancellationToken)
@@ -49,7 +53,8 @@ namespace SS_Microservice.Services.Auth.Application.Features.User.Commands
                 _logger.LogInformation(LoggerMessaging.StartPublishing(APPLICATION_SERVICE.AUTH_SERVICE, nameof(CreateAddressCommand), _handlerName));
                 request.Address.UserId = id;
 
-                await _publishEndpoint.Publish(_mapper.Map<CreateAddressCommand>(request.Address));
+                await (await _sendEndpoint.GetSendEndpoint(new Uri($"queue:{EventBusConstant.CreateAddress}")))
+                    .Send<ICreateAddressCommand>(_mapper.Map<CreateAddressCommand>(request.Address), cancellationToken);
 
                 _logger.LogInformation(LoggerMessaging.CompletePublishing(APPLICATION_SERVICE.AUTH_SERVICE, nameof(CreateAddressCommand), _handlerName));
             }

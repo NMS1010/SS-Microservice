@@ -18,12 +18,19 @@ namespace SS_Microservice.Common.RabbitMQ
 
                     mt.SetKebabCaseEndpointNameFormatter();
 
-                    var entryAssembly = Assembly.GetEntryAssembly();
-                    mt.AddConsumers(entryAssembly);
-                    mt.AddActivities(entryAssembly);
-                    mt.AddSagas(entryAssembly);
-                    mt.AddSagaStateMachines(entryAssembly);
-
+                    if (consumers != null)
+                    {
+                        foreach (var consumer in consumers)
+                        {
+                            Type type = consumer.Type;
+                            mt.AddConsumer(type).Endpoint(c => c.InstanceId = consumer.Endpoint);
+                        }
+                    }
+                    else
+                    {
+                        var entryAssembly = Assembly.GetEntryAssembly();
+                        mt.AddConsumers(entryAssembly);
+                    }
 
                     mt.UsingRabbitMq((context, cfg) =>
                     {
@@ -34,15 +41,14 @@ namespace SS_Microservice.Common.RabbitMQ
                             h.Password(rabbitMqSettings.Password);
                         });
 
-                        cfg.ConfigureEndpoints(context);
-
                         if (consumers != null)
                         {
                             foreach (var consumer in consumers)
                             {
+                                Type type = consumer.Type;
                                 cfg.ReceiveEndpoint(consumer.Endpoint, e =>
                                 {
-                                    e.ConfigureConsumer(context, consumer.Type);
+                                    e.ConfigureConsumer(context, type);
                                 });
                             }
                         }

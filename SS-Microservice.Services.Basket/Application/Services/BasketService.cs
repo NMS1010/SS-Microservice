@@ -8,6 +8,8 @@ using SS_Microservice.Services.Basket.Application.Features.Basket.Queries;
 using SS_Microservice.Services.Basket.Application.Interfaces;
 using SS_Microservice.Services.Basket.Application.Specifications;
 using SS_Microservice.Services.Basket.Domain.Entities;
+using SS_Microservice.Services.Basket.Infrastructure.Consumers.Commands.OrderingSaga;
+using SS_Microservice.Services.Basket.Infrastructure.Consumers.Events.User;
 
 namespace SS_Microservice.Services.Basket.Application.Services
 {
@@ -116,11 +118,6 @@ namespace SS_Microservice.Services.Basket.Application.Services
 
                 var isSuccess = await _unitOfWork.Save() > 0;
 
-                if (!isSuccess)
-                {
-                    throw new Exception("Cannot clear basket");
-                }
-
                 await _unitOfWork.Commit();
 
                 return isSuccess;
@@ -128,7 +125,7 @@ namespace SS_Microservice.Services.Basket.Application.Services
             catch
             {
                 await _unitOfWork.Rollback();
-                throw;
+                return false;
             }
         }
 

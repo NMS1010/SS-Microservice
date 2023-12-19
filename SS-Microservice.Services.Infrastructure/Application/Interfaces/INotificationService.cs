@@ -7,9 +7,9 @@ namespace SS_Microservice.Services.Infrastructure.Application.Interfaces
 {
     public interface INotificationService
     {
-        Task CreateOrderNotification(CreateNotificationCommand command);
+        Task CreateOrderNotification(CreateOrderNotificationCommand command);
 
-        Task CreateSaleNotification(CreateNotificationCommand command);
+        Task CreateSaleNotification(CreateOrderNotificationCommand command);
 
         Task<bool> UpdateNotification(UpdateNotificationCommand command);
 

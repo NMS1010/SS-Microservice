@@ -20,11 +20,6 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
     {
         private readonly Serilog.ILogger _logger;
 
-        public OrderingStateMachine(Serilog.ILogger logger)
-        {
-            _logger = logger;
-        }
-
         // States
         private State OrderCreated { get; set; }
 
@@ -44,8 +39,6 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
 
         // Events
         public Event<IOrderCreatedEvent> OrderCreatedEvent { get; set; }
-        public Event<IOrderCreationRejectedEvent> OrderCreationRejectedEvent { get; set; }
-        public Event<IOrderCreationCompletedEvent> OrderCreationCompletedEvent { get; set; }
 
         public Event<IStockReservedEvent> StockReservedEvent { get; set; }
         public Event<IStockReservationRejectedEvent> StockReservationRejectedEvent { get; set; }
@@ -58,13 +51,23 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
 
         public OrderingStateMachine()
         {
+            _logger = Serilog.Log.Logger;
             InstanceState(x => x.CurrentState);
+
+            State(() => OrderCreated);
+            State(() => StockReserved);
+            State(() => StockReservationRejected);
+            State(() => InventoryExported);
+            State(() => InventoryExportationRejected);
+            State(() => BasketCleared);
+            State(() => BasketClearedRejected);
 
             Event(() => OrderCreatedEvent, y => y.CorrelateBy<long>(state => state.OrderId, context => context.Message.OrderId)
             .SelectId(ctx => Guid.NewGuid()));
 
-            Event(() => OrderCreationRejectedEvent, y => y.CorrelateById(y => y.Message.CorrelationId));
-            Event(() => OrderCreationCompletedEvent, y => y.CorrelateById(y => y.Message.CorrelationId));
+            Event(() => ReserveStockCommand, y => y.CorrelateById(y => y.Message.CorrelationId));
+            Event(() => ExportInventoryCommand, y => y.CorrelateById(y => y.Message.CorrelationId));
+            Event(() => ClearBasketCommand, y => y.CorrelateById(y => y.Message.CorrelationId));
 
             Event(() => StockReservedEvent, y => y.CorrelateById(y => y.Message.CorrelationId));
             Event(() => StockReservationRejectedEvent, y => y.CorrelateById(y => y.Message.CorrelationId));
@@ -87,9 +90,15 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                             context.Saga.OrderId = context.Message.OrderId;
                             context.Saga.OrderCode = context.Message.OrderCode;
                             context.Saga.UserId = context.Message.UserId;
+                            context.Saga.UserName = context.Message.UserName;
+                            context.Saga.Email = context.Message.Email;
                             context.Saga.PaymentMethod = context.Message.PaymentMethod;
                             context.Saga.TotalPrice = context.Message.TotalPrice;
                             context.Saga.CreatedAt = DateTime.Now;
+                            context.Saga.Address = context.Message.Address;
+                            context.Saga.Receiver = context.Message.Receiver;
+                            context.Saga.ReceiverEmail = context.Message.ReceiverEmail;
+                            context.Saga.Phone = context.Message.Phone;
                             context.Saga.ProductInstances = context.Message.Products.Select(x =>
                             {
                                 return new ProductInstance
@@ -99,11 +108,12 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                                     VariantId = x.VariantId
                                 };
                             }).ToList();
-                        })
-                   .TransitionTo(OrderCreated)
+                        }
+                   )
                    .Send(new Uri($"queue:{EventBusConstant.ExportInventory}"),
                        context => new ExportInventoryCommand()
                        {
+                           CorrelationId = context.Saga.CorrelationId,
                            OrderId = context.Saga.OrderId,
                            Stocks = context.Saga.ProductInstances.Select(x => new ProductStock
                            {
@@ -113,6 +123,7 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                            }).ToList()
                        }
                     )
+                   .TransitionTo(OrderCreated)
                    .Then(context =>
                    {
                        _logger.ForContext("CorrelationId", context.Saga.CorrelationId)
@@ -131,6 +142,7 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                     .Send(new Uri($"queue:{EventBusConstant.ReserveStock}"),
                         context => new ReserveStockCommand()
                         {
+                            CorrelationId = context.Saga.CorrelationId,
                             Stocks = context.Saga.ProductInstances.Select(x => new ProductStock
                             {
                                 ProductId = x.ProductId,
@@ -151,9 +163,10 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                                 .Information("InventoryExportationRejectedEvent received in OrderingStateMachine: {ContextSaga} ", context.Saga);
                     })
                     .TransitionTo(InventoryExportationRejected)
-                    .Publish(context => new OrderCreationRejectedEvent()
+                    .Publish<OrderingStateInstance, IInventoryExportationRejectedEvent, IOrderCreationRejectedEvent>(context => new OrderCreationRejectedEvent()
                     {
                         OrderId = context.Saga.OrderId,
+                        UserId = context.Saga.UserId,
                     })
                     .Then(context =>
                     {
@@ -166,6 +179,7 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                 When(StockReservedEvent)
                     .Then(context =>
                     {
+                        context.Saga.Image = context.Message.Image;
                         _logger.ForContext("CorrelationId", context.Saga.CorrelationId)
                                 .Information("StockReservedEvent received in OrderingStateMachine: {ContextSaga} ", context.Saga);
                     })
@@ -173,6 +187,7 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                     .Send(new Uri($"queue:{EventBusConstant.ClearBasket}"),
                         context => new ClearBasketCommand()
                         {
+                            CorrelationId = context.Saga.CorrelationId,
                             UserId = context.Saga.UserId,
                             VariantIds = context.Saga.ProductInstances.Select(x => x.VariantId).ToList()
                         }
@@ -189,9 +204,10 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                                 .Information("StockReservationRejectedEvent received in OrderingStateMachine: {ContextSaga} ", context.Saga);
                     })
                     .TransitionTo(StockReservationRejected)
-                    .Publish(context => new OrderCreationRejectedEvent()
+                    .Publish<OrderingStateInstance, IStockReservationRejectedEvent, IOrderCreationRejectedEvent>(context => new OrderCreationRejectedEvent()
                     {
                         OrderId = context.Saga.OrderId,
+                        UserId = context.Saga.UserId,
                     })
                     .Then(context =>
                     {
@@ -201,6 +217,7 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                     .Send(new Uri($"queue:{EventBusConstant.RollBackInventory}"),
                         context => new RollBackInventoryCommand()
                         {
+                            CorrelationId = context.Saga.CorrelationId,
                             OrderId = context.Saga.OrderId
                         }
                     )
@@ -220,10 +237,20 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                                 .Information("BasketClearedEvent received in OrderingStateMachine: {ContextSaga} ", context.Saga);
                     })
                     .TransitionTo(BasketCleared)
-                    .Publish(context => new OrderCreationCompletedEvent()
+                    .Publish<OrderingStateInstance, IBasketClearedEvent, IOrderCreationCompletedEvent>(context => new OrderCreationCompletedEvent()
                     {
+                        OrderId = context.Saga.OrderId,
                         OrderCode = context.Saga.OrderCode,
                         UserId = context.Saga.UserId,
+                        Image = context.Saga.Image,
+                        Address = context.Saga.Address,
+                        Receiver = context.Saga.Receiver,
+                        ReceiverEmail = context.Saga.ReceiverEmail,
+                        Phone = context.Saga.Phone,
+                        Email = context.Saga.Email,
+                        UserName = context.Saga.UserName,
+                        PaymentMethod = context.Saga.PaymentMethod,
+                        TotalPrice = context.Saga.TotalPrice,
                     })
                     .Then(context =>
                     {
@@ -238,13 +265,16 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                                 .Information("BasketClearRejectedEvent received in OrderingStateMachine: {ContextSaga} ", context.Saga);
                     })
                     .TransitionTo(BasketClearedRejected)
-                    .Publish(context => new OrderCreationRejectedEvent()
+                    .Publish<OrderingStateInstance, IBasketClearedRejectedEvent, IOrderCreationRejectedEvent>(context => new OrderCreationRejectedEvent()
                     {
                         OrderId = context.Saga.OrderId,
+                        UserId = context.Saga.UserId,
+
                     })
                     .Send(new Uri($"queue:{EventBusConstant.RollBackInventory}"),
                         context => new RollBackInventoryCommand()
                         {
+                            CorrelationId = context.Saga.CorrelationId,
                             OrderId = context.Saga.OrderId
                         }
                     )
@@ -256,6 +286,7 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                     .Send(new Uri($"queue:{EventBusConstant.RollBackStock}"),
                         context => new RollBackStockCommand()
                         {
+                            CorrelationId = context.Saga.CorrelationId,
                             Stocks = context.Saga.ProductInstances.Select(x => new ProductStock
                             {
                                 ProductId = x.ProductId,
@@ -270,6 +301,8 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                                 .Information("RollBackStockCommand sent in OrderingStateMachine: {ContextSaga} ", context.Saga);
                     })
             );
+
+            SetCompletedWhenFinalized();
         }
     }
 }

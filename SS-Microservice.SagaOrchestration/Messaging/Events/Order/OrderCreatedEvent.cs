@@ -13,5 +13,11 @@ namespace SS_Microservice.SagaOrchestration.Messaging.Events.Order
         public List<ProductStock> Products { get; set; }
 
         public Guid CorrelationId { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string Address { get; set; }
+        public string Receiver { get; set; }
+        public string ReceiverEmail { get; set; }
+        public string Phone { get; set; }
     }
 }

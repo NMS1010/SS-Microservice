@@ -1,9 +1,8 @@
 {
   "GlobalConfiguration": {
     "QoSOptions": {
-      "ExceptionsAllowedBeforeBreaking": 2,
-      "DurationOfBreak": 3000,
-      "TimeoutValue": 5000
+      "ExceptionsAllowedBeforeBreaking": 3,
+      "DurationOfBreak": 3000
     },
     "LoadBalancerOptions": {
       "Type": "LeastConnection"

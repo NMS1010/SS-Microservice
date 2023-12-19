@@ -15,5 +15,6 @@ namespace SS_Microservice.Services.Order.Application.Dtos
         public string ProductName { get; set; }
         public string VariantName { get; set; }
         public long VariantQuantity { get; set; }
+        public long VariantId { get; set; }
     }
 }

@@ -7,5 +7,6 @@ namespace SS_Microservice.Services.Inventory.Application.Features.Product.Comman
         public long ProductId { get; set; }
         public long Quantity { get; set; }
         public long ActualInventory { get; set; }
+        public Guid CorrelationId { get; set; }
     }
 }

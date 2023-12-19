@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SS_Microservice.Common.Grpc.Product.Protos;
 using SS_Microservice.Services.Order.Application.Dtos;
 using SS_Microservice.Services.Order.Domain.Entities;
 
@@ -9,6 +10,7 @@ namespace SS_Microservice.Services.Order.Application.Common.AutoMapper
         public OrderItemProfile()
         {
             CreateMap<OrderItem, OrderItemDto>();
+            CreateMap<ProductCustomGrpcResponse, OrderItemDto>();
         }
     }
 }

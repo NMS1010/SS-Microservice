@@ -13,12 +13,12 @@ namespace SS_Microservice.Services.Infrastructure.Application.Common.AutoMapper
         {
             CreateMap<Notification, NotificationDto>();
 
-            CreateMap<CreateNotificationCommand, Notification>();
+            CreateMap<CreateOrderNotificationCommand, Notification>();
 
             // mapping request - command/query
             CreateMap<GetNotificationPagingRequest, GetListNotificationQuery>();
             CreateMap<UpdateNotificationRequest, UpdateNotificationCommand>();
-            CreateMap<CreateNotificationRequest, CreateNotificationCommand>();
+            CreateMap<CreateNotificationRequest, CreateOrderNotificationCommand>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SS_Microservice.Common.Specifications;
+using SS_Microservice.Services.Order.Application.Common.Constants;
 using SS_Microservice.Services.Order.Application.Models.Order;
 
 namespace SS_Microservice.Services.Order.Application.Specifications.Order
@@ -66,7 +67,7 @@ namespace SS_Microservice.Services.Order.Application.Specifications.Order
                     else
                     {
                         Criteria = x => x.UserId == request.UserId &&
-                            x.Code.ToLower().Contains(keyword);
+                            x.Code.ToLower().Contains(keyword) && x.Status != ORDER_STATUS.DRAFT;
                     }
                 }
                 else
@@ -77,7 +78,7 @@ namespace SS_Microservice.Services.Order.Application.Specifications.Order
                     }
                     else
                     {
-                        Criteria = x => x.UserId == request.UserId;
+                        Criteria = x => x.UserId == request.UserId && x.Status != ORDER_STATUS.DRAFT;
                     }
                 }
             }
@@ -92,7 +93,7 @@ namespace SS_Microservice.Services.Order.Application.Specifications.Order
                     }
                     else
                     {
-                        Criteria = x => x.Code.ToLower().Contains(keyword);
+                        Criteria = x => x.Code.ToLower().Contains(keyword) && x.Status != ORDER_STATUS.DRAFT;
                     }
                 }
                 else
@@ -103,7 +104,7 @@ namespace SS_Microservice.Services.Order.Application.Specifications.Order
                     }
                     else
                     {
-                        Criteria = x => true;
+                        Criteria = x => x.Status != ORDER_STATUS.DRAFT;
                     }
                 }
             }

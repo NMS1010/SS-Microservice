@@ -2,6 +2,7 @@
 using MassTransit;
 using MediatR;
 using SS_Microservice.Common.Logging.Messaging;
+using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Contracts.Commands.Product;
 using SS_Microservice.Services.Inventory.Application.Features.Product.Commands;
@@ -18,15 +19,15 @@ namespace SS_Microservice.Services.Inventory.Application.Features.Docket.Command
     {
         private readonly IInventoryService _inventoryService;
         private readonly ILogger<ImportProductHandler> _logger;
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly ISendEndpointProvider _sendEndpoint;
         private readonly IMapper _mapper;
         private readonly string _handlerName = nameof(ImportProductHandler);
 
-        public ImportProductHandler(IInventoryService inventoryService, ILogger<ImportProductHandler> logger, IPublishEndpoint publishEndpoint, IMapper mapper)
+        public ImportProductHandler(IInventoryService inventoryService, ILogger<ImportProductHandler> logger, ISendEndpointProvider sendEndpoint, IMapper mapper)
         {
             _inventoryService = inventoryService;
             _logger = logger;
-            _publishEndpoint = publishEndpoint;
+            _sendEndpoint = sendEndpoint;
             _mapper = mapper;
         }
 
@@ -37,13 +38,13 @@ namespace SS_Microservice.Services.Inventory.Application.Features.Docket.Command
             if (docketId > 0)
             {
                 _logger.LogInformation(LoggerMessaging.StartPublishing(APPLICATION_SERVICE.INVENTORY_SERVICE,
-                    nameof(ImportProductCommand), _handlerName));
+                    nameof(IUpdateProductQuantityCommand), _handlerName));
 
-                await _publishEndpoint.Publish<IUpdateProductQuantityCommand>(_mapper.Map<UpdateProductQuantityCommand>(request),
-                    cancellationToken);
+                await (await _sendEndpoint.GetSendEndpoint(new Uri($"queue:{EventBusConstant.UpdateProductQuantity}")))
+                    .Send<IUpdateProductQuantityCommand>(_mapper.Map<UpdateProductQuantityCommand>(request));
 
                 _logger.LogInformation(LoggerMessaging.CompletePublishing(APPLICATION_SERVICE.INVENTORY_SERVICE,
-                    nameof(ImportProductCommand), _handlerName));
+                    nameof(IUpdateProductQuantityCommand), _handlerName));
             }
 
 

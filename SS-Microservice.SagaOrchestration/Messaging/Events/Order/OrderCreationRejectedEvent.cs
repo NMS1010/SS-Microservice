@@ -7,5 +7,6 @@ namespace SS_Microservice.SagaOrchestration.Messaging.Events.Order
         public Guid CorrelationId { get; set; }
 
         public long OrderId { get; set; }
+        public string UserId { get; set; }
     }
 }
