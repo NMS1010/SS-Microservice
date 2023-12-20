@@ -27,6 +27,7 @@ using SS_Microservice.Services.Order.Infrastructure.Repositories;
 using SS_Microservice.Services.Order.Infrastructure.Services;
 using SS_Microservice.Services.Order.Infrastructure.Services.Address;
 using SS_Microservice.Services.Order.Infrastructure.Services.Auth;
+using SS_Microservice.Services.Order.Infrastructure.Services.UserOperation;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,7 +64,8 @@ builder.Services.AddGrpcClient<ProductProtoService.ProductProtoServiceClient>
             (o => o.Address = new Uri(configuration["GrpcSettings:ProductUrl"]));
 
 builder.Services.RegisterServiceForwarder<IAddressClientAPI>("address-service")
-    .RegisterServiceForwarder<IAuthClientAPI>("auth-service");
+    .RegisterServiceForwarder<IAuthClientAPI>("auth-service")
+    .RegisterServiceForwarder<IUserOperationClientAPI>("user-operation-service");
 
 builder.Services
     .AddScoped<IProductGrpcService, ProductGrpcService>()

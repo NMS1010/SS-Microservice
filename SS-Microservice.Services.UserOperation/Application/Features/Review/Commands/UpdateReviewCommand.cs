@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SS_Microservice.Contracts.Models;
 using SS_Microservice.Services.UserOperation.Application.Interfaces;
 using SS_Microservice.Services.UserOperation.Application.Models.Review;
 
@@ -11,17 +12,34 @@ namespace SS_Microservice.Services.UserOperation.Application.Features.Review.Com
     public class UpdateReviewHandler : IRequestHandler<UpdateReviewCommand, bool>
     {
         private readonly IReviewService _reviewService;
+        private readonly ISender _sender;
 
-        public UpdateReviewHandler(IReviewService reviewService)
+        public UpdateReviewHandler(IReviewService reviewService, ISender sender)
         {
             _reviewService = reviewService;
+            _sender = sender;
         }
 
         public async Task<bool> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
         {
-            //pub event to product service to update review
+            var isSuccess = await _reviewService.UpdateReview(request);
+            if (isSuccess)
+            {
+                var productReview = await _reviewService.GetProductReview(request.Id);
+                await _sender.Send(new UpdateProductRatingCommand()
+                {
+                    ProductRatings = new List<ProductRating>()
+                    {
+                        new()
+                        {
+                            ProductId = productReview.ProductId,
+                            Rating = productReview.Rating
+                        }
+                    }
+                });
+            }
 
-            return await _reviewService.UpdateReview(request);
+            return isSuccess;
         }
     }
 }

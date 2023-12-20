@@ -116,6 +116,14 @@ namespace SS_Microservice.Services.Order.Application.Services
 
         }
 
+        public async Task<OrderItemDto> GetOrderItem(GetOrderItemQuery query)
+        {
+            var orderItem = await _unitOfWork.Repository<OrderItem>().GetById(query.Id)
+                ?? throw new InvalidRequestException("Unexpected orderItemId");
+
+            return _mapper.Map<OrderItemDto>(orderItem);
+        }
+
         public async Task<PaginatedResult<OrderDto>> GetListOrder(GetListOrderQuery query)
         {
             var orders = await _unitOfWork.Repository<Domain.Entities.Order>().ListAsync(new OrderSpecification(query, isPaging: true));
@@ -335,5 +343,6 @@ namespace SS_Microservice.Services.Order.Application.Services
             }
 
         }
+
     }
 }

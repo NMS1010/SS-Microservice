@@ -2,7 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SS_Microservice.Common.Attributes;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Common.Types.Model.CustomResponse;
 using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.UserOperation.Application.Dto;
@@ -144,6 +146,21 @@ namespace SS_Microservice.Services.UserOperation.Controllers
             });
 
             return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status204NoContent));
+        }
+
+        // call from other service
+        [InternalCommunicationAPI(APPLICATION_SERVICE.ORDER_SERVICE)]
+        [HttpGet("internal/order-review")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetOrderReview([FromQuery] GetOrderReviewRequest request)
+        {
+            var res = await _sender.Send(new GetOrderReviewQuery()
+            {
+                OrderItemIds = request.OrderItemIds,
+                UserId = request.UserId
+            });
+
+            return Ok(CustomAPIResponse<OrderReviewDto>.Success(res, StatusCodes.Status200OK));
         }
     }
 }

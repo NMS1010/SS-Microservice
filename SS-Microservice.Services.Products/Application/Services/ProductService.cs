@@ -17,6 +17,7 @@ using SS_Microservice.Services.Products.Application.Specification.Variant;
 using SS_Microservice.Services.Products.Domain.Entities;
 using SS_Microservice.Services.Products.Infrastructure.Consumers.Commands.Inventory;
 using SS_Microservice.Services.Products.Infrastructure.Consumers.Commands.OrderingSaga;
+using SS_Microservice.Services.Products.Infrastructure.Consumers.Commands.UserOperation;
 
 namespace SS_Microservice.Services.Products.Application.Services
 {
@@ -355,6 +356,32 @@ namespace SS_Microservice.Services.Products.Application.Services
             catch
             {
 
+            }
+        }
+
+        public async Task UpdateProductRating(UpdateProductRatingCommand command)
+        {
+            try
+            {
+                await _unitOfWork.CreateTransaction();
+
+                foreach (var productRating in command.ProductRatings)
+                {
+                    var product = await _unitOfWork.Repository<Product>().GetById(productRating.ProductId)
+                        ?? throw new NotFoundException("Cannot find product");
+
+                    product.Rating = productRating.Rating;
+
+                    _unitOfWork.Repository<Product>().Update(product);
+                }
+
+                await _unitOfWork.Save();
+                await _unitOfWork.Commit();
+            }
+            catch
+            {
+                await _unitOfWork.Rollback();
+                throw;
             }
         }
     }

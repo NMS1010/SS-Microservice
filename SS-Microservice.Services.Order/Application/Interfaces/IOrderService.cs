@@ -16,6 +16,8 @@ namespace SS_Microservice.Services.Order.Application.Interfaces
 
         Task<bool> DeleteOrder(DeleteOrderCommand command);
 
+        Task<OrderItemDto> GetOrderItem(GetOrderItemQuery query);
+
         Task<OrderDto> GetOrder(GetOrderQuery query);
 
         Task<OrderDto> GetOrderByCode(GetOrderByCodeQuery query);

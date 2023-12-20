@@ -69,6 +69,9 @@ namespace SS_Microservice.Services.Basket.Application.Services
             else
             {
                 basketItem.Quantity += command.Quantity;
+                if (basketItem.Quantity * command.VariantQuantity > command.CurrentProductQuantity)
+                    throw new InvalidRequestException("Unexpected quantity, it must be less than or equal to product in inventory");
+
                 _unitOfWork.Repository<BasketItem>().Update(basketItem);
             }
 
@@ -143,9 +146,21 @@ namespace SS_Microservice.Services.Basket.Application.Services
 
             basketItem.Quantity = command.Quantity;
 
-            _unitOfWork.Repository<Domain.Entities.Basket>().Update(basket);
+            // set basket item quantity max as possible if product quantity not enough
+            if (command.ActualQuantity != -1)
+            {
+                basketItem.Quantity = command.ActualQuantity;
+            }
+
+            if (basketItem.Quantity > 0)
+                _unitOfWork.Repository<Domain.Entities.Basket>().Update(basket);
+            else
+                _unitOfWork.Repository<BasketItem>().Delete(basketItem);
 
             var isSuccess = await _unitOfWork.Save() > 0;
+
+            if (isSuccess && command.ActualQuantity != -1)
+                throw new InvalidRequestException("Unexpected quantity, it must be less than or equal to product in inventory");
 
             if (!isSuccess) throw new Exception("Cannot handle to update product quantity, an error has occured");
 

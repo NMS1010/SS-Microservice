@@ -93,7 +93,7 @@ namespace SS_Microservice.Services.Auth.Controllers
         }
 
         // call from other service
-        [InternalCommunicationAPI(APPLICATION_SERVICE.ORDER_SERVICE)]
+        [InternalCommunicationAPI(APPLICATION_SERVICE.ORDER_SERVICE, APPLICATION_SERVICE.USER_OPERATION_SERVICE)]
         [HttpGet("internal/{userId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetUserFromOtherService([FromRoute] string userId)

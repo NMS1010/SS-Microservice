@@ -85,27 +85,14 @@ namespace SS_Microservice.Services.UserOperation.Application.Services
                 if (command.Image != null)
                     review.Image = await _uploadService.UploadFile(command.Image);
 
-                //var product = await _unitOfWork.Repository<Product>().GetById(command.ProductId) ??
-                //    throw new InvalidRequestException("Unexpected productId");
-                //var user = await _unitOfWork.Repository<AppUser>().GetById(command.UserId) ??
-                //    throw new NotFoundException("Cannot found current user");
-                //var orderItem = await _unitOfWork.Repository<OrderItem>().GetEntityWithSpec(new OrderItemSpecification(command.OrderItemId, ORDER_STATUS.DELIVERED)) ??
-                //    throw new InvalidRequestException("Unexpected orderItemId, order has not been deliveried");
-
                 review.ProductId = command.ProductId;
                 review.UserId = command.UserId;
                 review.OrderItemId = command.OrderItemId;
 
                 await _unitOfWork.Repository<Review>().Insert(review);
-                await _unitOfWork.Save();
-
-                //await CalculateProductReview(review.ProductId);
 
                 var isSuccess = await _unitOfWork.Save() > 0;
-                if (!isSuccess)
-                {
-                    throw new Exception("Cannot create entity");
-                }
+
                 await _unitOfWork.Commit();
 
                 return review.Id;
@@ -124,10 +111,6 @@ namespace SS_Microservice.Services.UserOperation.Application.Services
             _unitOfWork.Repository<Review>().Update(review);
 
             var isSuccess = await _unitOfWork.Save() > 0;
-            if (!isSuccess)
-            {
-                throw new Exception("Cannot update entity");
-            }
 
             return isSuccess;
         }
@@ -142,15 +125,10 @@ namespace SS_Microservice.Services.UserOperation.Application.Services
                 review.Status = false;
 
                 _unitOfWork.Repository<Review>().Update(review);
-                await _unitOfWork.Save();
 
                 //await CalculateProductReview(review.ProductId);
 
                 var isSuccess = await _unitOfWork.Save() > 0;
-                if (!isSuccess)
-                {
-                    throw new Exception("Cannot update status of entity");
-                }
 
                 return isSuccess;
             }
@@ -174,16 +152,12 @@ namespace SS_Microservice.Services.UserOperation.Application.Services
                     review.Status = false;
 
                     _unitOfWork.Repository<Review>().Update(review);
-                    await _unitOfWork.Save();
 
                     //await CalculateProductReview(review.ProductId);
                 }
 
                 var isSuccess = await _unitOfWork.Save() > 0;
-                if (!isSuccess)
-                {
-                    throw new Exception("Cannot update status of entities");
-                }
+
                 await _unitOfWork.Commit();
 
                 return isSuccess;
@@ -212,15 +186,11 @@ namespace SS_Microservice.Services.UserOperation.Application.Services
                     review.Image = null;
 
                 _unitOfWork.Repository<Review>().Update(review);
-                await _unitOfWork.Save();
 
                 //await CalculateProductReview(review.ProductId);
 
                 var isSuccess = await _unitOfWork.Save() > 0;
-                if (!isSuccess)
-                {
-                    throw new Exception("Cannot update review");
-                }
+
                 await _unitOfWork.Commit();
 
                 return true;
@@ -254,15 +224,11 @@ namespace SS_Microservice.Services.UserOperation.Application.Services
 
                 review.Status = !review.Status;
                 _unitOfWork.Repository<Review>().Update(review);
-                await _unitOfWork.Save();
 
                 //await CalculateProductReview(review.Product);
 
                 var isSuccess = await _unitOfWork.Save() > 0;
-                if (!isSuccess)
-                {
-                    throw new Exception("Cannot toggle status of entity");
-                }
+
                 await _unitOfWork.Commit();
                 return isSuccess;
             }
@@ -300,6 +266,28 @@ namespace SS_Microservice.Services.UserOperation.Application.Services
 
             return new ProductReviewDto() { ProductId = review.ProductId, Rating = productRating };
 
+        }
+        // call from other service
+        public async Task<OrderReviewDto> GetOrderReview(GetOrderReviewQuery query)
+        {
+            var isReview = true;
+            DateTime? reviewDate = null;
+            var reviewDates = new List<DateTime>();
+            foreach (var id in query.OrderItemIds)
+            {
+                var review = await _unitOfWork.Repository<Review>().GetEntityWithSpec(new ReviewSpecification(id, query.UserId));
+                if (review == null)
+                {
+                    isReview = false;
+                    break;
+                }
+                reviewDates.Add(review.UpdatedAt ?? review.CreatedAt);
+            }
+
+            if (reviewDates.Count > 0 && reviewDates.Count == query.OrderItemIds.Count)
+                reviewDate = reviewDates.Max();
+
+            return new OrderReviewDto() { IsReview = isReview, ReviewDate = reviewDate };
         }
     }
 }

@@ -2,7 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SS_Microservice.Common.Attributes;
 using SS_Microservice.Common.Services.CurrentUser;
+using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Common.Types.Model.CustomResponse;
 using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Order.Application.Dtos;
@@ -105,6 +107,20 @@ namespace SS_Microservice.Services.Order.Controllers
             var isSuccess = await _sender.Send(_mapper.Map<CompletePaypalOrderCommand>(request));
 
             return Ok(CustomAPIResponse<bool>.Success(isSuccess, StatusCodes.Status204NoContent));
+        }
+
+        // call from other service
+        [InternalCommunicationAPI(APPLICATION_SERVICE.USER_OPERATION_SERVICE)]
+        [HttpGet("internal/order-items/{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> UpdateOrder([FromRoute] long id)
+        {
+            var res = await _sender.Send(new GetOrderItemQuery()
+            {
+                Id = id
+            });
+
+            return Ok(CustomAPIResponse<OrderItemDto>.Success(res, StatusCodes.Status204NoContent));
         }
     }
 }

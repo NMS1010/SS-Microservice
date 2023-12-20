@@ -4,9 +4,9 @@ using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.UserOperation.Application.Dto;
 using SS_Microservice.Services.UserOperation.Application.Interfaces;
 using SS_Microservice.Services.UserOperation.Application.Models.Review;
+using SS_Microservice.Services.UserOperation.Infrastructure.Services.Auth;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.Order;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product;
-using SS_Microservice.Services.UserOperation.Infrastructure.Services.User;
 
 namespace SS_Microservice.Services.UserOperation.Application.Features.Review.Queries
 {
@@ -18,10 +18,10 @@ namespace SS_Microservice.Services.UserOperation.Application.Features.Review.Que
     {
         private readonly IReviewService _reviewService;
         private readonly IProductClientAPI _productClientAPI;
-        private readonly IUserClientAPI _userClientAPI;
+        private readonly IAuthClientAPI _userClientAPI;
         private readonly IOrderClientAPI _orderClientAPI;
 
-        public GetListReviewHandler(IReviewService reviewService, IProductClientAPI productClientAPI, IUserClientAPI userClientAPI, IOrderClientAPI orderClientAPI)
+        public GetListReviewHandler(IReviewService reviewService, IProductClientAPI productClientAPI, IAuthClientAPI userClientAPI, IOrderClientAPI orderClientAPI)
         {
             _reviewService = reviewService;
             _productClientAPI = productClientAPI;

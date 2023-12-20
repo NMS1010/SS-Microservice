@@ -70,8 +70,11 @@ namespace SS_Microservice.Common.RestEase
             services.AddTransient<T>(c =>
                 new RestClient(
                     c.GetService<IHttpClientFactory>()
-                     .CreateClient(clientName)
-                ).For<T>());
+                     .CreateClient(clientName))
+                {
+                    RequestQueryParamSerializer = new QueryParamSerializer()
+                }
+                    .For<T>());
         }
     }
 }

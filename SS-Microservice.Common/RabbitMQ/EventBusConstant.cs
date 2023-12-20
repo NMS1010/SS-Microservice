@@ -14,6 +14,8 @@
 
         public const string SendMail = "send-mail-command";
 
+        public const string UpdateProductRating = "update-product-rating-command";
+
         // events
         public const string BasketCleared = "basket-cleared-event";
         public const string BasketClearedRejected = "basket-cleared-rejected-event";

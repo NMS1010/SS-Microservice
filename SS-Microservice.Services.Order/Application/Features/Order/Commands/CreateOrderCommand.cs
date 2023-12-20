@@ -50,6 +50,8 @@ namespace SS_Microservice.Services.Order.Application.Features.Order.Commands
 
             var productStocks = new List<ProductStock>();
 
+            Dictionary<long, long> productActualQuantity = new();
+
             foreach (var item in request.Items)
             {
                 var product = await _productGrpcService.GetProductByVariant(new SS_Microservice.Common.Grpc.Product.Protos.GetProductByVariant()
@@ -57,7 +59,21 @@ namespace SS_Microservice.Services.Order.Application.Features.Order.Commands
                     VariantId = item.VariantId
                 }) ?? throw new InternalServiceCommunicationException("Cannot get product by variant id");
 
+                if (!productActualQuantity.ContainsKey(product.ProductId))
+                {
+                    productActualQuantity.Add(product.ProductId, product.ProductActualQuantity);
+                }
+
                 item.TotalPrice = (decimal)product.TotalPrice;
+
+                var q = item.Quantity * product.VariantQuantity;
+
+                if (q > productActualQuantity[product.ProductId])
+                {
+                    throw new InvalidRequestException("Unexpected quantity, it must be less than or equal to product in inventory");
+                }
+
+                productActualQuantity[product.ProductId] -= q;
 
                 productStocks.Add(new ProductStock()
                 {

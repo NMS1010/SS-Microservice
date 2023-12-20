@@ -20,6 +20,7 @@ using SS_Microservice.Services.Products.Application.Interfaces;
 using SS_Microservice.Services.Products.Application.Services;
 using SS_Microservice.Services.Products.Infrastructure.Consumers.Commands.Inventory;
 using SS_Microservice.Services.Products.Infrastructure.Consumers.Commands.OrderingSaga;
+using SS_Microservice.Services.Products.Infrastructure.Consumers.Commands.UserOperation;
 using SS_Microservice.Services.Products.Infrastructure.Consumers.Events.Order;
 using SS_Microservice.Services.Products.Infrastructure.Data.Context;
 using SS_Microservice.Services.Products.Infrastructure.Repositories;
@@ -109,6 +110,13 @@ builder.Services.AddMessaging(configuration, new List<EventBusConsumer>()
         {
             Type = typeof(OrderCancelledEventConsumer),
             Endpoint = APPLICATION_SERVICE.PRODUCT_SERVICE + "_" + EventBusConstant.OrderCancelled
+        }
+    },
+    {
+        new EventBusConsumer()
+        {
+            Type = typeof(UpdateProductRatingCommandConsumer),
+            Endpoint = EventBusConstant.UpdateProductRating
         }
     }
 });

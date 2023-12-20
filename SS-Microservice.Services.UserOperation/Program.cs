@@ -9,6 +9,7 @@ using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
+using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.RestEase;
 using SS_Microservice.Common.Services.CurrentUser;
@@ -20,9 +21,9 @@ using SS_Microservice.Services.UserOperation.Application.Interfaces;
 using SS_Microservice.Services.UserOperation.Application.Services;
 using SS_Microservice.Services.UserOperation.Infrastructure.Data.DBContext;
 using SS_Microservice.Services.UserOperation.Infrastructure.Repositories;
+using SS_Microservice.Services.UserOperation.Infrastructure.Services.Auth;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.Order;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product;
-using SS_Microservice.Services.UserOperation.Infrastructure.Services.User;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +51,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services
     .RegisterServiceForwarder<IOrderClientAPI>("order-service")
     .RegisterServiceForwarder<IProductClientAPI>("products-service")
-    .RegisterServiceForwarder<IUserClientAPI>("auth-service");
+    .RegisterServiceForwarder<IAuthClientAPI>("auth-service");
 
 builder.Services.AddAutoMapper(typeof(ReviewProfile).Assembly);
 
@@ -78,6 +79,8 @@ builder.Services.AddSwaggerGenWithJWTAuth();
 builder.Services.AddJwtAuthentication(configuration);
 
 builder.Services.AddConsul(builder.Configuration.GetConsulConfig());
+
+builder.Services.AddMessaging(configuration);
 
 builder.Services.AddAuthorization();
 

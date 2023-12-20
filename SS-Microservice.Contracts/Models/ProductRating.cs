@@ -1,6 +1,6 @@
-﻿namespace SS_Microservice.Services.UserOperation.Application.Dto
+﻿namespace SS_Microservice.Contracts.Models
 {
-    public class ProductReviewDto
+    public class ProductRating
     {
         public long ProductId { get; set; }
         public double Rating { get; set; }

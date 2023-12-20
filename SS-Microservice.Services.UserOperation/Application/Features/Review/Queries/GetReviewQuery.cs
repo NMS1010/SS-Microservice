@@ -2,9 +2,9 @@
 using SS_Microservice.Common.Exceptions;
 using SS_Microservice.Services.UserOperation.Application.Dto;
 using SS_Microservice.Services.UserOperation.Application.Interfaces;
+using SS_Microservice.Services.UserOperation.Infrastructure.Services.Auth;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.Order;
 using SS_Microservice.Services.UserOperation.Infrastructure.Services.Product;
-using SS_Microservice.Services.UserOperation.Infrastructure.Services.User;
 
 namespace SS_Microservice.Services.UserOperation.Application.Features.Review.Queries
 {
@@ -17,10 +17,10 @@ namespace SS_Microservice.Services.UserOperation.Application.Features.Review.Que
     {
         private readonly IReviewService _reviewService;
         private readonly IProductClientAPI _productClientAPI;
-        private readonly IUserClientAPI _userClientAPI;
+        private readonly IAuthClientAPI _userClientAPI;
         private readonly IOrderClientAPI _orderClientAPI;
 
-        public GetReviewHandler(IReviewService reviewService, IOrderClientAPI orderClientAPI, IUserClientAPI userClientAPI, IProductClientAPI productClientAPI)
+        public GetReviewHandler(IReviewService reviewService, IOrderClientAPI orderClientAPI, IAuthClientAPI userClientAPI, IProductClientAPI productClientAPI)
         {
             _reviewService = reviewService;
             _orderClientAPI = orderClientAPI;

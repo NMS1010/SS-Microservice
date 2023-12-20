@@ -46,9 +46,10 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\SS-Microservice.Common\SS-Microservice.Common.csproj" />
+		<ProjectReference Include="..\SS-Microservice.Contracts\SS-Microservice.Contracts.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Infrastructure\Services\User\Model\Request\" />
+	  <Folder Include="Infrastructure\Services\Auth\Model\Request\" />
 	</ItemGroup>
 
 

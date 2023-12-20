@@ -8,6 +8,7 @@ namespace SS_Microservice.Services.Basket.Application.Features.Basket.Commands
 {
     public class UpdateBasketItemCommand : UpdateBasketItemRequest, IRequest<bool>
     {
+        public long ActualQuantity { get; set; } = -1;
     }
 
     public class UpdateBasketItemHandler : IRequestHandler<UpdateBasketItemCommand, bool>
@@ -44,7 +45,9 @@ namespace SS_Microservice.Services.Basket.Application.Features.Basket.Commands
 
             var quantity = product.ProductActualQuantity;
             if (quantity < (request.Quantity * product.VariantQuantity))
-                throw new InvalidRequestException("Unexpected quantity, it must be less than or equal to product in inventory");
+            {
+                request.ActualQuantity = quantity / product.VariantQuantity;
+            }
 
             return await _basketService.UpdateBasketItem(request);
         }
