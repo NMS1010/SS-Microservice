@@ -4,7 +4,7 @@
       "UseServiceDiscovery": true,
       "Servicename": "AuthService",
       "DownstreamPathTemplate": "/api/auths/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "SwaggerKey": "auth",
       "UpstreamPathTemplate": "/api/auths/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT" ]
@@ -13,7 +13,7 @@
       "UseServiceDiscovery": true,
       "Servicename": "AuthService",
       "DownstreamPathTemplate": "/api/auths/revoke-refresh-token",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "SwaggerKey": "auth",
       "UpstreamPathTemplate": "/api/auths/revoke-refresh-token",
       "UpstreamHttpMethod": [ "POST" ],

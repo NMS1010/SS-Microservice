@@ -103,7 +103,7 @@ if (app.Environment.IsDevelopment())
 app.UseProblemDetails();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

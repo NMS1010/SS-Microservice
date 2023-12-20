@@ -7,7 +7,7 @@
         {
           "Name": "SS-Microservice.APIGateway",
           "Version": "1.0",
-          "Url": "https://localhost:7182/swagger/v1/swagger.json"
+          "Url": "http://localhost:5201/swagger/v1/swagger.json"
         }
       ]
     },
@@ -18,7 +18,7 @@
         {
           "Name": "SS-Microservice.Services.Basket",
           "Version": "1.0",
-          "Url": "https://localhost:7168/swagger/v1/swagger.json"
+          "Url": "http://localhost:5216/swagger/v1/swagger.json"
         }
       ]
     },
@@ -29,7 +29,7 @@
         {
           "Name": "SS-Microservice.Services.Inventory",
           "Version": "1.0",
-          "Url": "https://localhost:7261/swagger/v1/swagger.json"
+          "Url": "http://localhost:5237/swagger/v1/swagger.json"
         }
       ]
     },
@@ -40,7 +40,7 @@
         {
           "Name": "SS-Microservice.Services.Order",
           "Version": "1.0",
-          "Url": "https://localhost:7037/swagger/v1/swagger.json"
+          "Url": "http://localhost:5231/swagger/v1/swagger.json"
         }
       ]
     },
@@ -51,7 +51,7 @@
         {
           "Name": "SS-Microservice.Services.Products",
           "Version": "1.0",
-          "Url": "https://localhost:7096/swagger/v1/swagger.json"
+          "Url": "http://localhost:5160/swagger/v1/swagger.json"
         }
       ]
     },
@@ -62,7 +62,7 @@
         {
           "Name": "SS-Microservice.Services.Auth",
           "Version": "1.0",
-          "Url": "https://localhost:7026/swagger/v1/swagger.json"
+          "Url": "http://localhost:5074/swagger/v1/swagger.json"
         }
       ]
     },
@@ -73,7 +73,7 @@
         {
           "Name": "SS-Microservice.Services.Address",
           "Version": "1.0",
-          "Url": "https://localhost:7075/swagger/v1/swagger.json"
+          "Url": "http://localhost:5254/swagger/v1/swagger.json"
         }
       ]
     },
@@ -84,7 +84,7 @@
         {
           "Name": "SS-Microservice.Services.UserOperation",
           "Version": "1.0",
-          "Url": "https://localhost:7120/swagger/v1/swagger.json"
+          "Url": "http://localhost:5082/swagger/v1/swagger.json"
         }
       ]
     },
@@ -95,7 +95,7 @@
         {
           "Name": "SS-Microservice.Services.Infrastructure",
           "Version": "1.0",
-          "Url": "https://localhost:7129/swagger/v1/swagger.json"
+          "Url": "http://localhost:5007/swagger/v1/swagger.json"
         }
       ]
     }

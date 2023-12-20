@@ -35,6 +35,20 @@ builder.Host
     .UseLogging()
     .UseAppMetrics(configuration);
 
+
+builder.WebHost.UseKestrel(options =>
+{
+    options.ListenAnyIP(5160, listenOptions =>
+    {
+        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+    });
+    // grpc
+    options.ListenAnyIP(5161, listenOptions =>
+    {
+        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
+    });
+});
+
 builder.Services.AddMetrics();
 
 builder.Services.AddProblemDetailsSetup();
@@ -133,7 +147,7 @@ app.UseRouting();
 app.UseStaticFiles();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseEndpoints(endpoints =>

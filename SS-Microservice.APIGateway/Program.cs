@@ -17,7 +17,6 @@ using SS_Microservice.Common.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 builder.Host.UseLogging();
 // Add services to the container.
 var routes = "Routes";

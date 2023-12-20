@@ -1,10 +1,5 @@
 ﻿using Consul;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SS_Microservice.Common.Consul
 {
@@ -32,7 +27,7 @@ namespace SS_Microservice.Common.Consul
                 Check = new AgentServiceCheck()
                 {
                     Interval = TimeSpan.FromSeconds(15),
-                    HTTP = $"https://{_config.Address}:{_config.Port}/{_config.HealthCheckEndPoint}",
+                    HTTP = $"http://{_config.Address}:{_config.Port}/{_config.HealthCheckEndPoint}",
                     Timeout = TimeSpan.FromSeconds(5)
                 }
             };
