@@ -102,5 +102,15 @@ namespace SS_Microservice.Services.Auth.Controllers
 
             return Ok(CustomAPIResponse<UserDto>.Success(res, StatusCodes.Status200OK));
         }
+
+        [InternalCommunicationAPI(APPLICATION_SERVICE.ORDER_SERVICE)]
+        [HttpGet("internal/count/{role}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetTotalUserByRole([FromRoute] string role)
+        {
+            var res = await _sender.Send(new GetTotalUserByRoleQuery() { Role = role });
+
+            return Ok(CustomAPIResponse<int>.Success(res, StatusCodes.Status200OK));
+        }
     }
 }

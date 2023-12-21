@@ -144,5 +144,28 @@ namespace SS_Microservice.Services.Inventory.Application.Services
 
             }
         }
+
+        public async Task<List<DocketDto>> GetListDocketByType(GetListDocketByTypeQuery query)
+        {
+            var dockets = await _unitOfWork.Repository<Docket>().ListAsync(new DocketSpecification(query.Type));
+            List<DocketDto> docketDtos = new();
+            dockets.ForEach(x => docketDtos.Add(_mapper.Map<DocketDto>(x)));
+
+            return docketDtos;
+        }
+
+        public async Task<List<List<DocketDto>>> GetListDocketByDate(GetListDocketByDateQuery query)
+        {
+            var res = new List<List<DocketDto>>();
+            foreach (var item in query.Items)
+            {
+                var dockets = await _unitOfWork.Repository<Docket>().ListAsync(new DocketSpecification(item.Type, item.FirstDate, item.LastDate));
+                List<DocketDto> docketDtos = new();
+                dockets.ForEach(x => docketDtos.Add(_mapper.Map<DocketDto>(x)));
+                res.Add(docketDtos);
+            }
+
+            return res;
+        }
     }
 }

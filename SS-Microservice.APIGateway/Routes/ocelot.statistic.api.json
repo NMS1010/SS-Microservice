@@ -1,0 +1,30 @@
+{
+  "Routes": [
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "UserOperationService",
+      "DownstreamPathTemplate": "/api/statistics/rating",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "user-operation",
+      "UpstreamPathTemplate": "/api/statistics/rating",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    },
+    {
+      "UseServiceDiscovery": true,
+      "Servicename": "OrderService",
+      "DownstreamPathTemplate": "/api/statistics/{everything}",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "order",
+      "UpstreamPathTemplate": "/api/statistics/{everything}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowScopes": []
+      }
+    }
+  ]
+}

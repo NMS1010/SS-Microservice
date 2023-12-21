@@ -1,4 +1,5 @@
 ﻿using SS_Microservice.Common.Grpc.Product.Protos;
+using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Services.Order.Application.Interfaces;
 
 namespace SS_Microservice.Services.Order.Infrastructure.Services
@@ -14,17 +15,33 @@ namespace SS_Microservice.Services.Order.Infrastructure.Services
             _logger = logger;
         }
 
-        public async Task<ProductCustomGrpcResponse> GetProductByVariant(GetProductByVariant request)
+        public async Task<ProductCustomGrpcResponse> GetProductById(GetProductById request)
         {
-            _logger.LogInformation("[Order Service] Starting gRPC connection to Product Service");
-            var product = await _productProtoServiceClient.GetProductInformationAsync(request);
+            _logger.LogInformation($"{APPLICATION_SERVICE.ORDER_SERVICE} Starting gRPC connection to Product Service");
+            var product = await _productProtoServiceClient.GetProductInformationByIdAsync(request);
             if (product == null)
             {
-                _logger.LogError("[Order Service] Failed to get product from gRPC service");
+                _logger.LogError($"{APPLICATION_SERVICE.ORDER_SERVICE} Failed to get product from gRPC service");
             }
             else
             {
-                _logger.LogInformation("[Order Service] Get product successfully from gRPC service");
+                _logger.LogInformation($"{APPLICATION_SERVICE.ORDER_SERVICE} Get product successfully from gRPC service");
+            }
+
+            return product;
+        }
+
+        public async Task<ProductCustomGrpcResponse> GetProductByVariant(GetProductByVariant request)
+        {
+            _logger.LogInformation($"{APPLICATION_SERVICE.ORDER_SERVICE} Starting gRPC connection to Product Service");
+            var product = await _productProtoServiceClient.GetProductInformationAsync(request);
+            if (product == null)
+            {
+                _logger.LogError($"{APPLICATION_SERVICE.ORDER_SERVICE} Failed to get product from gRPC service");
+            }
+            else
+            {
+                _logger.LogInformation($"{APPLICATION_SERVICE.ORDER_SERVICE} Get product successfully from gRPC service");
             }
 
             return product;

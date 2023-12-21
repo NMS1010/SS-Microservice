@@ -46,7 +46,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Application\Models\Statistic\" />
 	  <Folder Include="wwwroot\" />
 	</ItemGroup>
 </Project>

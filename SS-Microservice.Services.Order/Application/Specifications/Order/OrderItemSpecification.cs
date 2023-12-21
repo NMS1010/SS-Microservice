@@ -15,5 +15,13 @@ namespace SS_Microservice.Services.Order.Application.Specifications.Order
         {
         }
 
+        public OrderItemSpecification(long variantId, DateTime firstDate, DateTime lastDate, string status)
+            : base(
+                  x => x.VariantId == variantId
+                  && x.Order.CreatedAt >= firstDate
+                  && x.Order.CreatedAt <= lastDate
+                  && x.Order.Status == status)
+        { }
+
     }
 }

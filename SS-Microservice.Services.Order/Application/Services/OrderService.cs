@@ -8,6 +8,7 @@ using SS_Microservice.Services.Order.Application.Common.Constants;
 using SS_Microservice.Services.Order.Application.Dtos;
 using SS_Microservice.Services.Order.Application.Features.Order.Commands;
 using SS_Microservice.Services.Order.Application.Features.Order.Queries;
+using SS_Microservice.Services.Order.Application.Features.Statistic.Queries;
 using SS_Microservice.Services.Order.Application.Interfaces;
 using SS_Microservice.Services.Order.Application.Models.Order;
 using SS_Microservice.Services.Order.Application.Specifications.Order;
@@ -306,7 +307,7 @@ namespace SS_Microservice.Services.Order.Application.Services
             }
         }
 
-        public async Task<List<OrderDto>> GetTopOrderLatest(GetTopLatestOrderQuery query)
+        public async Task<List<OrderDto>> GetTopOrderLatest(GetStatisticTopLatestOrderQuery query)
         {
             List<OrderDto> orderDtos = new();
             var orders = await _unitOfWork.Repository<Domain.Entities.Order>().ListAsync(new OrderSpecification(query.Top));

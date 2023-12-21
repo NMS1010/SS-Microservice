@@ -6,10 +6,15 @@ package product;
 
 service ProductProtoService {
 	rpc GetProductInformation (GetProductByVariant) returns (ProductCustomGrpcResponse);
+	rpc GetProductInformationById (GetProductById) returns (ProductCustomGrpcResponse);
 }
 
 message GetProductByVariant{
 	int64 variantId = 1;
+}
+
+message GetProductById{
+	int64 productId = 1;
 }
 
 
@@ -31,4 +36,5 @@ message ProductCustomGrpcResponse{
     int64 ProductId = 15;
 	int64 ProductActualQuantity = 16;
     string Status = 17;
+    google.protobuf.DoubleValue ProductCost = 18;
 }

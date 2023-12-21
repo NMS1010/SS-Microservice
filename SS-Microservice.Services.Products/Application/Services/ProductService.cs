@@ -34,6 +34,31 @@ namespace SS_Microservice.Services.Products.Application.Services
             _unitOfWork = unitOfWork;
         }
 
+        public override async Task<ProductCustomGrpcResponse> GetProductInformationById(GetProductById request, ServerCallContext context)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(new ProductSpecification(request.ProductId))
+                ?? throw new InvalidRequestException("Unexpected productId");
+
+            if (product == null)
+                return null;
+
+
+            var productDto = _mapper.Map<ProductDto>(product);
+
+            return new ProductCustomGrpcResponse()
+            {
+                ProductId = productDto.Id,
+                ProductName = productDto.Name,
+                ProductImage = productDto?.Images.FirstOrDefault(x => x.IsDefault)?.Image ?? product.Images.FirstOrDefault()?.Image,
+                ProductSlug = productDto.Slug,
+                ProductUnit = productDto.Unit.Name,
+                ProductQuantity = productDto.Quantity,
+                ProductCost = (double?)productDto.Cost,
+                ProductActualQuantity = productDto.ActualInventory,
+                Status = productDto.Status
+            };
+        }
+
         public override async Task<ProductCustomGrpcResponse> GetProductInformation(GetProductByVariant request, ServerCallContext context)
         {
             var variant = await _unitOfWork.Repository<Variant>().GetEntityWithSpec(new VariantSpecification(request.VariantId))

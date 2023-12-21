@@ -60,6 +60,7 @@ builder.Services
             .AddSingleton<IUploadService, UploadService>()
             .AddScoped<IReviewService, ReviewService>()
             .AddScoped<IUserFollowProductService, UserFollowProductService>()
+            .AddScoped<IStatisticService, StatisticService>()
             .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
             .AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 

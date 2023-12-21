@@ -59,7 +59,8 @@ namespace SS_Microservice.Services.Auth.Application.Features.Auth.Commands
                             Payloads = new Dictionary<string, string>()
                             {
                                 { "name", userCreatedDto.Name },
-                                { "otp", userCreatedDto.OTP }
+                                { "email", userCreatedDto.Email },
+                                { "OTP", userCreatedDto.OTP }
                             }
                         });
 

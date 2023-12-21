@@ -10,6 +10,7 @@ using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Order.Application.Dtos;
 using SS_Microservice.Services.Order.Application.Features.Order.Commands;
 using SS_Microservice.Services.Order.Application.Features.Order.Queries;
+using SS_Microservice.Services.Order.Application.Features.Statistic.Queries;
 using SS_Microservice.Services.Order.Application.Models.Order;
 
 namespace SS_Microservice.Services.Order.Controllers
@@ -64,7 +65,7 @@ namespace SS_Microservice.Services.Order.Controllers
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> GetTop5OrderLatest()
         {
-            var resp = await _sender.Send(new GetTopLatestOrderQuery());
+            var resp = await _sender.Send(new GetStatisticTopLatestOrderQuery());
 
             return Ok(CustomAPIResponse<List<OrderDto>>.Success(resp, StatusCodes.Status200OK));
         }

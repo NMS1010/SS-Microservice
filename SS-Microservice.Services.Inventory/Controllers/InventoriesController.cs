@@ -2,10 +2,14 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SS_Microservice.Common.Attributes;
+using SS_Microservice.Common.Types.Enums;
 using SS_Microservice.Common.Types.Model.CustomResponse;
+using SS_Microservice.Services.Inventory.Application.Common.Constants;
 using SS_Microservice.Services.Inventory.Application.Dto;
 using SS_Microservice.Services.Inventory.Application.Features.Docket.Commands;
 using SS_Microservice.Services.Inventory.Application.Features.Docket.Queries;
+using SS_Microservice.Services.Inventory.Application.Models.Docket;
 using SS_Microservice.Services.Inventory.Application.Models.Inventory;
 
 namespace SS_Microservice.Services.Inventory.Controllers
@@ -41,6 +45,30 @@ namespace SS_Microservice.Services.Inventory.Controllers
             var res = await _sender.Send(_mapper.Map<ImportProductCommand>(request));
 
             return Ok(CustomAPIResponse<bool>.Success(res, StatusCodes.Status204NoContent));
+        }
+
+        [InternalCommunicationAPI(APPLICATION_SERVICE.ORDER_SERVICE)]
+        [HttpGet("internal/{type}")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetListDocketByType([FromRoute] string type)
+        {
+            var res = await _sender.Send(new GetListDocketByTypeQuery()
+            {
+                Type = type ?? DOCKET_TYPE.IMPORT
+            });
+
+            return Ok(CustomAPIResponse<List<DocketDto>>.Success(res, StatusCodes.Status200OK));
+        }
+
+
+        [InternalCommunicationAPI(APPLICATION_SERVICE.ORDER_SERVICE)]
+        [HttpGet("internal/date")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetListDocketByDate([FromQuery] GetListDocketByDateRequest request)
+        {
+            var res = await _sender.Send(_mapper.Map<GetListDocketByDateQuery>(request));
+
+            return Ok(CustomAPIResponse<List<List<DocketDto>>>.Success(res, StatusCodes.Status200OK));
         }
     }
 }

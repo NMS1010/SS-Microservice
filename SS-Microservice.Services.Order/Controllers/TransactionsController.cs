@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SS_Microservice.Common.Types.Model.CustomResponse;
 using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Order.Application.Dtos;
+using SS_Microservice.Services.Order.Application.Features.Statistic.Queries;
 using SS_Microservice.Services.Order.Application.Features.Transaction.Queries;
 using SS_Microservice.Services.Order.Application.Models.Transaction;
 
@@ -35,7 +36,7 @@ namespace SS_Microservice.Services.Order.Controllers
         [HttpGet("top5-tracsaction-latest")]
         public async Task<IActionResult> GetTop5TransactionLatest()
         {
-            var transactions = await _sender.Send(new GetTopLatestTransactionQuery());
+            var transactions = await _sender.Send(new GetStatisticTopLatestTransactionQuery());
 
             return Ok(CustomAPIResponse<List<StatisticTransactionDto>>.Success(transactions, StatusCodes.Status200OK));
         }

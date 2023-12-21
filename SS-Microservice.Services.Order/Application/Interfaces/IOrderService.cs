@@ -2,6 +2,7 @@
 using SS_Microservice.Services.Order.Application.Dtos;
 using SS_Microservice.Services.Order.Application.Features.Order.Commands;
 using SS_Microservice.Services.Order.Application.Features.Order.Queries;
+using SS_Microservice.Services.Order.Application.Features.Statistic.Queries;
 using SS_Microservice.Services.Order.Infrastructure.Consumers.Events.OrderingSaga;
 
 namespace SS_Microservice.Services.Order.Application.Interfaces
@@ -24,7 +25,7 @@ namespace SS_Microservice.Services.Order.Application.Interfaces
 
         Task<PaginatedResult<OrderDto>> GetListOrder(GetListOrderQuery query);
 
-        Task<List<OrderDto>> GetTopOrderLatest(GetTopLatestOrderQuery query);
+        Task<List<OrderDto>> GetTopOrderLatest(GetStatisticTopLatestOrderQuery query);
 
         Task<PaginatedResult<OrderDto>> GetListUserOrder(GetListUserOrderQuery query);
     }

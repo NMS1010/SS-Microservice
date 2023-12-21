@@ -11,5 +11,6 @@ namespace SS_Microservice.Services.Order.Application.Dtos
         public string PaypalOrderId { get; set; }
         public string PaypalOrderStatus { get; set; }
         public string OrderCode { get; set; }
+        public long OrderId { get; set; }
     }
 }

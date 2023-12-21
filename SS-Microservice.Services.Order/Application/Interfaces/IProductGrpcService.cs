@@ -5,5 +5,6 @@ namespace SS_Microservice.Services.Order.Application.Interfaces
     public interface IProductGrpcService
     {
         Task<ProductCustomGrpcResponse> GetProductByVariant(GetProductByVariant request);
+        Task<ProductCustomGrpcResponse> GetProductById(GetProductById request);
     }
 }

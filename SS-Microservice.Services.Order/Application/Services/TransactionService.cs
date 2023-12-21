@@ -4,9 +4,7 @@ using SS_Microservice.Common.Types.Model.Paging;
 using SS_Microservice.Services.Order.Application.Dtos;
 using SS_Microservice.Services.Order.Application.Features.Transaction.Queries;
 using SS_Microservice.Services.Order.Application.Interfaces;
-using SS_Microservice.Services.Order.Application.Specifications.Order;
 using SS_Microservice.Services.Order.Application.Specifications.Transaction;
-using SS_Microservice.Services.Order.Domain.Entities;
 
 namespace SS_Microservice.Services.Order.Application.Services
 {
@@ -35,24 +33,6 @@ namespace SS_Microservice.Services.Order.Application.Services
                 return res;
             }).ToList(),
                 query.PageIndex, count, query.PageSize);
-        }
-
-        public async Task<List<StatisticTransactionDto>> GetTopLatestTransaction(GetTopLatestTransactionQuery query)
-        {
-            List<StatisticTransactionDto> transactionDtos = new();
-            var transactions = await _unitOfWork.Repository<Transaction>().ListAsync(new TransactionSpecification(query.Top));
-            foreach (var transaction in transactions)
-            {
-                var order = await _unitOfWork.Repository<Domain.Entities.Order>().GetEntityWithSpec(new OrderSpecification(transaction.OrderId));
-                //var user = await _unitOfWork.Repository<AppUser>().GetEntityWithSpec(new UserSpecification(order.User.Id));
-                //var userDto = _mapper.Map<UserDto>(user);
-                var transactionDto = _mapper.Map<TransactionDto>(transaction);
-                transactionDtos.Add(new StatisticTransactionDto()
-                {
-                    Transaction = transactionDto,
-                });
-            }
-            return transactionDtos;
         }
 
         public async Task<TransactionDto> GetTransaction(GetTransactionQuery query)

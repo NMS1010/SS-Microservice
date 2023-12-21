@@ -12,6 +12,10 @@ namespace SS_Microservice.Services.Inventory.Application.Interfaces
 
         Task<List<DocketDto>> GetListDocketByProduct(GetListDocketQuery query);
 
+        // call from other service
+        Task<List<DocketDto>> GetListDocketByType(GetListDocketByTypeQuery query);
+        Task<List<List<DocketDto>>> GetListDocketByDate(GetListDocketByDateQuery query);
+
         // messaging
         Task<bool> ExportInventory(ExportInventoryCommand command);
 

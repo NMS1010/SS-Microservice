@@ -9,7 +9,5 @@ namespace SS_Microservice.Services.Order.Application.Interfaces
         Task<PaginatedResult<TransactionDto>> GetListTransaction(GetListTransactionQuery query);
 
         Task<TransactionDto> GetTransaction(GetTransactionQuery query);
-
-        Task<List<StatisticTransactionDto>> GetTopLatestTransaction(GetTopLatestTransactionQuery query);
     }
 }

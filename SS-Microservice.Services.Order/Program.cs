@@ -27,6 +27,8 @@ using SS_Microservice.Services.Order.Infrastructure.Repositories;
 using SS_Microservice.Services.Order.Infrastructure.Services;
 using SS_Microservice.Services.Order.Infrastructure.Services.Address;
 using SS_Microservice.Services.Order.Infrastructure.Services.Auth;
+using SS_Microservice.Services.Order.Infrastructure.Services.Inventory;
+using SS_Microservice.Services.Order.Infrastructure.Services.Product;
 using SS_Microservice.Services.Order.Infrastructure.Services.UserOperation;
 using System.Reflection;
 
@@ -65,6 +67,8 @@ builder.Services.AddGrpcClient<ProductProtoService.ProductProtoServiceClient>
 
 builder.Services.RegisterServiceForwarder<IAddressClientAPI>("address-service")
     .RegisterServiceForwarder<IAuthClientAPI>("auth-service")
+    .RegisterServiceForwarder<IInventoryClientAPI>("inventory-service")
+    .RegisterServiceForwarder<IProductClientAPI>("product-service")
     .RegisterServiceForwarder<IUserOperationClientAPI>("user-operation-service");
 
 builder.Services
@@ -76,6 +80,8 @@ builder.Services
     .AddScoped<IPaymentMethodService, PaymentMethodService>()
     .AddScoped<IOrderCancellationReasonService, OrderCancellationReasonService>()
     .AddScoped<ITransactionService, TransactionService>()
+    .AddScoped<IStatisticRepository, StatisticRepository>()
+    .AddScoped<IStatisticService, StatisticService>()
     .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
     .AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
