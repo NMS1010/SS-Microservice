@@ -1,0 +1,28 @@
+global:
+  scrape_interval:     10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: aggregated-trace-metrics
+    static_configs:
+      - targets:
+        - otel-collector:8889
+
+  - job_name: jaeger
+    static_configs:
+      - targets:
+        - jaeger:14269
+
+  - job_name: services
+    static_configs:
+      - targets:
+        - saga-orchestration:5171
+        - api-gateway:5201
+        - address-service:5254
+        - auth-service:5074
+        - basket-service:5216
+        - infrastructure-service:5007
+        - inventory-service:5237
+        - order-service:5231
+        - products-service:5160
+        - user-operation-service:5082

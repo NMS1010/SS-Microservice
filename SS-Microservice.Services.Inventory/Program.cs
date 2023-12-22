@@ -3,12 +3,11 @@ using Hellang.Middleware.ProblemDetails;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SS_Microservice.Common.Consul;
-using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
-using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
+using SS_Microservice.Common.OpenTelemetry;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
@@ -26,14 +25,23 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Configuration
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 var configuration = builder.Configuration;
 
 builder.Host
-    .UseLogging()
-    .UseAppMetrics(configuration);
+    .UseLogging();
+//.UseAppMetrics(configuration);
 
-builder.Services.AddMetrics();
+builder.WebHost.UseKestrel(options =>
+{
+    options.ListenAnyIP(5237, listenOptions =>
+    {
+        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+    });
+});
+
+//builder.Services.AddMetrics();
 
 builder.Services.AddProblemDetailsSetup();
 builder.Services.AddDbContext<InventoryDbContext>(options =>
@@ -57,9 +65,11 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Get
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-builder.Services.AddOpenTracing();
+//builder.Services.AddOpenTracing();
 
-builder.Services.AddJaeger(configuration.GetJaegerOptions());
+//builder.Services.AddJaeger(configuration.GetJaegerOptions());
+
+builder.Services.AddCustomOpenTelemetry(configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -109,6 +119,7 @@ app.UseProblemDetails();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 //app.UseHttpsRedirection();
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
 app.UseAuthentication();
 app.UseAuthorization();
 

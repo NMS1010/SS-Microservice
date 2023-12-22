@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using SS_Microservice.Common.Services.CurrentUser;
 
 namespace SS_Microservice.Services.Infrastructure.Infrastructure.Data.DBContext
@@ -22,6 +22,7 @@ namespace SS_Microservice.Services.Infrastructure.Infrastructure.Data.DBContext
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
                 .Build();
 
             var connectionString = configuration.GetConnectionString("InfrastructureDbContext");

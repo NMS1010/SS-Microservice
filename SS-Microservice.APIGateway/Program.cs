@@ -5,19 +5,33 @@ using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
 using Ocelot.Provider.Polly;
-using Ocelot.Tracing.OpenTracing;
 using Serilog;
 using SS_Microservice.Common.Consul;
-using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
 using SS_Microservice.Common.Middleware;
+using SS_Microservice.Common.OpenTelemetry;
 using SS_Microservice.Common.Swagger;
 using SS_Microservice.Common.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseLogging();
+builder.Host
+    .UseLogging();
+//.UseMetrics();
+
+builder.WebHost.UseKestrel(options =>
+{
+    options.ListenAnyIP(5201, listenOptions =>
+    {
+        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+    });
+});
+
+builder.Configuration
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
+//builder.Services.AddMetrics();
 // Add services to the container.
 var routes = "Routes";
 
@@ -28,18 +42,22 @@ builder.Configuration.AddOcelotWithSwaggerSupport(options =>
 {
     options.Folder = routes;
 });
+
 //add ocelot with consul
 builder.Services.AddOcelot(builder.Configuration)
-    .AddOpenTracing()
-    .AddConsul()
     .AddCacheManager(x =>
     {
         x.WithDictionaryHandle();
     })
-    .AddPolly();
+    .AddPolly()
+    .AddConsul()
+    .AddConfigStoredInConsul();
 
-builder.Services.AddJaeger(builder.Configuration.GetJaegerOptions());
+//builder.Services.AddOpenTracing();
 
+//builder.Services.AddJaeger(builder.Configuration.GetJaegerOptions());
+
+builder.Services.AddCustomOpenTelemetry(configuration);
 
 builder.Services.AddSwaggerForOcelot(builder.Configuration);
 
@@ -88,6 +106,7 @@ app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<InternalAPIMiddleware>();
 //app.UseHttpsRedirection();
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
 app.UseCors();
 app.UseRouting();
 app.UseAuthentication();

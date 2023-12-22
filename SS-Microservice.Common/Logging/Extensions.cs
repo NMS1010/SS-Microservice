@@ -1,16 +1,8 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.Elasticsearch;
 using SS_Microservice.Common.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SS_Microservice.Common.Logging
 {
@@ -56,10 +48,6 @@ namespace SS_Microservice.Common.Logging
                 });
             }
 
-            //if (serilogOptions.ConsoleEnabled)
-            //{
-            //    loggerConfiguration.WriteTo.Console();
-            //}
         }
     }
 }

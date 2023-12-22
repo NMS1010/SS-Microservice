@@ -11,10 +11,9 @@
       "UseTracing": true,
       "AllowAutoRedirect": false
     },
-    "BaseUrl": "https://localhost:7182",
     "ServiceDiscoveryProvider": {
       "Scheme": "http",
-      "Host": "localhost",
+      "Host": "consul",
       "Port": 8500,
       "Type": "Consul",
       "PollingInterval": 100

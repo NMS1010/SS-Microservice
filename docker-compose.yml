@@ -1,0 +1,167 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    container_name: ss-microservice-api-gateway
+    image: ss-microservice-api-gateway
+    restart: always
+    environment:
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    build:
+      context: .
+      dockerfile: ./SS-Microservice.APIGateway/Dockerfile
+    networks:
+      - ss-microservice-network
+    ports:
+      - "5201:5201"
+  saga-orchestration:
+    container_name: ss-microservice-saga-orchestration
+    image: ss-microservice-saga-orchestration
+    restart: always
+    environment:
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    build:
+      context: .
+      dockerfile: ./SS-Microservice.SagaOrchestration/Dockerfile
+    networks:
+      - ss-microservice-network
+    expose:
+      - "5171"
+  address-service:
+    container_name: ss-microservice-address-service
+    image: ss-microservice-address-service
+    restart: always
+    environment:
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    build:
+      context: .
+      dockerfile: ./SS-Microservice.Services.Address/Dockerfile
+    networks:
+      - ss-microservice-network
+    expose:
+      - "5254"
+  auth-service:
+    container_name: ss-microservice-auth-service
+    image: ss-microservice-auth-service
+    restart: always
+    environment:
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    build:
+      context: .
+      dockerfile: ./SS-Microservice.Services.Auth/Dockerfile
+    networks:
+      - ss-microservice-network
+    expose:
+      - "5074"
+  basket-service:
+    container_name: ss-microservice-basket-service
+    image: ss-microservice-basket-service
+    restart: always
+    environment:
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    build:
+      context: .
+      dockerfile: ./SS-Microservice.Services.Basket/Dockerfile
+    networks:
+      - ss-microservice-network
+    expose:
+      - "5216"
+  infrastructure-service:
+    container_name: ss-microservice-infrastructure-service
+    image: ss-microservice-infrastructure-service
+    restart: always
+    environment:
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    build:
+      context: .
+      dockerfile: ./SS-Microservice.Services.Infrastructure/Dockerfile
+    networks:
+      - ss-microservice-network
+    expose:
+      - "5007"
+  inventory-service:
+    container_name: ss-microservice-inventory-service
+    image: ss-microservice-inventory-service
+    restart: always
+    environment:
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    build:
+      context: .
+      dockerfile: ./SS-Microservice.Services.Inventory/Dockerfile
+    networks:
+      - ss-microservice-network
+    expose:
+      - "5237"
+  order-service:
+    container_name: ss-microservice-order-service
+    image: ss-microservice-order-service
+    restart: always
+    environment:
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    build:
+      context: .
+      dockerfile: ./SS-Microservice.Services.Order/Dockerfile
+    networks:
+      - ss-microservice-network
+    expose:
+      - "5231"
+  products-service:
+    container_name: ss-microservice-products-service
+    image: ss-microservice-products-service
+    restart: always
+    environment:
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    build:
+      context: .
+      dockerfile: ./SS-Microservice.Services.Products/Dockerfile
+    networks:
+      - ss-microservice-network
+    expose:
+      - "5160"
+  user-operation-service:
+    container_name: ss-microservice-user-operation-service
+    image: ss-microservice-user-operation-service
+    restart: always
+    environment:
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    build:
+      context: .
+      dockerfile: ./SS-Microservice.Services.UserOperation/Dockerfile
+    networks:
+      - ss-microservice-network
+    expose:
+      - "5082"
+networks:
+  ss-microservice-network:
+    name: ss-microservice-network
+    external: true

@@ -22,6 +22,7 @@ namespace SS_Microservice.Services.Products.Infrastructure.Data.Context
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
                 .Build();
 
             var connectionString = configuration.GetConnectionString("ProductDbContext");

@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SS_Microservice.Common.Consul;
 using SS_Microservice.Common.Grpc.Product.Protos;
-using SS_Microservice.Common.Jaeger;
 using SS_Microservice.Common.Jwt;
 using SS_Microservice.Common.Logging;
-using SS_Microservice.Common.Metrics;
 using SS_Microservice.Common.Middleware;
 using SS_Microservice.Common.Migration;
+using SS_Microservice.Common.OpenTelemetry;
 using SS_Microservice.Common.RabbitMQ;
 using SS_Microservice.Common.Repository;
 using SS_Microservice.Common.Services.CurrentUser;
@@ -27,15 +26,24 @@ using SS_Microservice.Services.Basket.Infrastructure.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Configuration
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 // Add services to the container.
 var configuration = builder.Configuration;
 
 builder.Host
-    .UseLogging()
-    .UseAppMetrics(configuration);
+    .UseLogging();
+//.UseAppMetrics(configuration);
 
-builder.Services.AddMetrics();
+builder.WebHost.UseKestrel(options =>
+{
+    options.ListenAnyIP(5216, listenOptions =>
+    {
+        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+    });
+});
+
+//builder.Services.AddMetrics();
 
 builder.Services.AddProblemDetailsSetup();
 builder.Services.AddDbContext<BasketDBContext>(options =>
@@ -72,9 +80,12 @@ builder.Services.AddMessaging(configuration, new List<EventBusConsumer>()
     }
 });
 
-builder.Services.AddOpenTracing();
+//builder.Services.AddOpenTracing();
 
-builder.Services.AddJaeger(configuration.GetJaegerOptions());
+//builder.Services.AddJaeger(configuration.GetJaegerOptions());
+
+builder.Services.AddCustomOpenTelemetry(configuration);
+
 // Grpc Configuration
 builder.Services.AddGrpcClient<ProductProtoService.ProductProtoServiceClient>
             (o => o.Address = new Uri(configuration["GrpcSettings:ProductUrl"]));
@@ -104,6 +115,7 @@ app.UseProblemDetails();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 //app.UseHttpsRedirection();
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
 app.UseAuthentication();
 app.UseAuthorization();
 

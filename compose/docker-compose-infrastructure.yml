@@ -1,0 +1,147 @@
+version: '3.8'
+
+services:
+  consul:
+    container_name: ss-microservice-consul
+    image: hashicorp/consul
+    restart: always
+    ports:
+      - 8500:8500
+    networks:
+      - ss-microservice-network
+    volumes:
+      - consul_data:/consul/data
+  jaeger:
+    container_name: ss-microservice-jaeger
+    image: jaegertracing/all-in-one:1.52
+    command: --query.ui-config=/etc/jaeger/jaeger-ui.json --collector.otlp.enabled=true --prometheus.server-url=http://prometheus:9090 --prometheus.query.support-spanmetrics-connector=true
+    restart: always
+    environment:
+      - METRICS_STORAGE_TYPE=prometheus
+      - PROMETHEUS_QUERY_NORMALIZE_CALLS=true
+      - PROMETHEUS_QUERY_NORMALIZE_DURATION=true
+    volumes:
+      - ./configs/jaeger-ui.json:/etc/jaeger/jaeger-ui.json
+    ports:
+      - "16686:16686"
+      - "14269:14269"
+    expose:
+      - "14269"
+    networks:
+      - ss-microservice-network
+  otel-collector:
+    container_name: ss-microservice-otel-collector
+    image: otel/opentelemetry-collector-contrib:0.91.0
+    restart: always
+    command: --config /etc/otelcol/otel-collector-config.yml
+    volumes:
+      - ./configs/otel-collector-config.yml:/etc/otelcol/otel-collector-config.yml
+    ports:
+      - "4317:4317"
+      - "8889:8889"
+    expose:
+      - "8889"
+    networks:
+      - ss-microservice-network
+    depends_on:
+      - jaeger
+  mysql:
+    container_name: ss-microservice-mysql
+    image: mysql:latest
+    restart: always
+    command: --lower_case_table_names=1
+    environment:
+      MYSQL_ROOT_PASSWORD: Nms10102002
+      MYSQL_PASSWORD: Nms10102002
+    networks:
+      - ss-microservice-network
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./backup-db:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ss-microservice-rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - ss-microservice-network
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
+  elasticsearch:
+    container_name: ss-microservice-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+    restart: always
+    ports:
+      - 9200:9200
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    environment:
+      - xpack.monitoring.enabled=true
+      - xpack.watcher.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    networks:
+      - ss-microservice-network
+  kibana:
+    container_name: ss-microservice-kibana
+    image: docker.elastic.co/kibana/kibana:7.9.2
+    restart: always
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    networks:
+      - ss-microservice-network
+  prometheus:
+    container_name: ss-microservice-prometheus
+    image: prom/prometheus:v2.48.1
+    restart: always
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - ss-microservice-network
+  grafana:
+    container_name: ss-microservice-grafana
+    image: grafana/grafana:10.2.3
+    restart: always
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    volumes:
+      - ./configs/grafana.ini:/etc/grafana/grafana.ini
+      - ./configs/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
+      - ./configs/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+      - ./configs/dotnet-otel-dashboard.json:/etc/grafana/provisioning/dashboards/dotnet-otel-dashboard.json
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - ss-microservice-network
+
+networks:
+  ss-microservice-network:
+    name: ss-microservice-network
+
+volumes:
+  consul_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  mysql_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+  grafana_data:
+    driver: local
+  prometheus_data:
+    driver: local

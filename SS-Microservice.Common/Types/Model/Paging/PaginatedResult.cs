@@ -1,10 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SS_Microservice.Common.Types.Model.Paging
 {
@@ -32,14 +26,6 @@ namespace SS_Microservice.Common.Types.Model.Paging
         {
             var count = await source.CountAsync();
             var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
-
-            return new PaginatedResult<T>(items, pageIndex, count, pageSize);
-        }
-
-        public static async Task<PaginatedResult<T>> CreatePaginatedListMongo(IFindFluent<T, T> source, int pageIndex, int pageSize)
-        {
-            var count = await source.CountDocumentsAsync();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Limit(pageSize).ToListAsync();
 
             return new PaginatedResult<T>(items, pageIndex, count, pageSize);
         }

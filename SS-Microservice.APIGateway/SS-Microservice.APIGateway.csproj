@@ -16,12 +16,17 @@
   <ItemGroup>
 	  <PackageReference Include="Ocelot.Tracing.OpenTracing" Version="18.0.0" />
 	  <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
 	  <PackageReference Include="MMLib.SwaggerForOcelot" Version="6.3.2" />
 	  <PackageReference Include="Ocelot" Version="18.0.0" />
 	  <PackageReference Include="Ocelot.Cache.CacheManager" Version="18.0.0" />
 	  <PackageReference Include="Ocelot.Provider.Consul" Version="18.0.0" />
 	  <PackageReference Include="Ocelot.Provider.Polly" Version="18.0.0" />
+	  <PackageReference Include="OpenTracing.Contrib.NetCore" Version="0.9.0" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
