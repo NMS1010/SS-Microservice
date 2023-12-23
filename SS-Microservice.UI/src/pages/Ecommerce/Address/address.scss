@@ -1,0 +1,22 @@
+.address-container {
+    .address-default {
+        border: 1px var(--primary-color) solid;
+        color: var(--primary-color);
+    }
+    .btn-default {
+        border: 1px var(--primary-color) solid;
+        &:hover {
+            border: 1px var(--primary-color) solid;
+        }
+    }
+    input[type="search"] {
+        font-size: 1.6rem;
+    }
+}
+.ant-modal-content {
+    .ant-select-selection-search-input {
+        &:focus {
+            box-shadow: none !important;
+        }
+    }
+}

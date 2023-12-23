@@ -1,0 +1,12 @@
+.footer-container{
+    background-color: var(--primary-color);
+    .wrapper {
+        .text-index {
+            cursor: pointer;
+            &:hover {
+                color: #8ee486 !important;
+                transition: all 0.5s;
+            }
+        }
+    }
+}

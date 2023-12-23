@@ -1,0 +1,56 @@
+.web-loading-container {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(120deg, #a7ebf0, #efe7f0);
+    div{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        .loading {
+            font-size: 84px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            text-align: center;
+            span {
+              display: inline-block;
+              margin: 0 -.05em;
+            }
+          }
+        .loading07 {
+            span {
+              position: relative;
+              color: rgba(#000, .2);
+              &::after {
+                position: absolute;
+                top: 0;
+                left: 0;
+                content: attr(data-text);
+                color: var(--primary-color);
+                opacity: 0;
+                transform: scale(1.5);
+                animation: loading07 3s infinite;
+              }
+              @for $i from 1 through 6 {
+                &:nth-child(#{$i+1})::after {
+                  animation-delay: #{$i*.1}s;
+                }
+              }
+            }
+          }
+    }
+    
+      @keyframes loading07 {
+        0%, 75%, 100% {
+          transform: scale(1.5);
+          opacity: 0;
+        }
+        25%, 50% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+}

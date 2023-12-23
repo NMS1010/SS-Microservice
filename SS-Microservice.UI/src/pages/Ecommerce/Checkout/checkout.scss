@@ -1,0 +1,58 @@
+.checkout-container {
+    .delivery-container,
+    .payment-container {
+        .element {
+            position: relative;
+            border-radius: 5px;
+            border: 1px solid transparent;
+            background-color: #f2f2f2;
+            &:hover {
+                .ant-radio-inner {
+                    border-color: var(--primary-color);
+                }
+            }
+            .ant-radio {
+                margin-bottom: 5px;
+            }
+            .ico-check {
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+        }
+        .ant-radio-wrapper-checked {
+            background-color: #ecffe5;
+            border-color: var(--primary-color);
+            .ant-radio-checked {
+                .ant-radio-inner {
+                    background-color: var(--primary-color);
+                    border-color: var(--primary-color);
+                }
+            }
+            .ico-check {
+                display: block !important;
+            }
+        }
+    }
+    .address-container {
+        .top {
+            height: 3px;
+            width: 100%;
+            background-position-x: -30px;
+            background-size: 116px 3px;
+            background-image: repeating-linear-gradient(
+                45deg,
+                #6fa6d6,
+                #6fa6d6 33px,
+                transparent 0,
+                transparent 41px,
+                #f18d9b 0,
+                #f18d9b 74px,
+                transparent 0,
+                transparent 82px
+            );
+        }
+    }
+}
+.paypal-payment-container {
+}

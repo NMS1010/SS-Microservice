@@ -1,0 +1,66 @@
+.order-detail-container {
+    .order-status-container {
+        $--order-state-color: #2dc258;
+        .ant-steps {
+            .current-step {
+                .ant-steps-item-icon{
+                    background-color: $--order-state-color !important;
+                    .ant-steps-icon {
+                        svg {
+                            color: white !important;
+                            height: 100%;
+                        }
+                    }
+                }
+            }
+            .ant-steps-item-finish {
+                .ant-steps-item-container {
+                    .ant-steps-item-icon {
+                        border: 0.4rem solid $--order-state-color !important;
+                        .ant-steps-icon {
+                            svg {
+                                color: $--order-state-color;
+                                height: 100%;
+                            }
+                        }
+                    }
+                    .ant-steps-item-title {
+                        &::after {
+                            background-color: $--order-state-color !important;
+                            height: 3px;
+                            top: -3rem;
+                            left: 7rem;
+                        }
+                    }
+                }
+            }
+        }
+        .ant-steps-item-container {
+            .ant-steps-item-icon {
+                .ant-steps-icon {
+                    svg {
+                        color: #e0e0e0;
+                        height: 100%;
+                    }
+                }
+                border: 0.4rem solid #e0e0e0 !important;
+                border-radius: 50%;
+                width: 6rem !important;
+                height: 6rem !important;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .ant-steps-item-title {
+                &::after {
+                    height: 3px;
+                    top: -3rem;
+                    left: 7rem;
+                }
+            }
+        }
+    }
+    .contact-container {
+        background-color: var(--background-main-color);
+    }
+}

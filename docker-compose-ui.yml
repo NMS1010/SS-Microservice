@@ -1,0 +1,29 @@
+version: '3.8'
+
+name: ss-microservice-ui
+
+services:
+  ui:
+    container_name: ss-microservice-ui
+    image: ss-microservice-ui
+    restart: always
+    environment:
+      - CHOKIDAR_USEPOLLING=true  
+      - BROWSER=none
+      - NODE_ENV=development
+    build: 
+      context: ./SS-Microservice.UI
+      dockerfile: Dockerfile
+      target: development
+    networks:
+      - ss-microservice-network
+    volumes: 
+      - ./SS-Microservice.UI:/app  
+      - /app/node_modules  
+    ports: 
+      - 5173:5173
+
+networks:
+  ss-microservice-network:
+    name: ss-microservice-network
+    external: true

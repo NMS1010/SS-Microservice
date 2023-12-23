@@ -1,0 +1,13 @@
+.card-product {
+    &:hover {
+        .heart {
+            display: inline-flex !important;
+        }
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px !important;
+    }
+    transition: all 0.5s !important;
+    box-shadow: 0.01em 0.01em 0.3em rgba(0, 0, 0, 0.1) !important;
+    .ant-card-body {
+        max-width: 250px !important;
+    }
+}

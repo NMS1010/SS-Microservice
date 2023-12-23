@@ -1,0 +1,31 @@
+.dashboard-container {
+    .ant-card {
+        box-shadow: 0.01em 0.01em 0.2em rgba(0, 0, 0, 0.2);
+        .ant-card-body {
+            max-width: 1000px !important;
+        }
+    }
+    .ant-statistic {
+        .ant-statistic-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+        .ant-statistic-content {
+            display: flex;
+            align-items: center;
+            .ant-statistic-content-value {
+                margin-left: 5px;
+            }
+            .ant-statistic-content-suffix {
+                display: flex;
+                margin-left: 10px;
+            }
+        }
+    }
+    .card-container {
+        .ant-card-body {
+            padding: 20px 25px !important;
+        }
+    }
+}

@@ -1,0 +1,8 @@
+.notification-container {
+    .detail-btn{
+        &:hover {
+            border: 1px var(--primary-color) solid !important;
+            color: var(--primary-color) !important;
+        }
+    }
+}

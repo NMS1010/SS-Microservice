@@ -1,0 +1,14 @@
+.form-container {
+    .ant-switch {
+        background: rgba(0, 0, 0, 0.45);
+    }
+    .ant-switch-checked {
+        background: #4096ff;
+    }
+    .ant-upload-wrapper {
+        .ant-upload-select {
+            width: 150px !important;
+            height: 150px !important;
+        }
+    }
+}

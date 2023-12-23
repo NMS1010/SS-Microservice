@@ -1,0 +1,53 @@
+@import 'normalize.css';
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400&family=Nunito:ital,wght@0,200;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap&family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-color: #537f44;
+    --price-color: #e94560;
+    --btn-color: #ff5722;
+    --star-color: #f6a500;
+    --text-color: #586177;
+    --search-main: #eeeeee;
+    --hover-navbar: #4b723d;
+    --hover-menu: #ebf5e7;
+    --text-sidebar: #29335d;
+    --color-icon: #adb5bd;
+    --border-form: #ced4da;
+    --border-radius-form: 5px;
+    --background-main-color: #fafafa;
+    // --background-color-content-admin: #f8f9fa;
+    --background-color-content-admin: #fafafa;
+    --background-item-menu-color: #ecf7ec;
+    --height-header-admin: 56px;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    // transition: all 0.5s;
+}
+html {
+    font-size: 62.5%;
+}
+body {
+    font-family: 'Nunito', sans-serif;
+    font-family: 'Poppins', sans-serif;
+    font-family: 'Josefin Sans', sans-serif;
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-rendering: optimizespeed;
+    color: var(--text-color);
+    overflow-y: overlay;
+    background-color: #ffffff;
+}
+.primary-color {
+    color: var(--primary-color);
+}
+.star-color {
+    color: var(--star-color);
+}
+.price-color {
+    color: var(--price-color);
+}
