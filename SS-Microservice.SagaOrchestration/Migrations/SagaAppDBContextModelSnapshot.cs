@@ -86,6 +86,9 @@ namespace SS_Microservice.SagaOrchestration.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("TotalQuantity")
+                        .HasColumnType("int");
+
                     b.Property<long>("VariantId")
                         .HasColumnType("bigint");
 

@@ -105,7 +105,8 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                                 {
                                     ProductId = x.ProductId,
                                     Quantity = x.Quantity,
-                                    VariantId = x.VariantId
+                                    VariantId = x.VariantId,
+                                    TotalQuantity = x.TotalQuantity,
                                 };
                             }).ToList();
                         }
@@ -119,7 +120,8 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                            {
                                ProductId = x.ProductId,
                                VariantId = x.VariantId,
-                               Quantity = x.Quantity
+                               Quantity = x.Quantity,
+                               TotalQuantity = x.TotalQuantity,
                            }).ToList()
                        }
                     )
@@ -147,7 +149,8 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                             {
                                 ProductId = x.ProductId,
                                 VariantId = x.VariantId,
-                                Quantity = x.Quantity
+                                Quantity = x.Quantity,
+                                TotalQuantity = x.TotalQuantity,
                             }).ToList()
                         }
                     )
@@ -291,7 +294,8 @@ namespace SS_Microservice.SagaOrchestration.StateMachines.Ordering
                             {
                                 ProductId = x.ProductId,
                                 VariantId = x.VariantId,
-                                Quantity = x.Quantity
+                                Quantity = x.Quantity,
+                                TotalQuantity = x.TotalQuantity
                             }).ToList()
                         }
                     )

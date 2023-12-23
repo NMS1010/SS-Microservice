@@ -1,5 +1,7 @@
 version: '3.8'
 
+name: ss-microservice-services
+
 services:
   api-gateway:
     container_name: ss-microservice-api-gateway
@@ -145,6 +147,7 @@ services:
       - ss-microservice-network
     expose:
       - "5160"
+      - "5161"
   user-operation-service:
     container_name: ss-microservice-user-operation-service
     image: ss-microservice-user-operation-service

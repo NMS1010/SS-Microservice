@@ -43,6 +43,7 @@ namespace SS_Microservice.SagaOrchestration.StateInstances.Ordering
         public long ProductId { get; set; }
         public long VariantId { get; set; }
         public int Quantity { get; set; }
+        public int TotalQuantity { get; set; }
         public OrderingStateInstance OrderingStateInstance { get; set; }
     }
 }

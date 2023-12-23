@@ -48,6 +48,7 @@ namespace SS_Microservice.SagaOrchestration.Migrations
                     ProductId = table.Column<long>(type: "bigint", nullable: false),
                     VariantId = table.Column<long>(type: "bigint", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
+                    TotalQuantity = table.Column<int>(type: "int", nullable: false),
                     OrderingStateInstanceCorrelationId = table.Column<Guid>(type: "char(36)", nullable: true)
                 },
                 constraints: table =>

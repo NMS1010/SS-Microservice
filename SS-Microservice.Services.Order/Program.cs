@@ -77,7 +77,7 @@ builder.Services.AddGrpcClient<ProductProtoService.ProductProtoServiceClient>
 builder.Services.RegisterServiceForwarder<IAddressClientAPI>("address-service")
     .RegisterServiceForwarder<IAuthClientAPI>("auth-service")
     .RegisterServiceForwarder<IInventoryClientAPI>("inventory-service")
-    .RegisterServiceForwarder<IProductClientAPI>("product-service")
+    .RegisterServiceForwarder<IProductClientAPI>("products-service")
     .RegisterServiceForwarder<IUserOperationClientAPI>("user-operation-service");
 
 builder.Services

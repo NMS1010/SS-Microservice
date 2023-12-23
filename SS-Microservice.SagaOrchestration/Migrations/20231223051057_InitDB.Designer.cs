@@ -11,7 +11,7 @@ using SS_Microservice.SagaOrchestration.DbContext;
 namespace SS_Microservice.SagaOrchestration.Migrations
 {
     [DbContext(typeof(SagaAppDBContext))]
-    [Migration("20231218051624_InitDB")]
+    [Migration("20231223051057_InitDB")]
     partial class InitDB
     {
         /// <inheritdoc />
@@ -87,6 +87,9 @@ namespace SS_Microservice.SagaOrchestration.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalQuantity")
                         .HasColumnType("int");
 
                     b.Property<long>("VariantId")

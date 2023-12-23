@@ -36,7 +36,7 @@ namespace SS_Microservice.Services.Inventory.Application.Services
                     {
                         Type = DOCKET_TYPE.EXPORT,
                         Code = string.Empty.GenerateUniqueCode(),
-                        Quantity = item.Quantity,
+                        Quantity = item.TotalQuantity,
                         ProductId = item.ProductId,
                         OrderId = command.OrderId
                     };

@@ -79,7 +79,8 @@ namespace SS_Microservice.Services.Order.Application.Features.Order.Commands
                 {
                     ProductId = product.ProductId,
                     VariantId = product.VariantId,
-                    Quantity = item.Quantity
+                    Quantity = item.Quantity,
+                    TotalQuantity = (int)product.VariantQuantity * item.Quantity,
                 });
             }
             var resp = await _orderService.CreateOrder(request);
